@@ -1,0 +1,20 @@
+#summary One-sentence summary of this page.
+#labels Featured
+
+= 介绍 =
+
+ZincScript是j2me平台上的脚本语言，语法涉及上参考了Ruby语言，采用了和Ruby相同的代码结构和关键字，例如if-else-end结构，def-end结构。熟悉Ruby语言和JAVA语言的开发者可以很快学会使用ZincScript进行脚本编程。
+
+= 背景 =
+
+
+= 功能特性 =
+
+ZincScript还在开发中，目前已经实现如下功能:
+  * 整数的四则运算；
+  * 整数与字符串的混合运算(比如连接)；
+  * 逻辑运算；
+  * 条件分支语句
+  * while循环
+  * 函数定义
+  * 库函数和脚本函数调用（可以递归调用）
