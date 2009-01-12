@@ -1,0 +1,98 @@
+body { 
+	background: #C7EDCC;
+	/*font: 12px/1.6em Georgia;*/
+	font: 11pt Georgia;
+	/*color: #535353;*/
+	color: #000;
+}
+
+b, strong {
+	font-size: 11pt;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #405871; 
+}
+
+a:visited {
+    color: #5A88B5;
+    background-color: inherit;
+}
+
+div.section h2{
+    background-color: #557697;
+    color: #fff;
+}
+
+span.term { 
+	font-weight: bold; 
+}
+
+div.sidebar { 
+	background: #F7F7F3; 
+	border: 1px solid #C1C1C1; 
+	padding: 5px; 
+	margin: 20px; 
+	color: #535353;
+}
+
+pre.programlisting, div.abstract, div.toc, div.literallayout { 
+	/*background: #F0F0F0; 
+	border: 1px solid gray; 
+	padding: 2px; 
+	font-size: 10pt;
+	white-space: pre;
+	color: #000000;*/
+	border: 1px solid #C1C1C1;
+	background: #F7F7F3;
+	color: #535353;
+	padding: 12px 2;
+	/*margin: 20px;*/
+	white-space: pre;
+}
+
+table {
+	border: 1px solid gray;
+	/*width: 100%;*/
+	empty-cells: show;
+	border-collapse: collapse;
+	font-size: 9pt;
+	padding: 2px;
+}
+
+div.revhistory table {
+	border: 1px solid #C1C1C1;
+	background: #F7F7F3;
+}
+
+table div.literallayout {
+	background: #C7EDCC;
+	border: 0px;
+}
+div.note th {
+	background: #F7F7F3;
+	border: 1px solid #C1C1C1;
+	color: #F59A05;
+}
+
+.screen {
+	background: #000;
+	color: #FFF;
+	font-weight: bolder;
+	margin: 20px;
+}
+
+div.colored {
+	background: #F90;
+	color: #535353;
+}
+
+div.navheader table, div.navfooter table {
+	background: #F90;
+	color: #535353;
+	font-size: 11pt;
+}
+
+.subtitle {
+	font-style: italic;
+}
