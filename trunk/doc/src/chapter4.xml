@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter4">
+	<title>ZincScript函数库</title>
+	<para>
+		<code>ZincScript</code>
+		引擎本身只是一个解释分析器，要想完成与平台开发相关的工作，就要以来封装好的库函数。目前我只是简单的封装了有限的几个库函数，将来需要时，可以按照第5章介绍的库函数封装方法，封装更多更强大的函数库，甚至封装出用于PC平带的函数库，让
+		<code>ZincScript</code>
+		可以运行在PC端。下面介绍一些已经有的库函数。随着大家的努力，ZincScript的函数库和库函数会越来越多，因此这部分的文档会频繁更新，请大家保持更新。
+	</para>
+	<sect1 id="sect.4.1">
+		<title>标准库--StdLib</title>
+		<para>
+			<table frame="all" align="left">
+				<title>StdLib函数列表</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>函数</entry>
+							<entry>描述</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>
+								<emphasis>void _zssprint(string s)</emphasis>
+							</entry>
+							<entry>将字符串输出到终端，结尾不加换行符</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zssprintln(string s)</emphasis>
+							</entry>
+							<entry>将字符串输出到终端，结尾加换行符</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zssExit()</emphasis>
+							</entry>
+							<entry>退出MIDlet</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>string _zssSubString(string s, int start, int
+									end)
+								</emphasis>
+							</entry>
+							<entry>截取子字符串</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zssStringLen(string s)</emphasis>
+							</entry>
+							<entry>获取字符串的长度</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</para>
+	</sect1>
+	<sect1 id="sect.4.2">
+		<title>图形库--GraphicsLib</title>
+		<para>
+			<table frame="all" align="left">
+				<title>GraphicsLib函数列表</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>函数</entry>
+							<entry>描述</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>
+								<emphasis>void _zsgSetColor(int color)</emphasis>
+							</entry>
+							<entry>设置绘图颜色</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgFillRect(int x, int y, int w, int h)
+								</emphasis>
+							</entry>
+							<entry>用默认颜色填充矩形</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgFillRect(int color, int x, int y, int w,
+									int h)</emphasis>
+							</entry>
+							<entry>用指定颜色填充矩形</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawRect(int x, int y, int w, int h)
+								</emphasis>
+							</entry>
+							<entry>用默认颜色绘制矩形</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawRect(int color, int x, int y, int w,
+									int h)</emphasis>
+							</entry>
+							<entry>用指定颜色绘制矩形</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawLine(int x1, int y1, int x2, int y2)
+								</emphasis>
+							</entry>
+							<entry>用默认颜色绘制直线</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawLine(int color, int x1, int y1, int
+									x2,
+									int y2)</emphasis>
+							</entry>
+							<entry>用指定颜色绘制直线</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawString(String s, int x, int y, int
+									anchor)
+								</emphasis>
+							</entry>
+							<entry>用默认颜色绘制字符串</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawString(int color, String s, int x,
+									int y, int anchor
+									)</emphasis>
+							</entry>
+							<entry>用指定颜色绘制文字</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zsgCanvasWidth()</emphasis>
+							</entry>
+							<entry>获取画布(屏幕)的宽度</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zsgCanvasHeight()</emphasis>
+							</entry>
+							<entry>获取画布(屏幕)的高度</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zsgGetStringWidth(String s)</emphasis>
+							</entry>
+							<entry>获取字符串的显示长度</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zsgGetFontHeight()</emphasis>
+							</entry>
+							<entry>获取字体高度</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>int _zsgGetFontWidth()</emphasis>
+							</entry>
+							<entry>获取中文字符宽度</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgLoadImage(string img1,string2,...)
+								</emphasis>
+							</entry>
+							<entry>载入图片资源</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawImage(string imageName, int x, int y,
+									int anchor)</emphasis>
+							</entry>
+							<entry>绘制图片</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>void _zsgDrawGradient(int startColor,
+									int endColor,
+									int x, int y, int w, int h, int direction)
+								</emphasis>
+							</entry>
+							<entry>绘制渐进色</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</para>
+	</sect1>
+</chapter>

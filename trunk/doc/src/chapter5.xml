@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter5">
+	<title>封装自己的函数库</title>
+	<para>
+		现在需要你参与到
+		<code>ZincScript</code>
+		引擎开发的时候了。在上一章中提到，与平台相关的功能，全部是由库函数完成的。在某种意义上，一门语言强大与否，直接取决于其提供的库函数是否强大。
+		<code>ZincScript</code>
+		在设计期初，就留下了库函数调用接口，并且在实现时将引擎与库函数完全剥离，仅留有1个接口完成库函数的调用。这个接口就是
+		<emphasis>
+			<code>callFunction(String name, ArrayList params)
+			</code>
+		</emphasis>
+		<code>ZincScript</code>
+		需要强大功能，就要有强大的函数库。下面我将介绍如何封装自己的函数库。
+	</para>
+	<sect1 id="sect.5.1">
+		<title>ZincScript的函数库架构</title>
+		<para>
+			<code>ZincScript</code>
+			中一个函数库就是一个类，他们全都继承自基类
+			<emphasis>AbstractLib</emphasis>
+			。如下图：
+			<figure>
+				<graphic fileref="images/zs2.png" />
+				<title>ZincScript函数库结构</title>
+			</figure>
+			其中基类有一个成员变量
+			<emphasis>functionMap</emphasis>
+			和一个接口
+			<emphasis>callFunction(String name, ArrayList
+				params)</emphasis>
+			和一个需要在子类中实现的保护方法
+			<emphasis>createFunctionMap()</emphasis>
+			。 其中
+			<emphasis>functionMap</emphasis>
+			保存函数名与函数代号之间的映射。这样做是为了能够在库函数比较多时快速定位到需要的函数。在构建函数库时，你需要为要实现的库函数起个名字(以下划线开头)，然后分配给他一个唯一的代码(byte)。
+			将函数名和代码建立起映射的方法在
+			<emphasis>createFunctionMap()</emphasis>
+			方法中完成，你需要将你的函数名作为key，把函数名和函数代码put到HashTable中。这里将函数名和函数值抽象成一个方法放到基类中，主要是为了将来需要时可以自己实现更高效的Hash算法。但是目前采用HashTable。
+			<emphasis>callFunction(String name, ArrayList
+				params)</emphasis>
+			是函数库暴露出来唯一接口，它接受函数名和函数参数列表为参数。该方法中需要根据函数名从
+			<emphasis>functionMap</emphasis>
+			中取出函数的代码，然后执行对应的方法。
+		</para>
+	</sect1>
+	<sect1 id="sect.5.2">
+		<title>函数库的封装过程</title>
+		<para>
+			先让我们看一个例子，下面是
+			<code>StdLib</code>
+			中的代码片段：
+			<programlisting><![CDATA[
+				public final class StdLib extends AbstactLib { 
+					private static final
+				int FUNCTION_NUM = 2;//函数数量
+				]]>
+				<co id="co.1.1.1" /><![CDATA[
+					// _zssprint函数名称和代码
+					private static final String PRINT = "_zssprint";
+					private static final byte PRINT_CODE = 1;
+					// _zssprintln函数名称和代码
+					private static final String PRINTLN = "_zssprintln";
+					private static final byte PRINTLN_CODE = 2;
+					]]>
+					
+				<co id="co.1.1.2" /><![CDATA[
+					protected void createFunctionMap() {
+						if (functionMap == null)
+							functionMap = new Hashtable(FUNCTION_NUM);
+						// 将函数名和函数代码放入映射表
+						functionMap.put(PRINT, new Byte(PRINT_CODE));
+						functionMap.put(PRINTLN, new Byte(PRINTLN_CODE));
+					}
+					]]>
+					
+				<co id="co.1.1.3" /><![CDATA[
+					public Object callFunction(String name, ArrayList params)
+							throws ZSException {
+						Byte code = (Byte) functionMap.get(name);
+						if (code != null) {
+							switch (code.byteValue()) {
+							case PRINT_CODE:
+								_zssprint(params);
+								return null;
+							case PRINTLN_CODE:
+								_zssprintln(params);
+								return null;
+							default:
+								throw new ZSException("函数" + name + "不存在");
+							}
+						} else {
+							throw new ZSException("函数" + name + "不存在");
+						}
+					}
+					]]>
+					
+				<co id="co.1.1.4" /><![CDATA[
+					private void _zssprint(ArrayList param) {
+						if (param == null || param.size() == 0)
+							return;
+						String s = "";
+						for (int i = 0; i < param.size(); i++)
+							s += param.get(i);
+						System.out.print(s);
+						s = null;
+					}
+				
+					private void _zssprintln(ArrayList param) {
+						_zssprint(param);
+						System.out.println();
+					}
+				} 
+				]]>
+			</programlisting>
+			<calloutlist>
+				<callout arearefs="co.1.1.1">
+					<para> 首先定义函数名和代号。函数名必须以下划线开头，并且函数名和代号要唯一。</para>
+				</callout>
+				<callout arearefs="co.1.1.2">
+					<para> 将函数名和代号放入映射表中，建立起映射。</para>
+				</callout>
+				<callout arearefs="co.1.1.3">
+					<para> 根据传入的函数名，取出函数代号，然后执行相应的方法。返回值为Object</para>
+				</callout>
+				<callout arearefs="co.1.1.4">
+					<para> 库函数的具体实现方法</para>
+				</callout>
+			</calloutlist>
+			所有的库都是按照这让的流程建立的。在功能复杂的库时，可能还需要一些其他的成员变量，这个根据需要添加。一般来说，函数库在整个程序中应当只有一个实例，为了保证这一点，我建议所有的库都采用单例模式，下面是一个指导性写法：
+			<programlisting>
+				<co id="co.1.2.1" />
+				private static AbstactLib instance = null;
+				<co id="co.1.2.2" />
+				public static AbstactLib getInstance() { if (instance == null) {
+				instance = new StdLib(); instance.createFunctionMap(); } return
+				instance; }
+			</programlisting>
+			<calloutlist>
+				<callout arearefs="co.1.2.1">
+					<para> 所有库都采用单例模式，确保内存中已有一份库的实例。</para>
+				</callout>
+				<callout arearefs="co.1.2.2">
+					<para> 如果此函数库的引用为空，则实例化此函数库，返回引用。</para>
+				</callout>
+			</calloutlist>
+		</para>
+	</sect1>
+</chapter>

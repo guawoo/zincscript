@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" 
+	"../../docbook-xml-4.5/docbookx.dtd" [
+	<!ENTITY chapter1 SYSTEM "chapter1.xml">
+	<!ENTITY chapter2 SYSTEM "chapter2.xml">
+	<!ENTITY chapter3 SYSTEM "chapter3.xml">
+	<!ENTITY chapter4 SYSTEM "chapter4.xml">
+	<!ENTITY chapter5 SYSTEM "chapter5.xml">
+	<!ENTITY chapter6 SYSTEM "chapter6.xml">
+	<!ENTITY chapter7 SYSTEM "chapter7.xml">
+	<!ENTITY glossary SYSTEM "glossary.xml">
+]>
+<book>
+	<bookinfo>
+		<title>ZincScript编程指南</title>
+		<author>
+			<othername>Jarod Yv</othername>
+			<affiliation>
+				<orgname>
+					<ulink url="http://3g.cn">3G门户(3g.cn)</ulink>
+				</orgname>
+				<orgdiv>GT2-KJAVA</orgdiv>
+				<address>
+					<email>yuxin@3g.net.cn</email>
+				</address>
+			</affiliation>
+		</author>
+		<revhistory>
+			<revision>
+				<revnumber>1.0</revnumber>
+				<date>2009-01-6</date>
+				<revdescription>
+					<para> 新建 </para>
+				</revdescription>
+			</revision>
+		</revhistory>
+		<legalnotice>
+			<para>本文档用于公司内部培训使用</para>
+		</legalnotice>
+
+	</bookinfo>
+	&chapter1;
+	&chapter2;
+	&chapter3;
+	&chapter4;
+	&chapter5;
+	&chapter6;
+	&chapter7;
+	&glossary;
+</book>

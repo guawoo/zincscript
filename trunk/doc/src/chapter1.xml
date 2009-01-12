@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter1">
+	<title>文档说明</title>
+	<sect1 id="sect.1.1">
+		<title>文档目的</title>
+		<para>
+			<code>ZincScript</code>
+			作为一门功能完备的语言，有其自己的语法和函数库。尽管
+			<code>ZincScript</code>
+			在语法上参考了Ruby语言，但是由于J2ME平台的限制以及面向对象特性的缺失，导致
+			<code>ZincScript</code>
+			与Ruby还是有一些区别。并且不是所有人都熟悉Ruby语言，因此要想使用
+			<code>ZincScript</code>
+			首先要熟悉
+			<code>ZincScript</code>
+			的语法和API。本文的写作目的正是帮助读者了解
+			<code>ZincScript</code>
+			的编程风格；掌握
+			<code>ZincScript</code>
+			的语法规则；熟悉
+			<code>ZincScript</code>
+			的API；最终使用户能够掌握
+			<code>ZincScript</code>
+			语言
+		</para>
+	</sect1>
+	<sect1 id="sect.1.2">
+		<title>文档对象</title>
+		<para>
+			本文档适用于想了解
+			<code>ZincScript</code>
+			的所有人员，尤其是需要使用
+			<code>ZincScript</code>
+			开发组件的开发者
+		</para>
+	</sect1>
+	<sect1 id="sect.1.3">
+		<title>阅读指南</title>
+		<para> 本文档大致分为3部分:</para>
+		<para>
+			第一部分为第2章，主要对
+			<code>ZincScript</code>
+			进行一个概略式的介绍
+		</para>
+		<para>
+			第二部分包括第3到第4章，主要介绍
+			<code>ZincScript</code>
+			的语法和API
+		</para>
+		<para>
+			第三部分包括第5到第6章，主要介绍
+			<code>ZincScript</code>
+			解释执行引擎的结构、流程以及函数库扩展接口
+		</para>
+		<para>
+			最后，在第7章，针对
+			<code>ZincScript</code>
+			的解释执行机制，还给出了
+			<code>ZincScript</code>
+			最佳开发实践和编码规范。
+		</para>
+		<para>
+			如果你是使用
+			<code>ZincScript</code>
+			的开发人员 的所有人员，你需要详细阅读第二部分，即第2章到第3章以及第6章的内容；
+		</para>
+		<para>
+			如果你是
+			<code>ZincScript</code>
+			引擎的开发维护人员，你需要详细阅读第三部分，即第5章到第6章的内容；
+		</para>
+		<para>
+			如果你仅仅是想了解一下
+			<code>ZincScript</code>
+			，那么你只需要阅读第2章。
+		</para>
+		<para>
+			如果你有任何问题可以随时和我交流，我的email是
+			<email>yuxin@3g.net.cn</email>
+			MSN:
+			<email>JarodYv@live.cn</email>
+		</para>
+	</sect1>
+</chapter>

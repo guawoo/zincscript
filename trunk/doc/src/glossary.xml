@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter1">
+	<title>术语表</title>
+	<glossentry id="xml">
+		<glossterm>ZincScript</glossterm>
+		<glossdef>
+			<para>
+				是j2me平台上的脚本语言，语法涉及上参考了Ruby语言，采用了和Ruby相同的代码结构和关键字，例如if-else-end结构，def-end结构。
+				熟悉Ruby语言和JAVA语言的开发者可以很快学会使用。</para>
+		</glossdef>
+	</glossentry>
+</chapter>

@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter3">
+	<title>ZincScript语法</title>
+	<para>
+		本章我们将进入
+		<code>ZincScript</code>
+		语法的学习。作为脚本语言，
+		<code>ZincScript</code>
+		在语法上并不比其他高级语言复杂。在设计时，我只实现了高级语言语法的最小完备子集。因此，如果你有其他高级语言的编程经验，你将很快掌握ZincScript的语法。
+	</para>
+	<sect1 id="sect.3.0">
+		<title>ZincScript中的约定</title>
+		<para> “没有规矩，不成方圆。”任何一门语言都由其独特的约定，ZincScript也不例外。</para>
+		<para>
+			我对ZincScript做如下约定：
+			<orderedlist numeration="arabic">
+				<listitem>
+					<para>
+						ZincScript脚本文件一律采用UTF-8编码的文本文件保存，对文件名没有要求但建议采用
+						<emphasis>.zs</emphasis>
+						作为后缀 ；
+					</para>
+				</listitem>
+				<listitem>
+					<para>关键字是大小写敏感的，关键字一律用小写；</para>
+				</listitem>
+				<listitem>
+					<para>变量名、函数名必须以字母或下划线开头。但是不建议用下划线开头，原因请参考下一条；
+					</para>
+				</listitem>
+				<listitem>
+					<para>库函数以下划线开头；</para>
+				</listitem>
+				<listitem>
+					<para>#号开始的行表示注释；</para>
+				</listitem>
+				<listitem>
+					<para>用换行标示语句的结束</para>
+				</listitem>
+			</orderedlist>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.1">
+		<title>ZincScript中的关键字</title>
+		<para>
+			<code>ZincScript</code>
+			中定义的关键字有:
+			<table frame="all" align="left">
+				<title>ZincScript中的关键字</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>关键字</entry>
+							<entry>描述</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>
+								<emphasis>int</emphasis>
+							</entry>
+							<entry>定义整型变量</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>string</emphasis>
+							</entry>
+							<entry>定义字符串型变量</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>array</emphasis>
+							</entry>
+							<entry>定义数组</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>if</emphasis>
+							</entry>
+							<entry>if语句</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>else</emphasis>
+							</entry>
+							<entry>else语句</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>elsif</emphasis>
+							</entry>
+							<entry>else if语句</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>while</emphasis>
+							</entry>
+							<entry>while循环</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>def</emphasis>
+							</entry>
+							<entry>定义函数</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>end</emphasis>
+							</entry>
+							<entry>关闭def/if/while</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>return</emphasis>
+							</entry>
+							<entry>返回变量值</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>load</emphasis>
+							</entry>
+							<entry>载入脚本</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.2">
+		<title>ZincScript中的运算符</title>
+		<para>
+			<code>ZincScript</code>
+			中目前支持的运算符有:
+			<table frame="all" align="left">
+				<title>ZincScript中的运算符</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>运算符</entry>
+							<entry>描述</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry align="center">一元运算符</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>-</emphasis>
+							</entry>
+							<entry>复数运算符</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>!</emphasis>
+							</entry>
+							<entry>逻辑非</entry>
+						</row>
+						<row>
+							<entry align="center">二元运算符</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>=</emphasis>
+							</entry>
+							<entry>赋值运算</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>==</emphasis>
+							</entry>
+							<entry>相等</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>!=</emphasis>
+							</entry>
+							<entry>不等</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>&gt;</emphasis>
+							</entry>
+							<entry>大于</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>&lt;</emphasis>
+							</entry>
+							<entry>小于</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>&gt;=</emphasis>
+							</entry>
+							<entry>大于等于</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>&lt;=</emphasis>
+							</entry>
+							<entry>小于等于</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>&amp;&amp;</emphasis>
+							</entry>
+							<entry>逻辑与</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>||</emphasis>
+							</entry>
+							<entry>逻辑或</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>+</emphasis>
+							</entry>
+							<entry>加法运算、连接运算</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>-</emphasis>
+							</entry>
+							<entry>减法运算</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>*</emphasis>
+							</entry>
+							<entry>乘法运算</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>/</emphasis>
+							</entry>
+							<entry>除法运算</entry>
+						</row>
+						<row>
+							<entry>
+								<emphasis>%</emphasis>
+							</entry>
+							<entry>取模运算</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+		</para>
+		<para>
+			运算符的有限级为：（*,/,%）&gt;(+,-)&gt;(==,!=,&gt;,&gt;=,&lt;,&lt;=)&gt;&amp;&amp;&gt;||&gt;=  可以用小括号改变算符的优先级。
+		</para>
+	</sect1>
+	<sect1 id="sect.3.3">
+		<title>ZincScript中的表达式</title>
+		<para>
+			<code>ZincScript</code>中将如下3种情形的代码视为是表达式：
+			<itemizedlist>
+				<listitem><para>孤立的整数活字符串</para></listitem>
+				<listitem><para>变量</para></listitem>
+				<listitem><para>由运算符链接的两表达式</para></listitem>
+			</itemizedlist>		
+		</para>
+	</sect1>
+	<sect1 id="sect.3.4">
+		<title>ZincScript中的赋值语句</title>
+		<code>ZincScript</code>
+		中的赋值语句与C语言或Java类似,基本模式如下:
+		<programlisting><![CDATA[
+			int|string {var[=expression],...}
+		]]>
+		</programlisting>
+		例如:
+		<programlisting><![CDATA[
+			int i #关键字int+变量名 i会被赋予默认值0
+			string s #关键字string+变量名 s会被赋予默认值""
+			int x=0,y=0 #用逗号分割多个变量名,声明多个变量
+			string s="i = "+i #赋值运算符=后可以跟表达式,但表达式返回值一定要与变量数据类型相同
+		]]>
+		</programlisting>
+	</sect1>
+	<sect1 id="sect.3.5">
+		<title>ZincScript中的分支语句</title>
+		<para>
+			<code>ZincScript</code>
+			支持全功能的分支语句.用法与C语言和Java相同,只不过关键字不同而已.所有分支语句都由
+			<emphasis>if</emphasis>
+			关键字开始，以
+			<emphasis>end</emphasis>
+			关键字结束，中间可以跟任意多else if子句(使用
+			<emphasis>elsif</emphasis>
+			关键字)或else子句。
+		</para>
+		关键字
+		<emphasis>if/elsif</emphasis>
+		后面可以跟整形值,整型变量或返回值为整型的表达式。
+		<code>ZincScript</code>
+		中没有布尔型，它采用同C语言相同的处理方法,0表示false,非0表示true。因此分支语句的基本模式为：
+		<programlisting><![CDATA[
+			if expression
+				code
+			[{
+			elsif expression}...
+				code
+			|
+			else
+				code
+			]
+			end
+			]]>
+		</programlisting>
+		举例：
+		<programlisting><![CDATA[
+			if 1
+				_zssprintln("永远执行此语句")
+			end
+			
+			if i<j
+				_zssprintln("i<j")
+			else
+				_zssprintln("i>j")
+			end
+			
+			if i<j
+				_zssprintln("i<j")
+			elsif i==j
+				_zssprintln("i=j")
+			else
+				_zssprintln("i>j")
+			end
+			]]>
+		</programlisting>
+		<note>
+			<title>注意事项</title>
+			<para>
+				<orderedlist numeration="arabic">
+					<listitem>
+						<para>表示else if的关键字是<emphasis>elsif</emphasis>，而不是else if</para>
+					</listitem>
+					<listitem>
+						<para>关键字后面的表达式可以不必放在括号内</para>
+					</listitem>
+				</orderedlist>
+			</para>
+		</note>
+	</sect1>
+	<sect1 id="sect.3.6">
+		<title>ZincScript中的循环语句</title>
+		<para>
+			<code>ZincScript</code>只实现了while循环。从编译原理的角度，while循环已经完备完备的循环功能。
+			while循环的基本模式为：
+			<programlisting><![CDATA[
+				while expression
+					code
+				end
+				]]>
+			</programlisting>
+			举例：下面代码实现了打印九九乘法表
+			<programlisting><![CDATA[
+				int i=1,j=1
+				while i<10
+					j=1
+					while j<10
+						_zssprintln(j+"*"+i+"="+i*j+"  ")
+						j=j+1
+					end
+					_zssprintln()
+					i=i+1
+				end
+				]]>
+			</programlisting>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.7">
+		<title>ZincScript中的数组</title>
+		<para>
+			<code>ZincScript</code>使用关键字<emphasis>array</emphasis>定义数组。定义数组的语句与定义整形和字符串的语句类似，但是定义数组时需要在变量后面用中括号表明数组的维度。例如：
+			<programlisting><![CDATA[
+				array a[][]
+			]]>
+			</programlisting>
+			定义好数组后，就可以为数组赋值了。
+			<warning>
+				<title>注意事项</title>
+				<para>数组定义后里面的元素是空的，必须对数组中各元素赋值后才能从数组中取值使用。</para>
+			</warning>
+			为数组赋值时数组下标可以不是连续的,也不必担心下标越界问题，<code>ZincScript</code>会自动等价数组的长度。
+			<programlisting><![CDATA[
+				array sudoku[][]
+				int i,j
+				while i<9
+					j=0
+					while j<9
+						sudoku[i][j]=0
+						j=j+1
+					end
+					i=i+1
+				end
+			]]>
+			</programlisting>
+			<note>
+				<title>注意事项</title>
+				<para>ZincScript中的数组下标也是从0开始的。</para>
+				<para>ZincScript中的数组是无类型的，可以存放整形也可以存放字符串，或者二者混合存储。</para>
+			</note>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.8">
+		<title>在ZincScript中定义并调用函数</title>
+		<para>
+			<code>ZincScript</code>允许开发者将脚本中的一些常用的语句组合，封装到一个函数里面，然后在需要的地方调用该函数，从而减少重复开发，提高开发效率。
+			定义函数使用<emphasis>def</emphasis>关键字，后面跟函数名和参数列表，然后将整个函数体放在def-end之间,如果有返回值的话，则用<emphasis>return</emphasis>关键字传回返回值。函数定义的基本模式如下:
+			<programlisting><![CDATA[
+				def func_name([{int|string var},...])
+					code
+				end
+				]]>
+			</programlisting>
+			<tip>
+				<title>注意事项</title>
+				<para>ZincScript支持函数递归调用。</para>
+			</tip>
+			下面的代码采用递归的方式计算整数的阶乘。
+			<programlisting><![CDATA[
+				def calculate()
+					int result=fact(10)
+					_zssprintln("10!= "+result)
+				end
+
+				def fact(int num)
+					if num==0
+						return 1
+					else
+					return num*fact(num-1)
+				end
+				]]>
+			</programlisting>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.9">
+		<title>在ZincScript中切换脚本</title>
+		<para>
+			当需要开发的功能是组件化或模块化时，或者在实现较为复杂的功能时，可以讲脚本根据功能块划分为若干小脚本，然后使用<code>ZincScript</code>提供的脚本切换功能，方便地在两个脚本之间切换。
+			要切换脚本，使用<emphasis>load</emphasis>关键字+脚本的路径。代码如下：
+			<programlisting><![CDATA[
+				load "/test.zs"
+				]]>
+			</programlisting>
+		</para>
+	</sect1>
+	<sect1 id="sect.3.10">
+		<title>在MIDlet中使用ZincScript</title>
+		<para>如何在MIDlet中使用ZincScript呢？</para>
+		<para>
+			<code>ZincScript</code>解释执行引擎经过良好的封装，只暴露出必要的几个接口，用于与MIDlet结合。这些接口如下：
+			<itemizedlist>
+				<listitem><para><code>getZincScript()</code></para></listitem>
+				<listitem><para><code>loadScript(String path)</code></para></listitem>
+				<listitem><para><code>loadScript(byte[] scriptData)</code></para></listitem>
+				<listitem><para><code>executeScript()</code></para></listitem>
+				<listitem><para><code>callFunction(String name, ArrayList params)</code></para></listitem>
+				<listitem><para><code>reset()</code></para></listitem>
+			</itemizedlist>	
+			<code>getZincScript()</code>返回脚本引擎的唯一实例；
+			<code>loadScript(String path)</code>和<code>loadScript(byte[] scriptData)</code>两个重载方法用于载入脚本文件；
+			<code>executeScript()</code>会解释执行脚本；
+			<code>callFunction(String name, ArrayList params)</code>负责调用执行脚本中某一特定函数；
+			<code>reset()</code>重置脚本引擎。
+			在MIDlet程序中的应用过程如下：
+			<figure>
+				<graphic fileref="images/zs1.png" />
+				<title>ZincScript脚本引擎在MIDlet中的调用过程</title>
+			</figure>
+			下面是ZincScriptDemo中Canvas的代码，可以帮助你了解上面所画的过程：
+			<programlisting><![CDATA[
+				public class TestCanvas extends Canvas {
+
+					private ZincScript zinc = null;// ZincScript引擎
+
+					public TestCanvas() {
+						setFullScreenMode(true);
+						zinc = ZincScript.getZincScript();// 获取ZincScript引擎
+						zinc.loadScript("/menu.zs");// 载入脚本
+						try {
+							zinc.executeScript();// 解释并执行脚本初始化代码
+						} catch (ZSException e) {
+							e.printStackTrace();
+						}
+					}
+				
+					protected void paint(Graphics g) {
+						GraphicsLib.g = g;// 传入Graphics的引用，供图形库函数使用
+						GraphicsLib.canvas = this;// 传入当前Canvas的引用，供图形库函数使用
+						try {
+							zinc.callFunction("paint", null);// 调用脚本的"paint"函数完成屏幕绘制
+						} catch (ZSException e) {
+							e.printStackTrace();
+						}
+					}
+				
+					protected void keyPressed(int keycode) {
+						try {
+							ArrayList params = new ArrayList(1);// 用于保存参数
+							params.add(new Integer(keycode));
+							zinc.callFunction("keypress", params);// 调用脚本的"keypress"函数完成按键响应
+							params = null;
+						} catch (ZSException e) {
+							e.printStackTrace();
+						}
+						repaint();
+					}
+				}
+			]]>
+			</programlisting>
+		</para>
+		
+	</sect1>
+</chapter>

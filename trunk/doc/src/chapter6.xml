@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter6">
+	<title>ZincScript解释执行引擎的实现</title>
+	<sect1 id="sect.6.1">
+		<title>ZincScript的架构</title>
+		<para>
+			<code>ZincScript</code>
+			引擎主要由3部分构成。分别是:
+			<itemizedlist>
+				<listitem>
+					<para>代码装载器</para>
+				</listitem>
+				<listitem>
+					<para>词法分析器</para>
+				</listitem>
+				<listitem>
+					<para>解释执行器</para>
+				</listitem>
+			</itemizedlist>
+			这三部分的关系请看下图：
+			<figure>
+				<graphic fileref="images/zs3.png" />
+				<title>ZincScript引擎结构</title>
+			</figure>
+			图中，最外边的大框代表ZincScript解释执行引擎。其中最下面的紫色部分--
+			<emphasis>ScriptLoader</emphasis>
+			是代码装载器，负责将脚本文件按照行的形式装载到内存中；ScriptLoader上面的蓝色部分--
+			<emphasis>Parser</emphasis>
+			是词法分析器，负责解析脚本内容，得到关键字或表达式，然后交给上层解释执行器去解释执行。图中浅绿色的部分--
+			<emphasis>Interpreter</emphasis>
+			是解释执行器，当拿掉相关关键字后，解释执行器会根据关键字内容解释执行相应功能。
+			<emphasis>Syntax</emphasis>
+			封装了ZincScript的脚本规则，比如关键字、运算符等。橙色的圆圈表示暴露的接口。
+			<para>
+				上图中所有的部分在代码中工程中都能找到相对应的类。这些类的组织关系如下图：
+				<figure>
+					<graphic fileref="images/zs4.png" />
+					<title>ZincScript引擎组件关系</title>
+				</figure>
+			</para>
+		</para>
+	</sect1>
+	<sect1 id="sect.6.2">
+		<title>ZincScript引擎与Java虚拟机</title>
+		<para>
+			如果你熟悉Java虚拟机，那么通过对ZincScript引擎与Java虚拟机的比较，可以帮助你进一步了解ZincScript引擎的架构和工作流程。
+		</para>
+		<para>
+			实际上Java语言在某种程度上也是解释执行的，--正是这种解释执行的机制，使得Java成为一种“跨平台”的语言--不同的是，Java解释执行的是编译过的字节码，而ZincScriptj解释执行的是脚本。
+			同为解释执行语言，那么二者在结构上必然有其相似的地方。下图是Java虚拟机的模块划分
+			<figure>
+				<graphic fileref="images/zs5.png" />
+				<title>Java虚拟机模块划分</title>
+			</figure>
+			我们再来看一下ZincScript引擎的模块划分：
+			<figure>
+				<graphic fileref="images/zs7.png" />
+				<title>ZincScript引擎模块划分</title>
+			</figure>
+			从上面两个图中，你可以发现ZincScript引擎同Java虚拟机结构上很相似，但是要精简很多，因为ZincScript没有Java那么多的功能特性。
+			总体来看，无论是ZincScript引擎同Java虚拟机都由3部分组成：
+			<emphasis>“装载器”、“执行引擎”和“函数接口”</emphasis>
+			。ZincScript结构图中，上面的
+			<emphasis>“脚本装载器”</emphasis>
+			相当于Java虚拟机中的
+			<emphasis>"类装载器"</emphasis>
+			；中间白框部分相当于Java虚拟机的
+			<emphasis>“执行引擎”</emphasis>
+			;下面的
+			<emphasis>“库函数接口”</emphasis>
+			相当于Java虚拟机的
+			<emphasis>“本地方法接口”</emphasis>
+			。
+		</para>
+		<para>
+			ZincScript与Java虚拟机的工作方式不尽相同，但是基本流程是一样的。下面是Java虚拟机的工作流程：
+			<figure>
+				<graphic fileref="images/zs6.png" />
+				<title>Java虚拟机工作流程</title>
+			</figure>
+			Java虚拟机的工作流程相对复杂，首先需要将Java源文件编译成字节码，然后装载时还需要连接Java类库。因为Java类库也是由Java语言实现的，因此在代码装载时会将所需要的类一同装载进来。
+			为了提高执行效率，Java还引入了即时编译器等功能。ZincScript的工作流程相对比较简单，下面是ZincScript的工作流程：
+			<figure>
+				<graphic fileref="images/zs8.png" />
+				<title>ZincScript引擎工作流程</title>
+			</figure>
+			比较两者，ZincScript代码不用编译，直接载入脚本装载器，并且不用装载类库，因为ZincScript没有由自身实现的库。ZincScript更多调用的是“平台方法”--相当于“本地方法”，因此在解释时会调用预先实现的库函数。
+			另外一个差别在于，Java虚拟机运行在操作系统上的，而ZincScript运行在Java虚拟机上，Java虚拟机相当于ZincScript的运行环境。
+
+		</para>
+	</sect1>
+</chapter>

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter2">
+	<title>ZincScript概览</title>
+	<para>
+		本章主要对
+		<code>ZincScript</code>
+		进行一个概要性的介绍，主要回答三个问题：
+		<itemizedlist>
+			<listitem>
+				<link linkend="chapter2" endterm="sect.2.1"> ZincScript 是什么？</link>
+			</listitem>
+			<listitem>
+				<link linkend="chapter2" endterm="sect.2.2"> ZincScript 为何存在？</link>
+			</listitem>
+			<listitem>
+				<link linkend="chapter2" endterm="sect.2.3"> ZincScript 能做什么？</link>
+			</listitem>
+			<listitem>
+				<link linkend="chapter2" endterm="sect.2.4"> ZincScript 长什么样子？</link>
+			</listitem>
+		</itemizedlist>
+	</para>
+	<sect1 id="sect.2.1">
+		<title>ZincScript是什么？</title>
+		<para>
+			在介绍
+			<code>ZincScript</code>
+			之前，我们首先花点时间了解一下什么是脚本语言，因为
+			<code>ZincScript</code>
+			也是一种脚本语言。
+		</para>
+		<sect2 id="sect.2.1.1">
+			<title>脚本语言概述</title>
+			<para>
+				脚本语言是电脑程式语言，因此也能让开发者藉以编写出让电脑听命行事的程式。以简单的方式快速完成某些复杂的事情通常是创造脚本语言的重要原则，基于这项原则，使得脚本语言通常比
+				C语言、C++语言或Java之类的系统程式语言要简单容易，也让脚本语言另有一些属于脚本语言的特性：
+				<itemizedlist>
+					<listitem>
+						<para> 语法和结构通常比较简单；</para>
+					</listitem>
+					<listitem>
+						<para> 学习和使用通常比较简单；</para>
+					</listitem>
+					<listitem>
+						<para> 通常以容易修改程式的“直译”作为执行方式，而不需要“编译”；</para>
+					</listitem>
+					<listitem>
+						<para> 程式的开发产能优于执行效能；</para>
+					</listitem>
+				</itemizedlist>
+				综上所述，脚本编程速度更快，且脚本文件明显小于如同类C程序文件。这种灵活性是以执行效率为代价的。脚本通常是解释执行的，速度可能很慢，且运行时更耗内存。
+				在很多案例中，如编写一些数十行的小脚本，它所带来的编写优势就远远超过了运行时的劣势，尤其是在当前程序员工资趋高和硬件成本趋低时。
+			</para>
+			<para>
+				目前诞生的有文档的脚本语言140多种。按语言发明目的和功能来分可以分为：
+				<variablelist>
+					<varlistentry>
+						<term>
+							<filename>工作控制语言和shell</filename>
+						</term>
+						<listitem>
+							<para>
+								此类脚本用于自动化工作控制，即启动和控制系统程序的行为。大多的脚本语言解释器也同时是命令行界面，如Unix
+								Shell。
+						</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>GUI 脚本</filename>
+						</term>
+						<listitem>
+							<para>
+								GUI出现带来一种专业的控制计算机的脚本语言。它在用户和图形界面，菜单，按钮等之间互动。它经常用来自动化重复性动作，或设置一个标准状态。
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>应用程序定制的脚本语言</filename>
+						</term>
+						<listitem>
+							<para>
+								许多大型的应用程序都包括根据用户需求而定制的惯用脚本语言。同样地，许多电脑游戏系统使用一种自定义脚本语言来表现NPC和游戏环境的预编程动作。
+								此类语言通常是为一个单独的应用程序所设计，虽然它们貌似一些通用语言(如ZincScript貌似Ruby和Java)，但它们有自定义的功能。
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>web编程脚本</filename>
+						</term>
+						<listitem>
+							<para>
+								应用程序定制的脚本语言中有一种重要的类别，用于提供WEB页面的自定义功能。它专业处理互联网通信，使用网页浏览器作为用户界面。
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>文本处理语言</filename>
+						</term>
+						<listitem>
+							<para>
+								处理基于文本的记录是脚本语言最早的用处之一，如PERL最早是用来产生报告的，现在它已经成了全面成熟的语言。
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>通用动态语言</filename>
+						</term>
+						<listitem>
+							<para>
+								一些语言，比如PERL，从一门脚本语言发展成了更通用的编程语言。由于“解释执行，内存管理，动态”等特性，它们仍被称为脚本语言。但它们已经用于应用程序编写，用户也不把它们看作脚本语言。
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<filename>扩展/可嵌入语言</filename>
+						</term>
+						<listitem>
+							<para>
+								少数的语言被设计通过嵌入应用程序来取代应用程序定制的脚本语言。这些语言和应用程序定制的脚本语言是同种用途，但优点在于可以在应用程序之间传递一些技能。
+							</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
+				<note>
+					<title>资料来源</title>
+					<para>
+						<ulink
+							url="http://zh.wikipedia.org/w/index.php?title=%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80&amp;variant=zh-hans">
+							以上资料来自：维基百科-“
+							<acronym>脚本语言</acronym>
+							”词条
+						</ulink>
+					</para>
+				</note>
+			</para>
+		</sect2>
+		<sect2 id="sect.2.1.2">
+			<title>ZincScript简介</title>
+			<para>
+				<code>ZincScript</code>
+				是j2me平台上的脚本语言，语法设计上参考了Ruby语言，采用了和Ruby相同的代码结构和关键字，例如if-else-end结构，def-end结构。
+				熟悉Ruby语言和JAVA语言的开发者可以很快学会使用
+				<code>ZincScript</code>
+				进行脚本编程。
+			</para>
+			<para>
+				按照上一节提到的脚本语言分类标准，
+				<code>ZincScript</code>
+				属于
+				<emphasis>应用程序定制的脚本语言</emphasis>
+				。因为他诞生于SNS项目背景下，最初目的是满足SNS项目中组件可插入性的需求。但是
+				<code>ZincScript</code>
+				本身是一个完备的通用脚本语言，可以很容易的移植到其他平台上，然后通过调用平台上特定实现的库函数，从而完成复杂的功能。从这个意义上，
+				<code>ZincScript</code>
+				又具有某些通用动态语言的特性。
+			</para>
+			<para>
+				总之，借助封装好的外部库，加上
+				<code>ZincScript</code>
+				强大的逻辑流程控制能力，可以使用
+				<code>ZincScript</code>
+				在手机上实现任意应用。
+			</para>
+		</sect2>
+	</sect1>
+	<sect1 id="sect.2.2">
+		<title>ZincScript为何存在？</title>
+		<para>
+			<code>ZincScript</code>
+			诞生于SNS项目背景下。SNS项目需要客户端能够实现类似“开心网”一样，允许用户自由添加删除组件，
+			并且客户端要向新组件开放机接口，允许运行人员今后能够随时加入新的组件，而不需要用户更新客户端。
+			这样就要求客户端要实现成一个组件的容器，预留出组件的接口，方便日后组件的插入。
+		</para>
+		<para>
+			PC端开发人员或者Symbian平台开发者也许会认为上面这个需求根本不是难题，他们可以将这些组件封装成COM或着dll，然后在运行时进行组装或调用。但是对J2ME开发者来说就不是那么容易的。
+			由于Java虚拟机有严格的安全边界，因此一个运行在Java虚拟机上的程序不可能调用任何虚拟机外的程序或逻辑。Java中要想动态得管理这些组件，一个比较好的办法就是将这些组件的逻辑写在脚本中，
+			然后让Java程序载入并执行脚本，从而实现可插入式组件的功能。
+		</para>
+		<para>
+			上面所说的方法被广泛应用在游戏开发领域。一个大型的RPG游戏，可能有多达200个角色，300个场景，500种道具，1000页的剧情，这些复杂的对白、参数、关系、逻辑不可能也不应该写死在客户端。
+			实际开发中都是用脚本来实现的。一般一个游戏开发团队会分为2组，一组是引擎开发组，主要有程序员组成，负责设计脚本引擎和游戏引擎；另一组是游戏设计组，主要由游戏策划组成，负责将游戏剧情写成脚本引擎能够执行的脚本。
+			这样分工，开发人员可以专注于引擎的实现，不必关心游戏的剧情，而游戏策划可以专注于剧情的设计，并且使用脚本可以很方便的修改剧情，不需要重新编译链接。
+		</para>
+		<para>
+			这种开发模式带来的另一个好处就是修改、发布方便快捷。任何与剧情相关的修改只要修改脚本就好，不用客户端做任何修改，甚至有些游戏在出下一版时，仅仅只是延续上一版的剧情，而客户端没有任何改变。
+		</para>
+		<para>
+			GGGame是将4小游戏写在了一个，发布时，4个游戏捆绑在一个同时发布。如果用户只想要其中的某一个或几个，这是无法实现的，要么4个都要要么1个不要；或者日后运营人员想再加一个好玩的小游戏，着也是无法实现的，客户端需要重新开发，重新打包，重新发布。
+			要是能将4个游戏的逻辑写到脚本中，那么上面提到的问题就迎刃而解。而这一点正是
+			<code>ZincScript</code>
+			给目前开发模式带来的最大的改进。
+		</para>
+		<para>
+			有了
+			<code>ZincScript</code>
+			，SNS项目中争车位、好友买卖等游戏组件就可以用脚本实现，当用户安装组件后，将脚本和资源下载到本地存入RMS，然后由客户端引擎解释执行脚本，完成组件的功能。如此实现组件的可插入功能。
+			日后运营中开发出了更加有趣的组件，只需要将写好的脚本和资源放到服务器上供用户安装既可，不必更新客户端。
+		</para>
+		<para>
+			总结一下，脚本语言具有如下优势：
+			<itemizedlist>
+				<listitem>
+					<para> 为J2ME程序带来可插入组件的能力；</para>
+				</listitem>
+				<listitem>
+					<para> 带来开发流程的专业化，让开发者专注于引擎开发，让设计者专注脚本实现；</para>
+				</listitem>
+				<listitem>
+					<para> 方便维护，降低维护成本；</para>
+				</listitem>
+				<listitem>
+					<para> 简单易用，让策划人员完成脚本逻辑部分，减轻开发人员的压力，提高开发效率；</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</sect1>
+	<sect1 id="sect.2.3">
+		<title>ZincScript能做什么?</title>
+		<sect2 id="sect.2.3.1">
+			<title>ZincScript的功能特性</title>
+			<para>
+				<code>ZincScript</code>
+				尚在完善中，目前版本为
+				<emphasis>0.64</emphasis>
+				，能够实现如下功能：
+				<orderedlist numeration="arabic">
+					<listitem>
+						<para>整数的四则运算；</para>
+					</listitem>
+					<listitem>
+						<para>整数与字符串的混合运算(比如连接)；</para>
+					</listitem>
+					<listitem>
+						<para>完备的逻辑运算；</para>
+					</listitem>
+					<listitem>
+						<para>完备的条件分支语句(支持任意深度嵌套)；</para>
+					</listitem>
+					<listitem>
+						<para>while循环(支持任意深度嵌套)；</para>
+					</listitem>
+					<listitem>
+						<para>安全的任意维度数组；</para>
+					</listitem>
+					<listitem>
+						<para>函数定义；</para>
+					</listitem>
+					<listitem>
+						<para>库函数和脚本函数调用（可以递归调用）；</para>
+					</listitem>
+					<listitem>
+						<para>脚本动态装载 。</para>
+					</listitem>
+				</orderedlist>
+			</para>
+		</sect2>
+		<sect2 id="sect.2.3.2">
+			<title>无所不能的ZincScript</title>
+			<para>
+				可以说，
+				<code>ZincScript</code>
+				无所不能！
+			</para>
+			<para>
+				这是真的。因为
+				<code>ZincScript</code>
+				留出了外部库调用接口，并且提供了简单方便的函数库生成方法。开发人员可将复杂的操作封装到库函数中，然后通过
+				<code>ZincScript</code>
+				来调用，从而完成以前需要用JAVA代码才能完成的功能。
+			</para>
+			<para>
+				下面是几张
+				<code>ZincScript</code>
+				Demo的截图，帮助大家对
+				<code>ZincScript</code>
+				的功能有一个感性的认识。
+				<figure>
+					<graphic fileref="images/menu.png" />
+					<title>菜单</title>
+				</figure>
+				菜单界面主要展示绘制渐进色和图片的能力
+				<figure>
+					<table frame="none" align="center" id="数独游戏界面">
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<graphic fileref="images/sudoku1.png" />
+									</entry>
+									<entry>
+										<graphic fileref="images/sudoku2.png" />
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</table>
+					<title>数独游戏</title>
+				</figure>
+				数独主要展示处理大量运算的能力
+				<figure>
+					<table frame="none" align="center" name="五子棋游戏界面">
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<graphic fileref="images/five1.png" />
+									</entry>
+									<entry>
+										<graphic fileref="images/five2.png" />
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</table>
+					<title>五子棋游戏</title>
+				</figure>
+				五子棋主要展示设计电脑AI(尽管有点傻)的能力
+				<figure>
+					<table frame="none" align="center" name="关于界面">
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<graphic fileref="images/about1.png" />
+									</entry>
+									<entry>
+										<graphic fileref="images/about2.png" />
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</table>
+					<title>关于界面</title>
+				</figure>
+				关于界面主要展示处理(折行)字符串的能力
+			</para>
+			<para>
+				你可以用手机或PC从网上下载此Demo，网址为：
+				<ulink url="http://test.3g.cn/gt2-kjava/zincscript.jar">http://test.3g.cn/gt2-kjava/zincscript.jar
+				</ulink>
+			</para>
+		</sect2>
+	</sect1>
+	<sect1 id="sect.2.4">
+		<title>ZincScript长什么样子</title>
+		<para>
+			<code>ZincScript</code>
+			在语法上类似Ruby，因此整体代码风格非常类似Ruby脚本。由于
+			<code>ZincScript</code>
+			尚不具有面向对象的能力，因此在处理一些过程和数据结构时，不得不放弃Ruby的风格，转而采用面向过程的C语言风格，因此你能在代码中或多或少看到C语言风格。因此整个
+			<code>ZincScript</code>
+			脚本看起来会像这样：
+			<programlisting><![CDATA[
+			# 定义函数test()
+			def test()
+				int a,b
+				a=1
+				b=2
+				if a+b==3
+					_zssprintln("a + b = "+(a+b))
+				else
+					error("test1()")
+			end
+			
+			# 定义函数error(),error()会在test()中被调用
+			def error(string info) 
+			 	error=1 
+			 	funcname=info
+				_zssprintln(funcname+"出错了！") 
+			end
+			
+			# 执行的主体，相当于main()
+			int error
+			string funcname
+			_zssprintln("test()开始执行")
+			test1()
+			_zssprintln("test()执行完毕")
+			
+			if !error 	
+				_zssprintln("所有测试全部通过")
+			else
+				_zssprintln(funcname+"有问题")
+			end
+			]]>
+			</programlisting>
+			上面这段代码很像Ruby，使用def-end块来定义函数，使用if-else-end块处理分支语句，关键字后的表达式不需要括号，语句结束不需要分号间隔而是用换行符，这些都与Ruby相同。但是Ruby是弱类型语言，一切数据在Ruby看来都是对象，因此Ruby中不会有
+			<emphasis>int、string</emphasis>
+			等表示数据类型的关键字，但是Java是强类型的，因此运行于Java虚拟机上的
+			<code>ZincScript</code>
+			需要表明数据的类型，因此这里采用了和C语言类似的关键字。
+			<para>
+				细心的读者也许会发现上面代码中应用了没有定义的函数
+				<emphasis>_zssprintln()</emphasis>
+				，这里是调用了库函数。
+				<code>ZincScript</code>
+				拥有灵活的外部库扩展接口，你可以方便的扩展出自己的外部库，用脚本内部调用。
+				<code>ZincScript</code>
+				约定所有库函数都以下划线开头。
+			</para>
+		</para>
+	</sect1>
+	<para>
+		现在，相信你已经对
+		<code>ZincScript</code>
+		已经有了初步的认识，下面我们就开始深入学习
+		<code>ZincScript</code>
+		的语法和API
+	</para>
+</chapter>
