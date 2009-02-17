@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
+
 <!-- script标签用于定义与此xml相关联的zincscript脚本 -->
 <!-- 脚本可以放在2个位置：-->
 <!-- 1 sandbox中：zincscript可以保存在程序内部，(对于symbian系统，可以定义在程序外部文件系统中)，
