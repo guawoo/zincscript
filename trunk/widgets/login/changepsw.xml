@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<script>
+    def show()
+        setVisible("email",1)
+        setVisible("question",1)
+        setVisible("answer",1)
+    end
+    
+    def submit()
+        string newpsw=getValue(newpsw) 
+        if newpsw==""
+            alert("请填写新密码")
+            return 0
+        end
+        
+        string againpsw=getValue(pswagain) 
+        if againpsw==""
+            alert("请重复新密码")
+            return 0
+        end
+        
+        if newpsw!=againpsw
+            alert("两次输入的密码不一致，请重新输入")
+            return 0
+        end
+        
+        
+    end
+</script>
+
+<unit>
+    <div id="chagepsw">
+        <textfield id="newpsw" label="新密码" name="newpsw" value="" type="password" lign="right"/>
+        <textfield id="pswagain" label="重复密码" value="" name="again" type="password" lign="right"/>
+        <button id="pretect" label="密码保护" onclick="show"/>
+        <textfield id="email" label="安全邮箱" name="email" value="" type="email" lign="right"/>
+        <combobox id="question" label="安全问题" name="question"  lign="right">
+            <item value="no1" label="我的宠物的名字"/>
+            <item value="no2" label="我爸爸的生日"/>
+            <item value="no3" label="自定义问题"/>
+        </combobox>
+        <textfield id="answer" label="问题答案" value="" name="question"  lign="right"/>
+        <button id="submit" label="提交" onclick="submit"/>
+    </div>
+</unit>
