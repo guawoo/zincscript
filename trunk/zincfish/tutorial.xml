@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rng" type="xml"?>
+
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title><code>ZincFish</code>&#8482;框架应用指南</title>
+        <!-- 作者信息 -->
+        <authorgroup>
+            <author>
+                <personname>
+                    <firstname>Jarod</firstname>
+                    <surname>Yv</surname>
+                </personname>
+                <email>yuxin@3g.net.cn</email>
+                <affiliation>
+                    <orgname>
+                        <link xlink:href="http://3g.cn">3g门户</link>
+                    </orgname>
+                    <orgdiv>GT2</orgdiv>
+                </affiliation>
+            </author>
+        </authorgroup>
+        <!-- 版本更改信息 -->
+        <revhistory>
+            <revision>
+                <revnumber>1.0</revnumber>
+                <date>2009-02-23</date>
+                <revdescription>
+                    <para>新建</para>
+                </revdescription>
+            </revision>
+        </revhistory>
+        <!-- 法律声明 -->
+        <legalnotice>
+            <title>声明</title>
+            <itemizedlist>
+                <listitem>
+                    <para>本文档用于公司内部培训使用，未经允许不得外传。</para>
+                </listitem>
+                <listitem>
+                    <para>本文档基于<code>ZincFish</code>&#8482;0.9版本(codename:
+                            <emphasis>Fingerling</emphasis>)制作。</para>
+                </listitem>
+            </itemizedlist>
+        </legalnotice>
+    </info>
+    
+    <!-- 目录结构 -->
+    <xi:include href="part1.xml"/>
+    <xi:include href="part2.xml"/>
+    <xi:include href="part3.xml"/>
+    <xi:include href="part4.xml"/>
+</book>
