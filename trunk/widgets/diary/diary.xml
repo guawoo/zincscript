@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+    <div id="main">
+        <mi text="写日记" onclick="newDiary"/>
+        <mi text="草稿箱" onclick="draft"/>
+        <mi text="编辑" onclick="edit"/>
+        <mi text="删除" onclick="delete"/>
+        <mi text="刷新" onclick="refresh"/>
+        <!-- 加载后取日记列表 -->
+        <list id="diarylist" onload="getDiaryList">
+            <item id="diary1" title="日记标题" body="日记正文" ltail="浏览:45 回复:3" rtail="2009-02-26" icon="1" onclick="showcontent(&quot;diary1&quot;)"/>
+            <item id="diary1" title="日记标题" body="日记正文" ltail="浏览:45 回复:3" rtail="2009-02-26" icon="0" onclick="showcontent(&quot;diary1&quot;)"/>
+        </list>
+    </div>
+</unit>

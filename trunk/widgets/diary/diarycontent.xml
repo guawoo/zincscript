@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<unit>
+    <mi text="评论" onclick="comment"/>
+    <mi text="删除" onclick="delete"/>
+    <mi text="刷新" onclick="refresh"/>
+    
+    <div id="content">
+        
+    </div>
+    <div id="friend">
+        <label text="这篇日记提到的朋友"/>
+        <slider id="fslider">
+            <slideritem src="图片的url" text="name" url=""/>
+            <slideritem src="图片的url" text="name" url=""/>
+        </slider>
+    </div>
+    <div id="comments">
+        <list id="clist">
+            <commentitem scr="头像的url" content="评论的内容" tail="张敏 5分钟前" line="2" />
+            <commentitem scr="头像的url" content="评论的内容" tail="张锐 2小时前" line="2"/>
+            <commentitem scr="头像的url" content="评论的内容" tail="于鑫 2009-2-15" line="2"/>
+        </list>
+    </div>
+</unit>
