@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<unit>
+	<script path="/widgets/diary/" name="diary.zs" />
+
+	<menu type="0">
+		<mi text="写日记" onclick="newDiary" />
+		<mi text="草稿箱" onclick="draft" />
+		<mi text="编辑" onclick="edit" />
+		<menu text="添加">
+			<mi text="添加照片" onclick="newDiary" />
+			<mi text="添加视频" onclick="draft" />
+			<mi text="添加音频" onclick="edit" />
+		</menu>
+		<mi text="删除" onclick="delete" />
+		<mi text="刷新" onclick="refresh" />
+	</menu>
+
+	<body id="diary" onload="getDiaryList">
+
+		<item src="http" id="mypanel" content="于鑫的日记" ltail1="2" ctype="1" />
+
+		<list id="diarylist" />
+	</body>
+</unit>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<script path="/widgets/diary/" name="comment.zs" />
+	<menu type="0">
+		<mi text="回复" onclick="replay" />
+		<mi text="删除" onclick="delete" />
+		<mi text="刷新" onclick="refresh" />
+	</menu>
+	<body id="comment">
+		<list id="original">
+			<item id="header" oninit="copy" />
+		</list>
+		<list id="replies" onload="getComment" />
+	</body>
+
+</unit>

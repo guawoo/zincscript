@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<body id="comment">
+		<list id="replies">
+			<item id="floor1" src="头像url" body="评论内容" rtail="于鑫 5分钟前" />
+			<item id="floor2" src="头像url" body="评论内容" rtail="于鑫 5分钟前" />
+			<item id="floor3" src="头像url" body="评论内容" rtail="于鑫 5分钟前" />
+		</list>
+	</body>
+</unit>

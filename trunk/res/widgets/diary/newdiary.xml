@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<menu>
+		<mi text="回复" onclick="newDiary" />
+		<mi text="删除" onclick="draft" />
+		<mi text="编辑" onclick="edit" />
+	</menu>
+	<body id="editor">
+		<textfield id="title" title="标题:" />
+		<texteditor id="content" title="正文:" />
+		<button id="comment" src="/widgets/diary/img/comment" />
+	</body>
+</unit>

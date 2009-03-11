@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<body id="diary">
+		<list id="diarylist">
+			<item id="diary1" title="很女子，很弓虽的木匡架hahahahahahahhahahah"
+				content="ZincFish是一个很好，很强大的移动Ajax框架" ltail1="45" ltail2="4" rtail="03-03"
+				icon="1" onclick="showcontent(&quot;/widgets/diary/diary1.xml&quot;)" />
+			<item id="diary2" " title="做最NB的SNS" content="不做则以，做就要做最NB的..."
+				ltail1="23" ltail2="1" rtail="02-28" icon="3"
+				onclick="showcontent(&quot;/widgets/diary/diary2.xml&quot;)" />
+			<item id="diary3" title="just a test" content="This is just a test."
+				ltail1="5" ltail2="0" rtail="02-26" icon="7" />
+		</list>
+	</body>
+</unit>

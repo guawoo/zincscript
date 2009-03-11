@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<menu>
+		<mi text="回复" onclick="newDiary" />
+		<mi text="删除" onclick="draft" />
+		<mi text="编辑" onclick="edit" />
+	</menu>
+	<body id="diary1">
+		<list id="diarylist">
+			<item id="diary1" src="http://" title="老大，你是我偶像呀" content="老大，你真是我的O像!!"
+				ltail1="2" ltail2="0" rtail="03-03" icon="8" />
+			<item id="diary2" src="http://" title="这是个什么东东？" content="这个框架是个什么东东呀？"
+				ltail1="3" ltail2="0" rtail="02-28" icon="8" />
+			<item id="diary3" src="http://" title="Opera也有类似的框架" content="好像Opera也有类似的框架."
+				ltail1="5" ltail2="0" rtail="02-26" icon="0" />
+		</list>
+		<button id="good" src="/widgets/diary/img/good" />
+		<button id="fuck" src="/widgets/diary/img/fuck" />
+		<button id="comment" src="/widgets/diary/img/comment" />
+		<button id="share" src="/widgets/diary/img/share" />
+	</body>
+</unit>
