@@ -1,6 +1,6 @@
 package utils;
 
-import dom.AbstractDOM;
+import zincfish.zincdom.AbstractDOM;
 
 /**
  * <code>DOMUtil</code> 是一个工具类，用于对DOM Tree进行操作。

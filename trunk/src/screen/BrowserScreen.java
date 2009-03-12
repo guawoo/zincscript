@@ -2,32 +2,33 @@ package screen;
 
 import java.io.IOException;
 import java.io.InputStream;
-import parser.wmlparser.SNSParser;
-import zincscript.core.ZSException;
-import zincscript.core.ZincScript;
+import ui.menu.MCascadeMenuItem;
+import ui.menu.MenuContainer;
+import ui.snscomponent.AbstractSNSComponent;
+import ui.snscomponent.ComponentFactory;
+import ui.snscomponent.SNSBodyComponent;
+import zincfish.zincdom.AbstractDOM;
+import zincfish.zincdom.MenuItemDOM;
+import zincfish.zincparser.zmlparser.ZMLParser;
+import zincfish.zincscript.core.ZSException;
+import zincfish.zincscript.core.ZincScript;
+
 import com.mediawoz.akebono.components.CSimpleImageBox;
 import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.UComponent;
 import com.mediawoz.akebono.ui.UScreen;
-import component.AbstractSNSComponent;
-import component.ComponentFactory;
-import component.SNSBodyComponent;
-import component.menu.MCascadeMenuItem;
-import component.menu.MenuContainer;
 import config.Config;
 import data.IDOMChangeListener;
 import data.UnitBuffer;
 import data.Unit;
-import dom.AbstractDOM;
-import dom.MenuItemDOM;
 
 public class BrowserScreen extends UScreen implements EComponentEventListener,
 		IDOMChangeListener {
 
 	private static BrowserScreen instance = null;
 	private SNSBodyComponent body = null;
-	private SNSParser parse = null;
+	private ZMLParser parse = null;
 	private ZincScript zinc = null;
 	private UnitBuffer buffer = null;
 	private MenuContainer menu = null;
@@ -52,7 +53,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 		initMenu();
 		buffer = UnitBuffer.getInstance();
 		buffer.setDomChangeListener(this);
-		parse = SNSParser.getSNSParser();
+		parse = ZMLParser.getSNSParser();
 		zinc = ZincScript.getZincScript();
 		loadUnit("/widgets/diary/diary.xml");
 	}
