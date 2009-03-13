@@ -127,6 +127,7 @@ public final class UnitBuffer {
 				buffer[index] = root;
 			}
 		}
+		System.out.println("buffer size = " + index);
 		domChangeListener.updateView();
 	}
 

@@ -68,7 +68,7 @@ public class NetLib extends AbstactLib {
 				WheelLoadingComponent hourglass = WheelLoadingComponent
 						.getInstance();
 				BrowserScreen.getInstance().setHourglass(hourglass);
-				BrowserScreen.getInstance().setEnabledMode(false);
+				//BrowserScreen.getInstance().setEnabledMode(false);
 				hourglass = null;
 				try {
 					Thread.sleep(5000L);
@@ -77,7 +77,7 @@ public class NetLib extends AbstactLib {
 				}
 				BrowserScreen.getInstance().loadUnit(url);
 				BrowserScreen.getInstance().setHourglass(null);
-				BrowserScreen.getInstance().setEnabledMode(true);
+				//BrowserScreen.getInstance().setEnabledMode(true);
 			}
 		}.start();
 	}

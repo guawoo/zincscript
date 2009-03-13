@@ -142,8 +142,13 @@ public final class ZMLParser {
 			text = text.trim();
 			PlainTextDOM dom = new PlainTextDOM();
 			dom.text = text;
-			add2DOMTree(dom);
-			parseEndTag();
+			if (currentDOM.type == AbstractDOM.TYPE_RICH_TEXT_VIEWER) {
+				((RichTextViewerDOM) currentDOM).addContent(dom);
+				dom.father = currentDOM;
+			} else {
+				add2DOMTree(dom);
+				parseEndTag();
+			}
 			dom = null;
 			text = null;
 		}
@@ -191,8 +196,13 @@ public final class ZMLParser {
 
 		dom.src = (String) attr.get(ZMLTag.SRC_ATTR);
 		dom.alt = (String) attr.get(ZMLTag.ALT_ATTR);
-
-		add2DOMTree(dom);
+		if (currentDOM.type == AbstractDOM.TYPE_RICH_TEXT_VIEWER) {
+			((RichTextViewerDOM) currentDOM).addContent(dom);
+			dom.father = currentDOM;
+			currentDOM = dom;
+		} else {
+			add2DOMTree(dom);
+		}
 		dom = null;
 	}
 

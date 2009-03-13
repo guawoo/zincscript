@@ -88,7 +88,7 @@ public abstract class AbstractSNSComponent extends UPanel implements
 	}
 
 	public boolean hasChildren() {
-		return (dom.children != null && dom.children.size() > 0 && dom.type != AbstractDOM.TYPE_RICH_TEXT_VIEWER);
+		return (dom.children != null && dom.children.size() > 0);
 	}
 
 	private void switchFocus(int ikeycode) {

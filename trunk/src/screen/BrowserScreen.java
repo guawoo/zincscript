@@ -112,8 +112,8 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 	private final AbstractSNSComponent DOMTree2ViewTree(AbstractDOM rootDOM) {
 		if (rootDOM == null)
 			return null;
-		System.out.println("dom = " + rootDOM.toString());
 		AbstractSNSComponent rootComponent = rootDOM.getComponent();
+		System.out.println("dom = " + rootDOM.toString());
 		if (rootComponent == null) {
 			rootComponent = ComponentFactory.createComponent(rootDOM);
 			rootComponent.setComponentEventListener(this);
@@ -123,8 +123,11 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			for (int i = 0; i < rootDOM.children.size(); i++) {
 				AbstractDOM dom = (AbstractDOM) rootDOM.children.get(i);
 				AbstractSNSComponent component = dom.getComponent();
-				if (component == null)
+				if (component == null){
 					component = DOMTree2ViewTree(dom);
+				}else{
+					System.out.println("domB = " + dom.toString());
+				}
 				dom.setComponent(component);
 				rootComponent.addComponent(component);
 				component.init(dom);
@@ -226,7 +229,12 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 		// 响应onload
 		if (unit.getOnLoad() != null) {
 			try {
-				zinc.callFunction(unit.getOnLoad(), null);
+				String onload = unit.getOnLoad();
+				if (onload.indexOf('(') == -1) {
+					zinc.callFunction(onload, null);
+				} else {
+					zinc.callFunction(onload);
+				}
 				unit.setOnLoad(null);
 			} catch (ZSException e) {
 				e.printStackTrace();

@@ -5,6 +5,7 @@ import zincfish.zincdom.ImageDOM;
 import zincfish.zincdom.PlainTextDOM;
 import zincfish.zincdom.RichTextViewerDOM;
 
+import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.coreservice.utils.CSList;
 import com.mediawoz.akebono.forms.lafs.simplegraph.FSGRichTextViewer;
@@ -12,6 +13,7 @@ import com.mediawoz.akebono.forms.formitems.FRichTextViewer;
 import com.mediawoz.akebono.forms.formitems.FRichTextViewer.Callback;
 
 import config.Config;
+import config.Resources;
 
 public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 
@@ -19,33 +21,36 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 
 	private FSGRichTextViewer richTextViewer = null;
 
-	private CSList fontList = new CSList();
+	private CSList fontList = null;
 
-	private CSList converageColorFontList = new CSList();
+	private CSList converageColorFontList = null;
 
-	private CSList colorList = new CSList();
+	private CSList colorList = null;
 
 	public void doLayout(int startX, int startY) {
-
+		iX = dom.x == -1 ? startX : dom.x;
+		iY = dom.y == -1 ? startY : dom.y;
 	}
 
 	public int getNextX() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public int getNextY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return iY + iHeight;
+	}
+
+	protected void drawCurrentFrame(CRGraphics g) {
+		System.out.println("Paint");
+		richTextViewer.paintCurrentFrame(g, 0, 0);
 	}
 
 	public void init(AbstractDOM dom) {
 		this.dom = dom;
 		RichTextViewerDOM richTextViewerDOM = (RichTextViewerDOM) this.dom;
 		Callback callback = new RichTextViewerCallback();
-		richTextViewer = new FSGRichTextViewer(1, 1240, 320, callback);
+		richTextViewer = new FSGRichTextViewer(1, iWidth, iHeight, callback);
 		callback = null;
-		System.out.println("append data");
 		if (richTextViewerDOM.children != null
 				&& richTextViewerDOM.children.size() > 0) {
 			int imageIndex = 0;
@@ -57,7 +62,6 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 					if (fontList == null || colorList == null
 							|| converageColorFontList == null)
 						generateFont(plainTextDOM.text);
-					System.out.println(plainTextDOM.text);
 					richTextViewer.appendText(plainTextDOM.text, fontList,
 							converageColorFontList, colorList,
 							converageColorFontList);
@@ -102,23 +106,29 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 
 		/* 图片列表 */
 		private CRImage[] images = null;
-		/* 表情列表 */
-		private CRImage[] emotionImages = null;
 
 		public CRImage getContentImage(FRichTextViewer richText, int imageID) {
-			if (images == null || imageID >= images.length) {
+			if (images == null) {
+				return null;
+			}
+			if (imageID >= images.length) {
 				return null;
 			}
 			return images[imageID];
 		}
 
 		public CRImage getEmoticonImage(FRichTextViewer richText, int imageID) {
-			if (emotionImages == null || imageID >= emotionImages.length) {
-				return CRImage.loadFromResource("/ceshi2/s1.png");
-			}
-			return emotionImages[imageID];
+			return Resources.getInstance().getEmotion_faces()[imageID];
 		}
 
+	}
+
+	public void release() {
+		richTextViewer = null;
+		fontList = null;
+		converageColorFontList = null;
+		colorList = null;
+		super.release();
 	}
 
 }

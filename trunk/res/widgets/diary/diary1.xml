@@ -13,5 +13,6 @@
 		<button id="fuck" src="/widgets/diary/img/fuck" />
 		<button id="comment" src="/widgets/diary/img/comment" />
 		<button id="share" src="/widgets/diary/img/share" />
+		<list id="diarylist" title="评论区"/>
 	</body>
 </unit>

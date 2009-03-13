@@ -25,6 +25,8 @@ public final class Resources {
 	private CRImage texteditor_rt = null;
 	private CRImage texteditor_rd = null;
 
+	private CRImage[] emotion_faces = null;
+
 	/**
 	 * @return the list_select_lt
 	 */
@@ -126,5 +128,14 @@ public final class Resources {
 		if (texteditor_rd == null)
 			texteditor_rd = CRImage.loadFromResource("/img/terd.png");
 		return texteditor_rd;
+	}
+
+	public CRImage[] getEmotion_faces() {
+		if (emotion_faces == null)
+			emotion_faces = new CRImage[10];
+		for (int i = 0; i < emotion_faces.length; i++)
+			emotion_faces[i] = CRImage.loadFromResource("/img/face" + i
+					+ ".png");
+		return emotion_faces;
 	}
 }
