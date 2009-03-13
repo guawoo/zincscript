@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import ui.menu.MCascadeMenuItem;
 import ui.menu.MenuContainer;
-import ui.snscomponent.AbstractSNSComponent;
-import ui.snscomponent.ComponentFactory;
-import ui.snscomponent.SNSBodyComponent;
 import zincfish.zincdom.AbstractDOM;
 import zincfish.zincdom.MenuItemDOM;
 import zincfish.zincparser.zmlparser.ZMLParser;
 import zincfish.zincscript.core.ZSException;
 import zincfish.zincscript.core.ZincScript;
-
+import zincfish.zincwidget.*;
 import com.mediawoz.akebono.components.CSimpleImageBox;
 import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.events.EComponentEventListener;
@@ -28,6 +25,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 
 	private static BrowserScreen instance = null;
 	private SNSBodyComponent body = null;
+	private AbstractSNSComponent currentComponent = null;
 	private ZMLParser parse = null;
 	private ZincScript zinc = null;
 	private UnitBuffer buffer = null;
@@ -128,7 +126,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 					component = DOMTree2ViewTree(dom);
 				dom.setComponent(component);
 				rootComponent.addComponent(component);
-				component.init();
+				component.init(dom);
 				component = null;
 				dom = null;
 			}
@@ -254,5 +252,12 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return the currentComponent
+	 */
+	public AbstractSNSComponent getCurrentComponent() {
+		return currentComponent;
 	}
 }
