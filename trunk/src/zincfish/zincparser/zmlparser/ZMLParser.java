@@ -79,6 +79,8 @@ public final class ZMLParser {
 			parseMenuItem();
 		} else if (ZMLTag.BUTTON_TAG.equals(currentTag)) {
 			parseButton();
+		} else if (ZMLTag.IMG_TAG.equals(currentTag)) {
+			parseImage();
 		} else if (ZMLTag.TEXT_FIELD_TAG.equals(currentTag)) {
 			parseTextField();
 		} else if (ZMLTag.TEXT_EDITOR_TAG.equals(currentTag)) {
@@ -93,8 +95,20 @@ public final class ZMLParser {
 			parseScript();
 		} else if (ZMLTag.BODY_TAG.equals(currentTag)) {
 			parseBody();
+		} else if (ZMLTag.RICH_TEXT_VIEWER_TAG.equals(currentTag)) {
+			parseRichTextViewer();
 		}
 
+		String attributeValue = (String) attr.get(ZMLTag.ON_INIT_ATTR);
+		if (attributeValue != null) {
+			try {
+				ZincScript.getZincScript().callFunction(attributeValue);
+			} catch (ZSException e) {
+				e.printStackTrace();
+			}
+		}
+
+		attributeValue = null;
 		currentTag = null;
 		attr.clear();
 	}
@@ -116,8 +130,22 @@ public final class ZMLParser {
 		currentTag = null;
 	}
 
-	private final void parseText() {
-
+	private final void parseText() throws ParserException {
+		boolean isWhitespace = false;
+		try {
+			isWhitespace = parser.isWhitespace();
+		} catch (ParserException ex) {
+			System.out.println("error2:" + ex.getMessage());
+		}
+		if (!isWhitespace) {
+			String text = parser.getText();
+			PlainTextDOM dom = new PlainTextDOM();
+			dom.text = text;
+			add2DOMTree(dom);
+			parseEndTag();
+			dom = null;
+			text = null;
+		}
 	}
 
 	private void add2DOMTree(AbstractDOM dom) throws ParserException {
@@ -156,6 +184,17 @@ public final class ZMLParser {
 		dom = null;
 	}
 
+	public final void parseImage() throws ParserException {
+		ImageDOM dom = new ImageDOM();
+		handelGeneralAttributes(dom);
+
+		dom.src = (String) attr.get(ZMLTag.SRC_ATTR);
+		dom.alt = (String) attr.get(ZMLTag.ALT_ATTR);
+
+		add2DOMTree(dom);
+		dom = null;
+	}
+
 	private final void parseTextField() throws ParserException {
 		TextFieldDOM dom = new TextFieldDOM();
 		handelGeneralAttributes(dom);
@@ -176,6 +215,14 @@ public final class ZMLParser {
 		dom.label = (String) attr.get(ZMLTag.TITLE_ATTR);
 		dom.name = (String) attr.get(ZMLTag.NAME_ATTR);
 		dom.value = (String) attr.get(ZMLTag.VALUE_ATTR);
+
+		add2DOMTree(dom);
+		dom = null;
+	}
+
+	private final void parseRichTextViewer() throws ParserException {
+		RichTextViewerDOM dom = new RichTextViewerDOM();
+		handelGeneralAttributes(dom);
 
 		add2DOMTree(dom);
 		dom = null;
@@ -209,14 +256,6 @@ public final class ZMLParser {
 	}
 
 	private final void handelGeneralAttributes(AbstractDOM dom) {
-		String attributeValue = null;
-		if ((attributeValue = (String) attr.get(ZMLTag.ON_INIT_ATTR)) != null) {
-			try {
-				ZincScript.getZincScript().callFunction(attributeValue);
-			} catch (ZSException e) {
-				e.printStackTrace();
-			}
-		}
 		dom.id = (String) attr.get(ZMLTag.ID_ATTR);
 		// 事件属性
 		dom.onClick = (String) attr.get(ZMLTag.ON_CLICK_ATTR);
@@ -290,5 +329,12 @@ public final class ZMLParser {
 		unit = null;
 		root = null;
 		currentDOM = null;
+	}
+
+	/**
+	 * @return the currentDOM
+	 */
+	public AbstractDOM getCurrentDOM() {
+		return currentDOM;
 	}
 }

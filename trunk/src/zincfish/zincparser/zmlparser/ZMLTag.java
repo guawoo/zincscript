@@ -13,6 +13,8 @@ public final class ZMLTag {
 	public static final String BUTTON_TAG = "button";
 	public static final String TEXT_FIELD_TAG = "textfield";
 	public static final String TEXT_EDITOR_TAG = "texteditor";
+	public static final String RICH_TEXT_VIEWER_TAG = "richtextviewer";
+	public static final String IMG_TAG = "img";
 
 	public static final String ID_ATTR = "id";
 	public static final String X_ATTR = "x";
@@ -43,4 +45,5 @@ public final class ZMLTag {
 	public static final String PATH_ATTR = "path";
 	public static final String TEXT_ATTR = "text";
 	public static final String CTYPE_ATTR = "ctype";
+	public static final String ALT_ATTR = "alt";
 }

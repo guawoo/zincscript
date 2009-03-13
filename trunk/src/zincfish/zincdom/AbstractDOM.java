@@ -1,8 +1,7 @@
 package zincfish.zincdom;
 
-
-import ui.snscomponent.AbstractSNSComponent;
 import utils.ArrayList;
+import zincfish.zincwidget.AbstractSNSComponent;
 
 /**
  * <p>
@@ -48,6 +47,12 @@ public abstract class AbstractDOM {
 	public static final byte TYPE_TEXT_FIELD = 0x08;
 	/** 多行输入框类型 */
 	public static final byte TYPE_TEXT_EDITOR = 0x09;
+	/** 富文本浏览器类型 */
+	public static final byte TYPE_RICH_TEXT_VIEWER = 0x0a;
+	/** 普通文本类型 */
+	public static final byte TYPE_PLAIN_TEXT = 0x0b;
+	/** 图片类型 */
+	public static final byte TYPE_IMAGE = 0x0c;
 	// ///////////////////////////////////////////////////////////
 
 	// ///////////////////////// 对齐方式 /////////////////////////
