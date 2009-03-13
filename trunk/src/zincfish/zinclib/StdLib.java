@@ -1,10 +1,10 @@
-package zincfish.zincscript.lib;
+package zincfish.zinclib;
 
 import java.util.Hashtable;
 import java.util.Random;
 import screen.BrowserScreen;
 import utils.ArrayList;
-import zincfish.zincscript.core.ZSException;
+import zincfish.zincscript.ZSException;
 
 /**
  * <code>StdLib</code>是一个预先实现的标准函数库<br>

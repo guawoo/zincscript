@@ -1,4 +1,4 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 /**
  * <code>ZSException</code>是自定义异常类

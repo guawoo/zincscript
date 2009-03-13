@@ -1,9 +1,8 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import utils.ArrayList;
-import zincfish.zincscript.tree.ExpressionNode;
 
 /**
  * 解释执行引擎

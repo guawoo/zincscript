@@ -1,4 +1,4 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 /**
  * 基于关键字语法的解析器<br>

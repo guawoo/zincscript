@@ -1,4 +1,4 @@
-package zincfish.zincscript.tree;
+package zincfish.zincscript;
 
 /**
  * 解析运算表达式的一种高效的做法是构建表达式树<br>

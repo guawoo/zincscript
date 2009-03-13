@@ -7,8 +7,8 @@ import utils.StringUtil;
 import zincfish.zincdom.*;
 import zincfish.zincparser.xmlparser.ParserException;
 import zincfish.zincparser.xmlparser.XmlParser;
-import zincfish.zincscript.core.ZSException;
-import zincfish.zincscript.core.ZincScript;
+import zincfish.zincscript.ZSException;
+import zincfish.zincscript.ZincScript;
 import data.Unit;
 
 public final class ZMLParser {

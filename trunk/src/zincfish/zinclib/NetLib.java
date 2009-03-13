@@ -1,4 +1,4 @@
-package zincfish.zincscript.lib;
+package zincfish.zinclib;
 
 import java.util.Hashtable;
 import screen.BrowserScreen;
@@ -7,7 +7,7 @@ import utils.ArrayList;
 import zincfish.zincdom.AbstractDOM;
 import zincfish.zincdom.ListItemDOM;
 import zincfish.zincparser.zmlparser.ZMLParser;
-import zincfish.zincscript.core.ZSException;
+import zincfish.zincscript.ZSException;
 import zincfish.zincwidget.AbstractSNSComponent;
 
 public class NetLib extends AbstactLib {

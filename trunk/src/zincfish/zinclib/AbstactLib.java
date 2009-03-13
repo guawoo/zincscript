@@ -1,10 +1,10 @@
-package zincfish.zincscript.lib;
+package zincfish.zinclib;
 
 import java.util.Hashtable;
 
 import utils.ArrayList;
 
-import zincfish.zincscript.core.ZSException;
+import zincfish.zincscript.ZSException;
 
 /**
  * <code>AbstactLib</code>是自定义函数库的基类<br>

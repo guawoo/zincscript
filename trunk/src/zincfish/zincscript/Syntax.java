@@ -1,4 +1,4 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 import java.util.Hashtable;
 

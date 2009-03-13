@@ -2,8 +2,8 @@ package data;
 
 import zincfish.zincdom.AbstractDOM;
 import zincfish.zincdom.MenuItemDOM;
-import zincfish.zincscript.core.ZSException;
-import zincfish.zincscript.core.ZincScript;
+import zincfish.zincscript.ZSException;
+import zincfish.zincscript.ZincScript;
 
 /**
  * <p>

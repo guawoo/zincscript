@@ -1,4 +1,4 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 /**
  * <code>Operator</code>封装了各种运算符的操作

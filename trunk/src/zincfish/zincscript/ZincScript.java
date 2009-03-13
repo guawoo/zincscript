@@ -1,11 +1,11 @@
-package zincfish.zincscript.core;
+package zincfish.zincscript;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import utils.ArrayList;
-import zincfish.zincscript.lib.*;
+import zincfish.zinclib.*;
 
 /**
  * <code>ScriptEngine</code>是对解析执行引擎interpreter进行了一层封装，只暴露出必要的接口
