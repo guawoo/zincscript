@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import utils.ArrayList;
 import zincfish.zincscript.lib.AbstactLib;
-import zincscript.lib.*;
 
 /**
  * <code>ScriptEngine</code>是对解析执行引擎interpreter进行了一层封装，只暴露出必要的接口

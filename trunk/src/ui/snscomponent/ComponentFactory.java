@@ -1,7 +1,6 @@
 package ui.snscomponent;
 
 import zincfish.zincdom.AbstractDOM;
-import dom.*;
 
 public final class ComponentFactory {
 
