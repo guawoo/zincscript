@@ -4,11 +4,11 @@
 		<mi text="回复" onclick="newDiary" />
 		<mi text="编辑" onclick="edit" />
 	</menu>
-	<body id="diary1"
-		onload="_zsnSend(&quot; / widgets / diary /
-		diary1data.xml &quot;)">
+	<body id="diary1" onload="_zsnSend(&quot;/widgets/diary/diary1data.xml&quot;)">
 		<item id="title" oninit="_zsnCopy()" />
-		<richtextview id="content" oninit="copytitle" />
+		<richtextviewer id="content">
+			正在加载日记正文，请稍候...
+		</richtextviewer>
 		<button id="good" src="/widgets/diary/img/good" />
 		<button id="fuck" src="/widgets/diary/img/fuck" />
 		<button id="comment" src="/widgets/diary/img/comment" />

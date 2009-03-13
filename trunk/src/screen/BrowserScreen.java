@@ -112,6 +112,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 	private final AbstractSNSComponent DOMTree2ViewTree(AbstractDOM rootDOM) {
 		if (rootDOM == null)
 			return null;
+		System.out.println("dom = " + rootDOM.toString());
 		AbstractSNSComponent rootComponent = rootDOM.getComponent();
 		if (rootComponent == null) {
 			rootComponent = ComponentFactory.createComponent(rootDOM);
@@ -248,6 +249,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 		} else {
 			if (root.canFocus()) {
 				root.setFocus(true);
+				currentComponent = root;
 				return true;
 			}
 		}
@@ -259,5 +261,9 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 	 */
 	public AbstractSNSComponent getCurrentComponent() {
 		return currentComponent;
+	}
+
+	public ZMLParser getParse() {
+		return parse;
 	}
 }

@@ -52,6 +52,7 @@ public class NetLib extends AbstactLib {
 		if (functionMap == null)
 			functionMap = new Hashtable(FUNCTION_NUM);
 		functionMap.put(SEND, new Byte(SEND_CODE));
+		functionMap.put(COPY, new Byte(COPY_CODE));
 	}
 
 	private void _zsnSend(ArrayList params) {
@@ -84,7 +85,17 @@ public class NetLib extends AbstactLib {
 	private void _zsnCopy(ArrayList params) {
 		AbstractDOM resouce = BrowserScreen.getInstance().getCurrentComponent()
 				.getDom();
-		AbstractDOM target = ZMLParser.getSNSParser().getCurrentDOM();
+		if (resouce == null) {
+			System.out.println("resouce is null");
+			return;
+		}
+		AbstractDOM target = BrowserScreen.getInstance().getParse()
+				.getCurrentDOM();
+		if (target == null) {
+			System.out.println("target is null");
+			return;
+		}
+
 		if (resouce.type == AbstractDOM.TYPE_LIST_ITEM
 				&& target.type == resouce.type) {
 			ListItemDOM srcList = (ListItemDOM) resouce;

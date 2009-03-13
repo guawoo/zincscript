@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import utils.ArrayList;
-import zincfish.zincscript.lib.AbstactLib;
+import zincfish.zincscript.lib.*;
 
 /**
  * <code>ScriptEngine</code>是对解析执行引擎interpreter进行了一层封装，只暴露出必要的接口
@@ -208,10 +208,10 @@ public class ZincScript {
 			throws ZSException {
 		if (name.startsWith("_")) {
 			AbstactLib lib = null;
-			// if (name.startsWith("_zss"))
-			// lib = StdLib.getInstance();
-			// else if (name.startsWith("_zsn"))
-			// lib = NetLib.getInstance();
+			 if (name.startsWith("_zss"))
+				lib = StdLib.getInstance();
+			else if (name.startsWith("_zsn"))
+				lib = NetLib.getInstance();
 			// FIXME 此处需要根据函数名的前缀,调用不同的库函数
 			if (lib != null)
 				return lib.callFunction(name, params);

@@ -43,8 +43,9 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		this.dom = dom;
 		RichTextViewerDOM richTextViewerDOM = (RichTextViewerDOM) this.dom;
 		Callback callback = new RichTextViewerCallback();
-		richTextViewer = new FSGRichTextViewer(1, iWidth, iHeight, callback);
+		richTextViewer = new FSGRichTextViewer(1, 1240, 320, callback);
 		callback = null;
+		System.out.println("append data");
 		if (richTextViewerDOM.children != null
 				&& richTextViewerDOM.children.size() > 0) {
 			int imageIndex = 0;
@@ -56,6 +57,7 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 					if (fontList == null || colorList == null
 							|| converageColorFontList == null)
 						generateFont(plainTextDOM.text);
+					System.out.println(plainTextDOM.text);
 					richTextViewer.appendText(plainTextDOM.text, fontList,
 							converageColorFontList, colorList,
 							converageColorFontList);
@@ -78,11 +80,11 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		converageColorFontList.addElement(converage);
 		converage = null;
 		int[] color = { 0x292929 };
+		colorList = new CSList();
 		colorList.addElement(color);
 		color = null;
 		fontList = new CSList();
 		fontList.addElement(Config.PLAIN_SMALL_FONT);
-		colorList = new CSList();
 	}
 
 	public void setMotion(int startX, int startY) {

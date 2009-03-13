@@ -1,7 +1,6 @@
 package zincfish.zincwidget;
 
 import zincfish.zincdom.AbstractDOM;
-
 import com.mediawoz.akebono.coreservice.utils.CSDevice;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.IKeyInputHandler;
@@ -89,7 +88,7 @@ public abstract class AbstractSNSComponent extends UPanel implements
 	}
 
 	public boolean hasChildren() {
-		return (dom.children != null && dom.children.size() > 0);
+		return (dom.children != null && dom.children.size() > 0 && dom.type != AbstractDOM.TYPE_RICH_TEXT_VIEWER);
 	}
 
 	private void switchFocus(int ikeycode) {

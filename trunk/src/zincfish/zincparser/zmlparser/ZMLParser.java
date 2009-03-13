@@ -139,6 +139,7 @@ public final class ZMLParser {
 		}
 		if (!isWhitespace) {
 			String text = parser.getText();
+			text = text.trim();
 			PlainTextDOM dom = new PlainTextDOM();
 			dom.text = text;
 			add2DOMTree(dom);

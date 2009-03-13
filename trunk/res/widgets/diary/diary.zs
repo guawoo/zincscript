@@ -25,7 +25,3 @@ end
 def showcontent(string id)
 	_zsnSend(id)
 end
-
-def copydata()
-	_zsnCopy();
-end

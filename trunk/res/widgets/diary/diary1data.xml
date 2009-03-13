@@ -2,7 +2,7 @@
 
 <unit>
 	<body>
-		<richtextview id="content">
+		<richtextviewer id="content">
 			ZincFish是一个移动Ajax和WEB Widgets技术框架，可以为运行在移动设备上的应用提供更佳的用户体验:-)
 			架构上，ZincFish包含两部分，分别是Ajax引擎和UI组件库。Ajax引擎主要由xml解析器，ZincScript脚本引擎(独立实现的语法类似Ruby的脚本，功能层上相当于JavaScript，因此ZincFish实现的移动Ajax更准确的名称应当是"Azax
 			-- Asynchronous ZincScript and XML")以及相关的函数库组成。
@@ -16,7 +16,7 @@
 			
 			如果库函数API条例清晰，xml结构严谨，并且有足够详细的文档和培训，那么ZincFish可能会带来开发方式的重大变革。这种变革的最直接好处就是大大降低开发成本。
 			<img src="" alt="图" />
-		</richtextview>
+		</richtextviewer>
 		<list id="diarylist" title="评论区">
 			<item id="diary1" src="http://" title="老大，你是我偶像呀" content="老大，你真是我的O像!!"
 				ltail1="2" ltail2="0" rtail="03-03" icon="8" />

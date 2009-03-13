@@ -29,6 +29,8 @@ public final class ComponentFactory {
 			component = new SNSRichTextViewerComponent();
 			break;
 		}
+		if (component != null)
+			component.setDom(dom);
 		return component;
 	}
 }
