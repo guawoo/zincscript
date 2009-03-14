@@ -164,13 +164,5 @@ public abstract class AbstractSNSComponent extends UPanel implements
 		return false;
 	}
 
-	public void release() {
-		for (int i = 0; i < getComponentCount(); i++) {
-			AbstractSNSComponent c = (AbstractSNSComponent) componentAt(i);
-			c.release();
-			c = null;
-		}
-		this.dom = null;
-		System.gc();
-	}
+	public abstract void release();
 }

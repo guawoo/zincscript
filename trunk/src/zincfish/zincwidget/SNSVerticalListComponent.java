@@ -30,8 +30,8 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 			component = null;
 		}
 	}
-	
-	public void addComponent(UComponent c){
+
+	public void addComponent(UComponent c) {
 		super.addComponent(c);
 	}
 
@@ -70,5 +70,15 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 	public void setMotion(int startX, int startY) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void release() {
+		for (int i = 0; i < getComponentCount(); i++) {
+			AbstractSNSComponent c = (AbstractSNSComponent) componentAt(i);
+			c.release();
+			c = null;
+		}
+		this.dom = null;
+		System.gc();
 	}
 }

@@ -80,4 +80,12 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 		textField.forceActivated(isFocused);
 		super.setFocus(isFocused);
 	}
+
+	public void release() {
+		textField = null;
+		label = null;
+		leftImage = null;
+		rightImage = null;
+		this.dom = null;
+	}
 }

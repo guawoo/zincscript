@@ -113,7 +113,6 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 		if (rootDOM == null)
 			return null;
 		AbstractSNSComponent rootComponent = rootDOM.getComponent();
-		System.out.println("dom = " + rootDOM.toString());
 		if (rootComponent == null) {
 			rootComponent = ComponentFactory.createComponent(rootDOM);
 			rootComponent.setComponentEventListener(this);
@@ -125,8 +124,6 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 				AbstractSNSComponent component = dom.getComponent();
 				if (component == null){
 					component = DOMTree2ViewTree(dom);
-				}else{
-					System.out.println("domB = " + dom.toString());
 				}
 				dom.setComponent(component);
 				rootComponent.addComponent(component);

@@ -14,7 +14,7 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 	private static final int SPACE = 2;
 	private static final int PADDING = 6;
 	private String label = null;
-	private FSGDirectTextBox textArea;
+	private FSGDirectTextBox textArea = null;
 	private CRImage lt, ld, rt, rd = null;
 	private CRImage leftMarginImage, topMarginImage = null;
 
@@ -86,4 +86,15 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 
 	}
 
+	public void release() {
+		label = null;
+		textArea = null;
+		lt = null;
+		ld = null;
+		rt = null;
+		rd = null;
+		leftMarginImage = null;
+		topMarginImage = null;
+		this.dom = null;
+	}
 }

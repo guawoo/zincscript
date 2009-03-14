@@ -158,12 +158,9 @@ public final class Unit {
 	 * @return
 	 */
 	private boolean replaceNode(AbstractDOM srcDom, AbstractDOM tagDom) {
-		System.out.println("srcDom = " + srcDom.toString() + " id = "
-				+ srcDom.id);
 		if (srcDom.equals(tagDom)) {// 两个节点相等则需要替换
 			AbstractDOM father = srcDom.father;// 获取父节点
 			int index = father.children.indexOf(srcDom);// 获取子节点的索引
-			System.out.println("index = " + index);
 			father.children.set(index, tagDom);// 用新节点替换原节点
 			tagDom.father = father;// 设置新节点的父亲
 			srcDom.release();// 清理源节点

@@ -211,5 +211,6 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 		ltail2 = null;
 		rtail = null;
 		motion = null;
+		this.dom = null;
 	}
 }

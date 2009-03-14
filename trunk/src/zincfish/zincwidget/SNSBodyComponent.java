@@ -56,4 +56,14 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 
 	}
 
+	public void release() {
+		for (int i = 0; i < getComponentCount(); i++) {
+			AbstractSNSComponent c = (AbstractSNSComponent) componentAt(i);
+			c.release();
+			c = null;
+		}
+		this.dom = null;
+		System.gc();
+	}
+
 }

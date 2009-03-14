@@ -97,6 +97,7 @@ public class SNSButtonComponent extends AbstractSNSComponent {
 		bgImageHighLight = null;
 		text = null;
 		motion = null;
+		this.dom = null;
 	}
 
 }
