@@ -6,6 +6,8 @@ import zincfish.zincdom.ButtonDOM;
 import com.mediawoz.akebono.corefilter.CFMotion;
 import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
+import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.filters.motion.FMShake;
 
 import config.Config;
@@ -24,14 +26,6 @@ public class SNSButtonComponent extends AbstractSNSComponent {
 	public void doLayout(int startX, int startY) {
 		iX = dom.x == -1 ? startX : dom.x;
 		iY = dom.y == -1 ? startY : dom.y;
-	}
-
-	public int getNextX() {
-		return iX + iWidth + SPACE;
-	}
-
-	public int getNextY() {
-		return iY;
 	}
 
 	protected void drawCurrentFrame(CRGraphics g) {
@@ -98,6 +92,35 @@ public class SNSButtonComponent extends AbstractSNSComponent {
 		text = null;
 		motion = null;
 		this.dom = null;
+	}
+
+	public boolean keyPressed(int keyCode) {
+		int keyAction = CSDevice.getGameAction(keyCode);
+		switch (keyAction) {
+		case CSDevice.KEY_FIRE:
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_CLICKED, dom.onClick, 0);
+			return true;
+		case CSDevice.KEY_UP:
+		case CSDevice.KEY_RIGHT:
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_LEFT:
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	public boolean keyReleased(int keyCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean keyRepeated(int keyCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

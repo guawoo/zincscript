@@ -5,6 +5,7 @@ import zincfish.zincdom.TextFieldDOM;
 
 import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
+import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.forms.lafs.simplegraph.FSGDirectTextBox;
 import config.Config;
 import config.Resources;
@@ -21,14 +22,6 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 	public void doLayout(int startX, int startY) {
 		iX = dom.x == -1 ? startX : dom.x;
 		iY = dom.y == -1 ? startY : dom.y;
-	}
-
-	public int getNextX() {
-		return 0;
-	}
-
-	public int getNextY() {
-		return iY + iHeight;
 	}
 
 	protected void drawCurrentFrame(CRGraphics g) {
@@ -87,5 +80,23 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 		leftImage = null;
 		rightImage = null;
 		this.dom = null;
+	}
+
+	public boolean keyPressed(int keyCode) {
+		if (textField.isBeingEdited()) {// 如果编辑框处于编辑状态，按键响应交由编辑框处理
+			return textField.keyPressed(keyCode);
+		} else {// 非编辑状态
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			return true;
+		}
+	}
+
+	public boolean keyReleased(int arg0) {
+		return false;
+	}
+
+	public boolean keyRepeated(int arg0) {
+		return false;
 	}
 }

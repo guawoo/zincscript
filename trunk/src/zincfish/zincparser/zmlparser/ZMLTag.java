@@ -5,7 +5,8 @@ public final class ZMLTag {
 	public static final String UNIT_TAG = "unit";
 	public static final String DIV_TAG = "div";
 	public static final String SCRIPT_TAG = "script";
-	public static final String LIST_TAG = "list";
+	public static final String VLIST_TAG = "vlist";
+	public static final String HLIST_TAG = "hlist";
 	public static final String LIST_ITEM_TAG = "item";
 	public static final String MENU_TAG = "menu";
 	public static final String MENU_ITEM_TAG = "mi";

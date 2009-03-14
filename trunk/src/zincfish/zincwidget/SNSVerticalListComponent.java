@@ -4,6 +4,8 @@ import zincfish.zincdom.AbstractDOM;
 
 import com.mediawoz.akebono.corerenderer.CRDisplay;
 import com.mediawoz.akebono.corerenderer.CRGraphics;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
+import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.UComponent;
 
 public class SNSVerticalListComponent extends AbstractSNSComponent {
@@ -45,11 +47,10 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 				: dom.w;
 		int subX = 0, subY = 0;
 		for (int i = 0; i < getComponentCount(); i++) {
-			AbstractSNSComponent componet = (AbstractSNSComponent) componentAt(i);
-			componet.doLayout(subX, subY);
-			subX = componet.getNextX();
-			subY = componet.getNextY() + SPACE * 2;
-			componet = null;
+			AbstractSNSComponent c = (AbstractSNSComponent) componentAt(i);
+			c.doLayout(subX, subY);
+			subY = c.iY + c.getHeight() + SPACE * 2;
+			c = null;
 		}
 		this.iHeight = subY;
 		for (int i = 0; i < getComponentCount(); i++) {
@@ -80,5 +81,36 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 		}
 		this.dom = null;
 		System.gc();
+	}
+
+	public boolean keyPressed(int keyCode) {
+		int keyAction = CSDevice.getGameAction(keyCode);
+		switch (keyAction) {
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_RIGHT:
+			index++;
+			break;
+		case CSDevice.KEY_UP:
+		case CSDevice.KEY_LEFT:
+			index--;
+		default:
+			break;
+		}
+		if (index < 0 || index >= getComponentCount()) {
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+		} else {
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_CHANGING, null, index);
+		}
+		return false;
+	}
+
+	public boolean keyReleased(int arg0) {
+		return false;
+	}
+
+	public boolean keyRepeated(int arg0) {
+		return false;
 	}
 }

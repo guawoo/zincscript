@@ -29,8 +29,8 @@ import zincfish.zincwidget.AbstractSNSComponent;
  */
 public abstract class AbstractDOM {
 	// /////////////////////// DOM节点类型 ////////////////////////
-	/** 列表类型 */
-	public static final byte TYPE_LIST = 0x01;
+	/** 垂直列表类型 */
+	public static final byte TYPE_VLIST = 0x01;
 	/** 列表项类型 */
 	public static final byte TYPE_LIST_ITEM = 0x02;
 	/** 按钮类型 */
@@ -53,6 +53,8 @@ public abstract class AbstractDOM {
 	public static final byte TYPE_PLAIN_TEXT = 0x0b;
 	/** 图片类型 */
 	public static final byte TYPE_IMAGE = 0x0c;
+	/** 水平列表类型 */
+	public static final byte TYPE_HLIST = 0x02;
 	// ///////////////////////////////////////////////////////////
 
 	// ///////////////////////// 对齐方式 /////////////////////////

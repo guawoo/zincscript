@@ -8,9 +8,11 @@ package zincfish.zincdom;
  * @author Jarod Yv
  * @since fingerling
  */
-public class ListDOM extends AbstractDOM {
-	
-	public ListDOM() {
-		this.type = TYPE_LIST;
+public class VListDOM extends AbstractDOM {
+	public String title = null;
+
+	public VListDOM() {
+		this.type = TYPE_VLIST;
+		this.isVisible = true;
 	}
 }

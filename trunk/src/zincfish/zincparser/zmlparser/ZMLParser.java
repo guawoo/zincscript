@@ -72,8 +72,10 @@ public final class ZMLParser {
 		}
 		if (ZMLTag.LIST_ITEM_TAG.equals(currentTag)) {
 			parseListItem();
-		} else if (ZMLTag.LIST_TAG.equals(currentTag)) {
-			parseList();
+		} else if (ZMLTag.VLIST_TAG.equals(currentTag)) {
+			parseVerticalList();
+		} else if (ZMLTag.HLIST_TAG.equals(currentTag)) {
+			parseHorizontalList();
 		} else if (ZMLTag.MENU_ITEM_TAG.equals(currentTag)
 				|| ZMLTag.MENU_TAG.equals(currentTag)) {
 			parseMenuItem();
@@ -171,8 +173,16 @@ public final class ZMLParser {
 		}
 	}
 
-	private final void parseList() throws ParserException {
-		ListDOM list = new ListDOM();
+	private final void parseVerticalList() throws ParserException {
+		VListDOM list = new VListDOM();
+		handelGeneralAttributes(list);
+
+		add2DOMTree(list);
+		list = null;
+	}
+
+	private final void parseHorizontalList() throws ParserException {
+		HListDOM list = new HListDOM();
 		handelGeneralAttributes(list);
 
 		add2DOMTree(list);

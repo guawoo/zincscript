@@ -58,10 +58,6 @@ public abstract class AbstractSNSComponent extends UPanel implements
 
 	public abstract void setMotion(int startX, int startY);
 
-	public abstract int getNextX();
-
-	public abstract int getNextY();
-
 	/**
 	 * 设置组件的焦点状态。不同组件获得焦点后会有不同的动作。
 	 * 
@@ -129,39 +125,6 @@ public abstract class AbstractSNSComponent extends UPanel implements
 
 	public String toString() {
 		return dom.id;
-	}
-
-	public boolean keyPressed(int ikeycode) throws IndexOutOfBoundsException {
-		AbstractSNSComponent currentComonent = (AbstractSNSComponent) componentAt(index);
-		if (currentComonent.hasChildren()) {
-			try {
-				currentComonent.keyPressed(ikeycode);
-			} catch (Exception e) {
-				switchFocus(ikeycode);
-			}
-		} else {
-			int key = CSDevice.getGameAction(ikeycode);
-			if (key == CSDevice.KEY_FIRE) {
-				cel.componentEventFired(currentComonent,
-						EComponentEventListener.EVENT_SEL_CLICKED, null, 0);
-			} else {
-				switchFocus(ikeycode);
-			}
-		}
-
-		currentComonent = null;
-
-		return false;
-	}
-
-	public boolean keyReleased(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean keyRepeated(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public abstract void release();

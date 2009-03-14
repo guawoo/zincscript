@@ -24,12 +24,12 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 		for (int i = 0; i < getComponentCount(); i++) {
 			AbstractSNSComponent component = (AbstractSNSComponent) componentAt(i);
 			component.doLayout(subX, subY);
-			int tmpX = component.getNextX();
-			int tmpY = component.getNextY();
+			int tmpX = component.iX + component.getWidth();
+			int tmpY = component.iY;
 			if (tmpX > iWidth) {
 				component.iX = 0;
 				component.iY += lineHeight;
-				tmpY = component.getNextY();
+				tmpY = component.iY;
 				lineHeight = component.getHeight();
 			}
 			if (tmpY == subY) {// 同一行
@@ -64,6 +64,19 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 		}
 		this.dom = null;
 		System.gc();
+	}
+
+	public boolean keyPressed(int keycode) {
+		
+		return false;
+	}
+
+	public boolean keyReleased(int keycode) {
+		return false;
+	}
+
+	public boolean keyRepeated(int keycode) {
+		return false;
 	}
 
 }

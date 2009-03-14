@@ -32,14 +32,6 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		iY = dom.y == -1 ? startY : dom.y;
 	}
 
-	public int getNextX() {
-		return 0;
-	}
-
-	public int getNextY() {
-		return iY + iHeight;
-	}
-
 	protected void drawCurrentFrame(CRGraphics g) {
 		System.out.println("Paint");
 		richTextViewer.paintCurrentFrame(g, 0, 0);

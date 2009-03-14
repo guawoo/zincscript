@@ -7,7 +7,11 @@ import com.mediawoz.akebono.corefilter.CFMotion;
 import com.mediawoz.akebono.corerenderer.CRDisplay;
 import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
+import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.filters.motion.FMLinear;
+import com.vodafone.io.RemoteControlData;
+
 import config.Config;
 import config.Resources;
 
@@ -28,6 +32,8 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 	private String ltail2 = null;
 	/* 右脚注 */
 	private String rtail = null;
+
+	private boolean hasMore = false;
 
 	/* 列表弹出的motion */
 	private CFMotion motion = null;
@@ -188,14 +194,6 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 				: dom.w;
 	}
 
-	public int getNextX() {
-		return 0;
-	}
-
-	public int getNextY() {
-		return iY + iHeight;
-	}
-
 	public void setMotion(int startX, int startY) {
 		motion = new FMLinear(1, FMLinear.PULLBACK, startX, startY, iX, iY, 10,
 				0, -100);
@@ -212,5 +210,36 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 		rtail = null;
 		motion = null;
 		this.dom = null;
+	}
+
+	public boolean keyPressed(int keyCode) {
+		int keyAction = CSDevice.getGameAction(keyCode);
+		if (hasMore) {// 某些列表项，比如日记，可能有更多内容，此时方向右键 == fire键
+			if (keyAction == CSDevice.KEY_RIGHT)
+				keyAction = CSDevice.KEY_FIRE;
+		}
+		switch (keyAction) {
+		case CSDevice.KEY_FIRE:
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_CLICKED, dom.onClick, 0);
+			return true;
+		case CSDevice.KEY_UP:
+		case CSDevice.KEY_RIGHT:
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_LEFT:
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	public boolean keyReleased(int keyCode) {
+		return false;
+	}
+
+	public boolean keyRepeated(int keyCode) {
+		return false;
 	}
 }

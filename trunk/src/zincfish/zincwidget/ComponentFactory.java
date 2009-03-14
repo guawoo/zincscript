@@ -10,7 +10,7 @@ public final class ComponentFactory {
 		case AbstractDOM.TYPE_BODY:
 			component = new SNSBodyComponent();
 			break;
-		case AbstractDOM.TYPE_LIST:
+		case AbstractDOM.TYPE_VLIST:
 			component = new SNSVerticalListComponent();
 			break;
 		case AbstractDOM.TYPE_LIST_ITEM:
