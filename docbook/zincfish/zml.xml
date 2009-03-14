@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
+<article xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title>ZML标签定义</title>
+        <!-- 作者信息 -->
+        <authorgroup>
+            <author>
+                <personname>
+                    <firstname>Jarod</firstname>
+                    <surname>Yv</surname>
+                </personname>
+                <email>yuxin@3g.net.cn</email>
+                <affiliation>
+                    <orgname>
+                        <link xlink:href="http://3g.cn">3g门户</link>
+                    </orgname>
+                    <orgdiv>GT2</orgdiv>
+                </affiliation>
+            </author>
+        </authorgroup>
+        <!-- 版本更改信息 -->
+        <revhistory>
+            <revision>
+                <revnumber>1.0</revnumber>
+                <date>2009-03-14</date>
+                <revdescription>
+                    <para>新建(传说中，今天是白色情人节?)</para>
+                </revdescription>
+            </revision>
+        </revhistory>
+        <!-- 法律声明 -->
+        <legalnotice>
+            <title>声明</title>
+            <itemizedlist>
+                <listitem>
+                    <para>本文档用于公司内部培训和交流使用，未经允许不得外传；</para>
+                </listitem>
+                <listitem>
+                    <para>本文档基于正在开发中的<code>ZincFish</code>0.9版本(codename:
+                            <emphasis>Fingerling</emphasis>)完成，目前<code>ZincFish</code>框架需求尚不稳定，在<code>ZincFish</code>
+                        1.0版本完成前，此文档会频繁更新，请及时更新最新文档</para>
+                </listitem>
+            </itemizedlist>
+        </legalnotice>
+    </info>
+    <sect1>
+        <title>什么是ZML</title>
+        <para> ZML是一组XML扩展标签规则，在<code>ZincFish</code>框架中主要用来定义UI。
+            <code>ZincFish</code>框架需要一个UI库作为显示前端，此UI库将根据具体需求由一系列的UI组件(widget)组成。
+                使用<code>ZincFish</code>框架，程序界面不再由Java代码或C代码来硬编码到程序内部，而是通过ZML定义在程序外部。
+                UI库中每一个UI组件(widget)都会对应一个zml标签，其所需属性会封装在zml标签的属性中。<code>ZincFish</code>框架中的ZML解析器从ZML文件中解析出UI组件类型和其属性，从而生成相应类型的UI组件。
+        </para>
+        <para>
+            从上面的介绍中我们可以了解到ZML具有如下特性：
+            <orderedlist>
+                <listitem>
+                    <para>ZML是XML，其遵循一切XML的规范；</para>
+                </listitem>
+                <listitem>
+                    <para>ZML中的标签与UI库中的UI组件(widget)是一一对应的；</para>
+                </listitem>
+                <listitem>
+                    <para>开发过程中，ZML中的标签和属性是被动跟随UI组件(widget)的变化而变化的，UI组件(widget)的任何变化可能导致ZML相应标签和属性的变化；</para>
+                </listitem>
+            </orderedlist>
+        </para>
+    </sect1>
+    <sect1>
+        <title>ZML文件的结构</title>
+        <para>
+            
+        </para>
+    </sect1>
+    
+    <sect1>
+        <title>script段详解</title>
+        <para>
+            
+        </para>
+    </sect1>
+    
+    <sect1>
+        <title>menu段详解</title>
+        <para>
+            
+        </para>
+    </sect1>
+    
+    <sect1>
+        <title>body段详解</title>
+        <para>
+            
+        </para>
+        <sect2>
+            <title>vlist标签</title>
+            <para></para>
+        </sect2>
+        
+        <sect2>
+            <title>hlist标签</title>
+            <para></para>
+        </sect2>
+        
+        <sect2>
+            <title>div标签</title>
+            <para></para>
+        </sect2>
+        
+        <sect2>
+            <title>button标签</title>
+            <para></para>
+        </sect2>
+        
+        <sect2>
+            <title>item标签</title>
+            <para></para>
+        </sect2>
+    </sect1>
+</article>
