@@ -93,8 +93,9 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 		case CSDevice.KEY_UP:
 		case CSDevice.KEY_LEFT:
 			index--;
-		default:
 			break;
+		default:
+			return false;
 		}
 		if (index < 0 || index >= getComponentCount()) {
 			cel.componentEventFired(this,
@@ -103,7 +104,7 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 			cel.componentEventFired(this,
 					EComponentEventListener.EVENT_SEL_CHANGING, null, index);
 		}
-		return false;
+		return true;
 	}
 
 	public boolean keyReleased(int arg0) {

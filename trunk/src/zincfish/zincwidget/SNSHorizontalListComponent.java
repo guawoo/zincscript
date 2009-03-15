@@ -1,6 +1,9 @@
 package zincfish.zincwidget;
 
 import zincfish.zincdom.AbstractDOM;
+
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
+import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.UComponent;
 
 public class SNSHorizontalListComponent extends AbstractSNSComponent {
@@ -28,7 +31,7 @@ public class SNSHorizontalListComponent extends AbstractSNSComponent {
 
 	public void init(AbstractDOM dom) {
 		this.dom = dom;
-		
+
 	}
 
 	public void setMotion(int startX, int startY) {
@@ -44,6 +47,47 @@ public class SNSHorizontalListComponent extends AbstractSNSComponent {
 		}
 		this.dom = null;
 		System.gc();
+	}
+
+	public boolean keyPressed(int keyCode) {
+		int keyAction = CSDevice.getGameAction(keyCode);
+		switch (keyAction) {
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_UP:
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			break;
+		case CSDevice.KEY_RIGHT:
+			index++;
+			if (index >= getComponentCount()) {
+				index = getComponentCount();
+			} else {
+
+			}
+			break;
+		case CSDevice.KEY_LEFT:
+			index--;
+			if (index < 0) {
+				index = 0;
+			} else {
+				cel
+						.componentEventFired(this,
+								EComponentEventListener.EVENT_SEL_CHANGING,
+								null, index);
+			}
+			break;
+		default:
+			return false;
+		}
+		return true;
+	}
+
+	public boolean keyReleased(int arg0) {
+		return false;
+	}
+
+	public boolean keyRepeated(int arg0) {
+		return false;
 	}
 
 }

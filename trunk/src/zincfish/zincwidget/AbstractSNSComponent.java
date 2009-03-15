@@ -58,6 +58,15 @@ public abstract class AbstractSNSComponent extends UPanel implements
 
 	public abstract void setMotion(int startX, int startY);
 
+	public AbstractSNSComponent getCurrentChild() {
+		if (hasChildren()) {
+			AbstractDOM child = (AbstractDOM) dom.children.get(index);
+			return child.getComponent();
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * 设置组件的焦点状态。不同组件获得焦点后会有不同的动作。
 	 * 

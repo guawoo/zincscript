@@ -15,6 +15,8 @@ import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.UComponent;
 import com.mediawoz.akebono.ui.UScreen;
+import com.sun.perseus.model.Switch;
+
 import config.Config;
 import data.IDOMChangeListener;
 import data.UnitBuffer;
@@ -122,7 +124,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			for (int i = 0; i < rootDOM.children.size(); i++) {
 				AbstractDOM dom = (AbstractDOM) rootDOM.children.get(i);
 				AbstractSNSComponent component = dom.getComponent();
-				if (component == null){
+				if (component == null) {
 					component = DOMTree2ViewTree(dom);
 				}
 				dom.setComponent(component);
@@ -163,13 +165,45 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			return;
 		}
 		try {
-			body.keyPressed(iKeyCode);
+			currentComponent.keyPressed(iKeyCode);
 		} catch (Exception e) {
 		}
 	}
 
 	public void componentEventFired(UComponent component, int eventID,
 			Object paramObj, int param) {
+		switch (eventID) {
+		case EVENT_SEL_CLICKED:
+		case 0:
+		case 1:
+			String func = (String) paramObj;
+			if (func != null) {
+				try {
+					zinc.callFunction(func);
+				} catch (ZSException e) {
+					e.printStackTrace();
+				}
+			}
+			break;
+		case EVENT_SEL_EDGE:
+			AbstractSNSComponent father = (AbstractSNSComponent) component
+					.getContainingPanel();
+			if (father != null) {
+				father.keyPressed(param);
+			}
+			father = null;
+			break;
+		case EVENT_SEL_CHANGING:
+			AbstractSNSComponent c = (AbstractSNSComponent) component;
+			c = c.getCurrentChild();
+			if (c != null) {
+				currentComponent = c;
+			}
+			c = null;
+			break;
+		default:
+			break;
+		}
 		if (component instanceof AbstractSNSComponent) {
 			AbstractSNSComponent com = (AbstractSNSComponent) component;
 			if (eventID == EVENT_SEL_CLICKED) {

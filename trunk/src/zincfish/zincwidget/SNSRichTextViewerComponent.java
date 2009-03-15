@@ -44,7 +44,7 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		iWidth = getContainingPanel().getWidth();
 		iHeight = 300;
 		richTextViewer = new FSGRichTextViewer(1, iWidth, iHeight, callback);
-		//richTextViewer.setBgColor(-1);
+		// richTextViewer.setBgColor(-1);
 		addComponent(richTextViewer);
 		callback = null;
 		if (richTextViewerDOM.content != null
@@ -131,6 +131,18 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		converageColorFontList = null;
 		colorList = null;
 		this.dom = null;
+	}
+
+	public boolean keyPressed(int keyCode) {
+		return richTextViewer.keyPressed(keyCode);
+	}
+
+	public boolean keyReleased(int arg0) {
+		return false;
+	}
+
+	public boolean keyRepeated(int arg0) {
+		return false;
 	}
 
 }

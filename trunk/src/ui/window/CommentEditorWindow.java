@@ -11,12 +11,12 @@ import config.Config;
 public class CommentEditorWindow extends ULayer {
 
 	/** �ı������ */
-	FSGDirectTextBox textBox;
+	private FSGDirectTextBox textBox;
 
 	/** ��ť: ûѡ��ʱ��ʾͼƬ */
-	CRImage[] selectImages;
+	private CRImage[] selectImages;
 	/** ��ť: ѡ��ʱ��ʾͼƬ */
-	CRImage[] okImages;
+	private CRImage[] okImages;
 	/** Fire�������� */
 	int[] iCmdCode;
 
