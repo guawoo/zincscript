@@ -315,31 +315,262 @@
 	<sect1>
 		<title>body段详解</title>
 		<para>
-
+			"body段"是ZML的主体，它是主要的UI定义。
+			从最终生成的UI组件形式来分，ZML标签分为2类，一类是容器标签，一类是实体标签。
+			顾名思义，容器标签会被解析并最终生成一个UI容器，用于装载有实体标签生成的实体UI组件。&lt;body&gt;就属于容器标签，其他容器标签还有&lt;vlist&gt;，&lt;hlist&gt;。
+			实体标签有：&lt;button&gt;，&lt;item&gt;下面逐个介绍。
 		</para>
 		<sect2>
-			<title>vlist标签</title>
+			<title>容器标签</title>
 			<para></para>
-		</sect2>
+				<sect3>
+					<title>&lt;body&gt;标签</title>
+					<para>
+						所有的UI组件标签都会嵌套在&lt;body&gt;标签中。作为容器&lt;body&gt;标签没有什么特别的属性，其最主要的是"id"属性。如果id属性不同，我们则认为它是一个新的界面单元，会将其加入到缓存中，否则直接更新当前的DOM树。
+						上面提到过，一个ZML只能有一个"onload"属性，通常我们也将"onload"属性写在&lt;body&gt;标签中。&lt;body&gt;是整个UI定义的根，解析后它会形成DOM树的根节点，其嵌套的子标签则会被解析成DOM树的子节点。
+					</para>
+					<para>
+						<example>
+                			<title>body实例</title>
+							<programlisting>
+								&lt;body id="body"&gt;
+									subtags...
+								&lt;/body&gt;
+							</programlisting>
+						</example>
+					</para>
+				</sect3>
+			
+				<sect3>
+					<title>&lt;vlist&gt;标签</title>
+					<para>&lt;vlist&gt;标签定义了一个垂直列表容器，其内部的实体会竖式排列。作为容器，&lt;vlist&gt;没有太多属性，最重要的是"id"属性，可以用来方便的整个列表的更新。</para>
+					<para>
+						<example>
+                			<title>垂直列表实例</title>
+							<programlisting>
+								&lt;vlist id="list"&gt;
+									subtags...
+								&lt;/vlist&gt;
+							</programlisting>
+						</example>
+					</para>
+				</sect3>
 
-		<sect2>
-			<title>hlist标签</title>
-			<para></para>
+				<sect3>
+					<title>&lt;vlist&gt;标签</title>
+					<para>
+						&lt;vlist&gt;标签定义了一个水平列表容器，其内部的实体会横式排列，如果显示不下，则到达边缘是会滚动。作为容器，&lt;hlist&gt;没有太多属性，最重要的是"id"属性，可以用来方便的整个列表的更新。
+					</para>
+					<para>
+						<example>
+                			<title>水平列表实例</title>
+							<programlisting>
+								&lt;hlist id="list"&gt;
+									subtags...
+								&lt;/hlist&gt;
+							</programlisting>
+						</example>
+					</para>
+				</sect3>
+		
+				<sect3>
+					<title>&lt;div&gt;标签</title>
+					<para>
+						&lt;div&gt;标签与html的&lt;div&gt;标签是一样的，定义了一个"盒子"容器，其内部的实体会Z式排列。作为容器，&lt;div&gt;没有太多属性，最重要的是"id"属性，可以用来方便的整个列表的更新。
+					</para>
+					<para>
+						<example>
+                			<title>div实例</title>
+							<programlisting>
+								&lt;div id="list"&gt;
+									subtags...
+								&lt;/div&gt;
+							</programlisting>
+						</example>
+					</para>
+				</sect3>
+				
+				<sect3>
+					<title>&lt;richtextviewer&gt;</title>
+					<para>此标签的用于展示图文混排的内容。具体格式还需要与劳惠明协定，沟通确定下来后再做更新。</para>
+				</sect3>
+				
+			<sect3>
+				<title>扩展标签</title>
+				<para>用于今后扩展</para>
+			</sect3>
 		</sect2>
-
+		
 		<sect2>
-			<title>div标签</title>
+			<title>实体标签</title>
 			<para></para>
-		</sect2>
+				<sect3>
+					<title>&lt;button&gt;标签</title>
+					<para>
+						&lt;button&gt;标签定义了一个按钮。可以通过"src"属性制定按钮的背景，通过"text"设置按钮上的文字。当然按钮的点击相应由"onclick"通用事件接口来定义。
+					</para>
+					<para>
+						<example>
+                			<title>&lt;button&gt;实例</title>
+							<programlisting>
+								&lt;button id="comment" text="评论" src="/widgets/diary/img/comment" onclick="comment()"/&gt;
+							</programlisting>
+						</example>
+					</para>
+					<para>
+		            	<note>
+		            		<title>总结</title>
+		            		<para>
+		            		 <table>
+		                        <title>&lt;button&gt;标签属性列表</title>
+		                        <tgroup cols="4">
+		                            <colspec colnum="1" colname="1"/>
+		                            <colspec colnum="2" colname="2"/>
+		                            <colspec colnum="3" colname="3"/>
+		                            <colspec colnum="4" colname="4"/>
+		                            <thead>
+		                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+		                            </thead>
+		                            <tbody>
+		                            	<row><entry>src</entry><entry>指定按钮背景图片</entry><entry>本地路径或URL</entry><entry>为空则画默认背景</entry></row>
+		                            	<row><entry>text</entry><entry>按钮上显示的文字</entry><entry>字符串</entry><entry>为空则不显示文字</entry></row>
+		                            </tbody>
+		                        </tgroup>
+		                      </table>
+		            		</para>
+		            	</note>
+            		</para>
+				</sect3>
 
-		<sect2>
-			<title>button标签</title>
-			<para></para>
-		</sect2>
+				<sect3>
+					<title>&lt;item&gt;标签</title>
+					<para>
+						&lt;item&gt;稍微复杂，它主要用于定义日记、评论类表项。这个组件往往由2部分组成，即左边的头像和右边的文字。文字部分通常分3行，第一行为title，中间一行为content，最下面是一些其他信息。这些信息都在&lt;item&gt;里有属性一一对应。下面是一个例子：
+					</para>
+					<para>
+						<example>
+                			<title>&lt;item&gt;实例</title>
+							<programlisting>
+								&lt;item id="diary1" src="http://myhead.png" title="老大，你是我偶像呀" content="老大，你真是我的O像!!" 
+								ltail1="2" ltail2="0" rtail="03-03" icon="8" /&gt;
+							</programlisting>
+						</example>
+					</para>
+					<para>
+		            	<note>
+		            		<title>总结</title>
+		            		<para>
+		            		 <table>
+		                        <title>&lt;button&gt;标签属性列表</title>
+		                        <tgroup cols="4">
+		                            <colspec colnum="1" colname="1"/>
+		                            <colspec colnum="2" colname="2"/>
+		                            <colspec colnum="3" colname="3"/>
+		                            <colspec colnum="4" colname="4"/>
+		                            <thead>
+		                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+		                            </thead>
+		                            <tbody>
+		                            	<row><entry>src</entry><entry>左边头像图片的URL</entry><entry>本地路径或URL</entry><entry>为空则不画</entry></row>
+		                            	<row><entry>title</entry><entry>文字部分的title</entry><entry>字符串</entry><entry>为空则不显示文字</entry></row>
+		                            	<row><entry>content</entry><entry>内容部分的文字</entry><entry>字符串</entry><entry>为空则不画</entry></row>
+		                            	<row><entry>ltail1</entry><entry>左下方第一个文字</entry><entry>字符串</entry><entry>为空则不显示文字</entry></row>
+		                            	<row><entry>ltail2</entry><entry>左下方第二个文字</entry><entry>字符串</entry><entry>为空则不显示文字</entry></row>
+		                            	<row><entry>rtail</entry><entry>右下方文字</entry><entry>字符串</entry><entry>为空则不显示文字</entry></row>
+		                            	<row><entry>icon</entry><entry>左上方的一组图标</entry><entry>整型</entry><entry>通过位测试判断显示哪个图标</entry></row>
+		                            </tbody>
+		                        </tgroup>
+		                      </table>
+		            		</para>
+		            	</note>
+            		</para>
+				</sect3>
+				
+				<sect3>
+					<title>&lt;textfield&gt;标签</title>
+					<para>
+						&lt;textfield&gt;标签定义了一个单行的输入框，用于接收用户的输入。它是一个复杂的交互组件，需要"value"和"name"属性来完成数据的上传。另外"title"属性定义了输入框的label。
+					</para>
+					<para>
+						<example>
+                			<title>&lt;textfield&gt;实例</title>
+							<programlisting>
+								&lt;textfield id="title" title="标题:" type="0" value="请输入帐号" name="name"/&gt;
+							</programlisting>
+						</example>
+					</para>
+					<para>
+		            	<note>
+		            		<title>总结</title>
+		            		<para>
+		            		 <table>
+		                        <title>&lt;textfield&gt;标签属性列表</title>
+		                        <tgroup cols="4">
+		                            <colspec colnum="1" colname="1"/>
+		                            <colspec colnum="2" colname="2"/>
+		                            <colspec colnum="3" colname="3"/>
+		                            <colspec colnum="4" colname="4"/>
+		                            <thead>
+		                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+		                            </thead>
+		                            <tbody>
+		                            	<row><entry>title</entry><entry>输入框的label</entry><entry>字符串</entry><entry>为空则不显示</entry></row>
+		                            	<row><entry>name</entry><entry>用于上传时拼接"name"</entry><entry>字符串</entry><entry>只在上传时有效，不用于显示</entry></row>
+		                            	<row><entry>value</entry><entry>输入框的默认值，上传时会由用户的输入提到</entry><entry>字符串</entry><entry></entry></row>
+		                            	<row><entry>type</entry><entry>接受数据的类型</entry><entry>整形</entry><entry>默认为ANY</entry></row>
+		                            </tbody>
+		                        </tgroup>
+		                      </table>
+		            		</para>
+		            	</note>
+            		</para>
+				</sect3>
 
-		<sect2>
-			<title>item标签</title>
-			<para></para>
+				<sect3>
+					<title>&lt;texteditor&gt;标签</title>
+					<para>
+						&lt;texteditor&gt;标签与&lt;textfield&gt;标签类似，只不过&lt;texteditor&gt;是多行输入框，比&lt;textfield&gt;多出一个属性"line"用于指定行数，
+					</para>
+					<para>
+						<example>
+                			<title>&lt;texteditor&gt;实例</title>
+							<programlisting>
+								&lt;texteditor id="title" title="标题:" type="0" line="6" value="请输入正文" name="content"/&gt;
+							</programlisting>
+						</example>
+					</para>
+					<para>
+		            	<note>
+		            		<title>总结</title>
+		            		<para>
+		            		 <table>
+		                        <title>&lt;textfield&gt;标签属性列表</title>
+		                        <tgroup cols="4">
+		                            <colspec colnum="1" colname="1"/>
+		                            <colspec colnum="2" colname="2"/>
+		                            <colspec colnum="3" colname="3"/>
+		                            <colspec colnum="4" colname="4"/>
+		                            <thead>
+		                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+		                            </thead>
+		                            <tbody>
+		                            	<row><entry>title</entry><entry>输入框的label</entry><entry>字符串</entry><entry>为空则不显示</entry></row>
+		                            	<row><entry>name</entry><entry>用于上传时拼接"name"</entry><entry>字符串</entry><entry>只在上传时有效，不用于显示</entry></row>
+		                            	<row><entry>value</entry><entry>输入框的默认值，上传时会由用户的输入提到</entry><entry>字符串</entry><entry></entry></row>
+		                            	<row><entry>type</entry><entry>接受数据的类型</entry><entry>整形</entry><entry>默认为ANY</entry></row>
+		                            	<row><entry>line</entry><entry>文本框显示的行数</entry><entry>整形(对于0)</entry><entry>默认为6</entry></row>
+		                            </tbody>
+		                        </tgroup>
+		                      </table>
+		            		</para>
+		            	</note>
+            		</para>
+				</sect3>
+				
+			<sect3>
+				<title>扩展标签</title>
+				<para>用于今后扩展</para>
+			</sect3>
 		</sect2>
 	</sect1>
 </article>
