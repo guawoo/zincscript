@@ -1,121 +1,345 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
-<article xmlns="http://docbook.org/ns/docbook"
-    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
-    <info>
-        <title>ZML标签定义</title>
-        <!-- 作者信息 -->
-        <authorgroup>
-            <author>
-                <personname>
-                    <firstname>Jarod</firstname>
-                    <surname>Yv</surname>
-                </personname>
-                <email>yuxin@3g.net.cn</email>
-                <affiliation>
-                    <orgname>
-                        <link xlink:href="http://3g.cn">3g门户</link>
-                    </orgname>
-                    <orgdiv>GT2</orgdiv>
-                </affiliation>
-            </author>
-        </authorgroup>
-        <!-- 版本更改信息 -->
-        <revhistory>
-            <revision>
-                <revnumber>1.0</revnumber>
-                <date>2009-03-14</date>
-                <revdescription>
-                    <para>新建(传说中，今天是白色情人节?)</para>
-                </revdescription>
-            </revision>
-        </revhistory>
-        <!-- 法律声明 -->
-        <legalnotice>
-            <title>声明</title>
-            <itemizedlist>
-                <listitem>
-                    <para>本文档用于公司内部培训和交流使用，未经允许不得外传；</para>
-                </listitem>
-                <listitem>
-                    <para>本文档基于正在开发中的<code>ZincFish</code>0.9版本(codename:
-                            <emphasis>Fingerling</emphasis>)完成，目前<code>ZincFish</code>框架需求尚不稳定，在<code>ZincFish</code>
-                        1.0版本完成前，此文档会频繁更新，请及时更新最新文档</para>
-                </listitem>
-            </itemizedlist>
-        </legalnotice>
-    </info>
-    <sect1>
-        <title>什么是ZML</title>
-        <para> ZML是一组XML扩展标签规则，在<code>ZincFish</code>框架中主要用来定义UI。
-            <code>ZincFish</code>框架需要一个UI库作为显示前端，此UI库将根据具体需求由一系列的UI组件(widget)组成。
-                使用<code>ZincFish</code>框架，程序界面不再由Java代码或C代码来硬编码到程序内部，而是通过ZML定义在程序外部。
-                UI库中每一个UI组件(widget)都会对应一个zml标签，其所需属性会封装在zml标签的属性中。<code>ZincFish</code>框架中的ZML解析器从ZML文件中解析出UI组件类型和其属性，从而生成相应类型的UI组件。
-        </para>
-        <para>
-            从上面的介绍中我们可以了解到ZML具有如下特性：
-            <orderedlist>
-                <listitem>
-                    <para>ZML是XML，其遵循一切XML的规范；</para>
-                </listitem>
-                <listitem>
-                    <para>ZML中的标签与UI库中的UI组件(widget)是一一对应的；</para>
-                </listitem>
-                <listitem>
-                    <para>开发过程中，ZML中的标签和属性是被动跟随UI组件(widget)的变化而变化的，UI组件(widget)的任何变化可能导致ZML相应标签和属性的变化；</para>
-                </listitem>
-            </orderedlist>
-        </para>
-    </sect1>
-    <sect1>
-        <title>ZML文件的结构</title>
-        <para>
-            
-        </para>
-    </sect1>
-    
-    <sect1>
-        <title>script段详解</title>
-        <para>
-            
-        </para>
-    </sect1>
-    
-    <sect1>
-        <title>menu段详解</title>
-        <para>
-            
-        </para>
-    </sect1>
-    
-    <sect1>
-        <title>body段详解</title>
-        <para>
-            
-        </para>
-        <sect2>
-            <title>vlist标签</title>
-            <para></para>
-        </sect2>
-        
-        <sect2>
-            <title>hlist标签</title>
-            <para></para>
-        </sect2>
-        
-        <sect2>
-            <title>div标签</title>
-            <para></para>
-        </sect2>
-        
-        <sect2>
-            <title>button标签</title>
-            <para></para>
-        </sect2>
-        
-        <sect2>
-            <title>item标签</title>
-            <para></para>
-        </sect2>
-    </sect1>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+	version="5.0">
+	<info>
+		<title>ZML标签定义</title>
+		<!-- 作者信息 -->
+		<authorgroup>
+			<author>
+				<personname>
+					<firstname>Jarod</firstname>
+					<surname>Yv</surname>
+				</personname>
+				<email>yuxin@3g.net.cn</email>
+				<affiliation>
+					<orgname>
+						<link xlink:href="http://3g.cn">3g门户</link>
+					</orgname>
+					<orgdiv>GT2</orgdiv>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<!-- 版本更改信息 -->
+		<revhistory>
+			<revision>
+				<revnumber>1.0</revnumber>
+				<date>2009-03-14</date>
+				<revdescription>
+					<para>新建(传说中，今天是白色情人节?)</para>
+				</revdescription>
+			</revision>
+		</revhistory>
+		<!-- 法律声明 -->
+		<legalnotice>
+			<title>声明</title>
+			<itemizedlist>
+				<listitem>
+					<para>本文档用于公司内部培训和交流使用，未经允许不得外传；</para>
+				</listitem>
+				<listitem>
+					<para>
+						本文档基于正在开发中的
+						<code>ZincFish</code>
+						0.9版本(codename:
+						<emphasis>Fingerling</emphasis>
+						)完成，目前
+						<code>ZincFish</code>
+						框架需求尚不稳定，在
+						<code>ZincFish</code>
+						1.0版本完成前，此文档会频繁更新，请及时更新最新文档
+					</para>
+				</listitem>
+			</itemizedlist>
+		</legalnotice>
+	</info>
+	<sect1>
+		<title>什么是ZML</title>
+		<para>
+			ZML是一组XML扩展标签规则，在
+			<code>ZincFish</code>
+			框架中主要用来定义UI。
+			<code>ZincFish</code>
+			框架需要一个UI库作为显示前端，此UI库将根据具体需求由一系列的UI组件(widget)组成。
+			使用
+			<code>ZincFish</code>
+			框架，程序界面不再由Java代码或C代码来硬编码到程序内部，而是通过ZML定义在程序外部。
+			UI库中每一个UI组件(widget)都会对应一个zml标签，其所需属性会封装在zml标签的属性中。
+			<code>ZincFish</code>
+			框架中的ZML解析器从ZML文件中解析出UI组件类型和其属性，从而生成相应类型的UI组件。
+		</para>
+		<para>
+			从上面的介绍中我们可以了解到ZML具有如下特性：
+			<orderedlist>
+				<listitem>
+					<para>ZML是XML，其遵循一切XML的规范；</para>
+				</listitem>
+				<listitem>
+					<para>ZML中的标签与UI库中的UI组件(widget)是一一对应的；
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						开发过程中，ZML中的标签和属性是被动跟随UI组件(widget)的变化而变化的，UI组件(widget)的任何变化可能导致ZML相应标签和属性的变化；
+					</para>
+				</listitem>
+			</orderedlist>
+		</para>
+	</sect1>
+
+	<sect1>
+		<title>ZML文件的约定及公共属性</title>
+		<para>
+			一个ZML文件定义的是一个UI界面单元(unit)，你可以将其理解为一个浏览器页面。当有新的ZML文件下发下来时，新的ZML会被解析成新的UI界面，替换掉之前的界面。
+			当然实际应用的情况比单纯切换界面要复杂的多，我们更希望可以单纯更新数据从而实现界面的局部更新，即Ajax。要实现Ajax，就设计到对DOM的操作。为了给
+			<code>ZincFish</code>
+			提供一套统一而方便的DOM操作规则，我们需要事先做出一些约定并提供几个公共属性。
+		</para>
+		<sect2>
+			<title>约定</title>
+			<para>
+				<orderedlist>
+					<listitem>
+						<para>
+							任何界面定义标签都必须有
+							<emphasis>"id"</emphasis>
+							属性用于唯一标志此标签，因此同一ZML文件中"id"属性值不能重复。"id"属性非常重要，用于DOM操作中查找定位组件。
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							ZML的根标签统一为
+							<emphasis>&lt;unit&gt;</emphasis>,即代表此为一个界面单元(unit)。
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							&lt;unit&gt;标签也有的"id"属性，用于标示此界面单元属于哪个更大的功能模块。(ie.日记组件是一个大的功能模块，其里面含有日记列表、日记浏览。写日记等功能，每一个功能都需要一个不同的界面，这里的界面就是界面单元(unit)，我们会将其定义在一个ZML文件中，3个界面就需要3个ZML文件，但这样个界面属于同一个大的功能模块--日记模块，因此他们unit的id属性应当是相同的，都是"diary"。)
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							当有新的ZML下发下来时，需要根据"id"属性判断新组件与当前组件是否是同一个组件(比较两id是否相同)，如果相同则不需要生成新组件，直接用新数据更新当前对应的组件。反之，如果"id"属性不相同，则要生成新组件加入到相应位置或者整个替换掉当前界面。
+						</para>
+					</listitem>
+				</orderedlist>
+			</para>
+		</sect2>
+		<sect2>
+			<title>公共属性</title>
+			<para>
+				公共属性是指每个标签都支持的属性，除了上面提到的"id"属性外，我们还定义了一组通用事件接口。通用事件接口是一系列以"on"开头的属性，其属性值是一个ZincScript函数。目前支持的通用事件属性如下：
+				<glosslist>
+    				<glossentry>
+        				<glossterm>onclick</glossterm>
+        				<glossdef>
+             				<para>当组件被点击时触发，<code>zincfish</code>引擎会调用onclick指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+   				 	<glossentry>
+        				<glossterm>onfocus</glossterm>
+        				<glossdef>
+             				<para>当组件获得焦点时触发，<code>zincfish</code>引擎会调用onfocus指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+   				 	<glossentry>
+        				<glossterm>onlosefocus</glossterm>
+        				<glossdef>
+             				<para>当组件失去焦点时触发，<code>zincfish</code>引擎会调用onlosefocus指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+   				 	<glossentry>
+        				<glossterm>onchanged</glossterm>
+        				<glossdef>
+             				<para>当组件内容改变时触发，<code>zincfish</code>引擎会调用onchanged指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+   				 	<glossentry>
+        				<glossterm>onloaded</glossterm>
+        				<glossdef>
+             				<para>当组件加载到屏幕，显示出来时触发，<code>zincfish</code>引擎会调用onloaded指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+   				 	<glossentry>
+        				<glossterm>oninit</glossterm>
+        				<glossdef>
+             				<para>解析时，当组件生成后触发，<code>zincfish</code>引擎会调用oninit指定的函数。</para>
+        				</glossdef>
+   				 	</glossentry>
+				</glosslist>
+			</para>
+			<para>
+				<tip>
+					<title>提示</title>
+					<para>
+						<itemizedlist>
+							<listitem>
+								<para>onload事件一个ZML文件只能有一个，他代表整个ZML文件解析并装载完成后的动作，我们习惯将其放在&lt;body&gt;标签中；</para>
+							</listitem>
+							<listitem>
+								<para>oninit是一个前置时间，它不是生成后由用户操作出发的，而是解析生成组件时出发的，主要用于完成组件的一些属性的初始化工作。</para>
+							</listitem>
+						</itemizedlist>
+					</para>
+				</tip>
+			</para>
+			<para>
+				另外我们还定义了"x","y","w","h"4个排版属性，用于明确指示组件在屏幕中的位置及其尺寸。如果一个组件在ZML被指明了位置和尺寸，在其不受默认排版的影响，其位置和尺寸存此固定不变。
+			</para>
+		</sect2>
+	</sect1>
+
+	<sect1>
+		<title>ZML文件的结构</title>
+		<para>
+			一个ZML文件由3部分组成，分别是“script段”，“menu段”和“body段”。“script段”用于定义与此zml绑定的ZincScript脚本；“menu段”用于定义一个界面的菜单；而“body”是UI的主体，所有UI都在这部分加以定义，解析时会将其解析为DOM树。
+		</para>
+		<para>
+			这3部分中，只有“body段”是必须的，因为没有“body段”就没有DOM树，自然就没有了界面的更新。(除非你就是希望没有界面的更新，仅仅是载入其他ZincScript脚本或更改Menu。但是绝大多数的用例都是要求更新UI的。)
+		</para>
+		<para>
+			下面我们详细讲解这样部分的组织规则。上面提到过，“body段”是整个ZML的重心，因此我会将重点放在“body”段的讲解上，其他两部分相对容易，关键是领会精神。
+		</para>
+	</sect1>
+
+	<sect1>
+		<title>script段详解</title>
+		<para>script段指的是&lt;script&gt;标签部分，用于定义与此ZML绑定的ZincScript脚本。</para>
+		<para>script段有两种用法，一种是指定外部ZincScript脚本文件的路径，另一种是直接在&lt;script&gt;&lt;/script&gt;标签之间附上ZincScrip脚本代码。</para>
+		<sect2>
+			<title>指定路径形式</title>
+			<para>&lt;script&gt;标签提供了两个属性用于指定ZincScript脚本的路径，分别是"path"和"name"。"path"属性表示ZincScript脚本所在的路径，而"name"属性表示脚本文件的名字。二者拼接起来就是完整的路径。</para>
+			<para>
+				<example>
+	                <title>指定路径形式实例</title>
+	                <programlisting>
+	                	&lt;script path="/widgets/diary/" name="diary.zs" /&gt;
+	                </programlisting>
+	            </example>
+            </para>
+            <para>
+            	<note>
+            		<title>总结</title>
+            		<para>
+            		 <table>
+                        <title>"script段"属性列表</title>
+                        <tgroup cols="4">
+                            <colspec colnum="1" colname="1"/>
+                            <colspec colnum="2" colname="2"/>
+                            <colspec colnum="3" colname="3"/>
+                            <colspec colnum="4" colname="4"/>
+                            <thead>
+                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+                            </thead>
+                            <tbody>
+                            	<row><entry>path</entry><entry>ZincScript脚本所在的路径</entry><entry>字符串</entry><entry></entry></row>
+                            	<row><entry>name</entry><entry>ZincScript脚本的文件名</entry><entry>字符串</entry><entry></entry></row>
+                            </tbody>
+                        </tgroup>
+                      </table>
+            		</para>
+            	</note>
+            </para>
+		</sect2>
+		<sect2>
+			<title>附加代码形式</title>
+			<para>附加代码形式是将ZinScript脚本代码写在&lt;script&gt;&lt;/script&gt;之间。这种形式可以将一段ZincScript代码追加到当前脚本装载器中，但是这部分代码不会被缓存，当离开这个界面后，此段代码随即失效。</para>
+			<para>
+				<example>
+	                <title>附加代码形式实例</title>
+	                <programlisting>
+	                	&lt;script&gt;
+	                		def func
+	                			_zssprint("This is just a example!")
+	                		end
+	                	&lt;/script&gt;
+	                </programlisting>
+	            </example>
+            </para>
+		</sect2>
+	</sect1>
+
+	<sect1>
+		<title>menu段详解</title>
+		<para>menu段指的是&lt;menu&gt;标签部分，用于定义与此界面单元拥有的菜单项。</para>
+		<para>这里的菜单支持多级菜单，我们用&lt;menu&gt;表示菜单项容器，用&lt;mi&gt;表示菜单项。&lt;menu&gt;作为菜单容器，具有"text"属性用于显示菜单的文字，其中根&lt;menu&gt;可以没有"text"属性，但要有有"type"属性，用于标识整个菜单属于何种类型(左软键菜单、右软键菜单、弹出菜单)。而&lt;mi&gt;作为菜单项除了具有"text"属性外，还具有"code"和"onclick"属性。其中"code"表示菜单事件的代码，而"onclick"则定义了响应菜单点击的函数。</para>
+		<para>
+			<example>
+                <title>菜单实例</title>
+				<programlisting>
+	                &lt;menu type="0"&gt;
+	                     &lt;mi text="写日记" onclick="newDiary" /&gt;
+	                     &lt;mi text="草稿箱" onclick="draft" /&gt;
+	                     &lt;mi text="编辑" onclick="edit" /&gt;
+	                     &lt;menu text="添加"&gt;
+	                         &lt;mi text="添加照片" onclick="addpic" /&gt;
+	                         &lt;mi text="添加视频" onclick="addvideo" /&gt;
+	                         &lt;mi text="添加音频" onclick="addaudio" /&gt;
+	                     &lt;/menu&gt;
+	                     &lt;mi text="删除" onclick="delete" /&gt;
+	                     &lt;mi text="刷新" onclick="refresh" /&gt;
+	                 &lt;/menu&gt;
+	            </programlisting>
+            </example>
+		</para>
+		<para>
+			<note>
+				<title>总结</title>
+				<para>
+					 <table>
+                        <title>"menu段"属性列表</title>
+                        <tgroup cols="4">
+                            <colspec colnum="1" colname="1"/>
+                            <colspec colnum="2" colname="2"/>
+                            <colspec colnum="3" colname="3"/>
+                            <colspec colnum="4" colname="4"/>
+                            <thead>
+                            	<row><entry>属性名</entry><entry>描述</entry><entry>接受值类型</entry><entry>备注</entry></row>
+                            </thead>
+                            <tbody>
+                                <row><entry namest="1" nameend="4">&lt;menu&gt;</entry></row>
+                                <row><entry>text</entry><entry>菜单的显示文字</entry><entry>任意字符串</entry><entry>根菜单可以没有此属性</entry></row>
+                            	<row><entry>type</entry><entry>菜单的类型</entry><entry><itemizedlist><listitem><para>0--左软键菜单</para></listitem><listitem><para>1--右软键菜单</para></listitem><listitem><para>2--弹出菜单</para></listitem></itemizedlist></entry><entry>根菜单需要此属性，默认值为0</entry></row>
+                            	<row><entry namest="1" nameend="4">&lt;mi&gt;</entry></row>
+                            	<row><entry>text</entry><entry>菜单项的显示文字</entry><entry>任意字符串</entry><entry>此为必须属性</entry></row>
+                            	<row><entry>onclick</entry><entry>菜单项点击的相应函数</entry><entry>已有的合法的ZincScript函数名</entry><entry>此为必须选项</entry></row>
+                            	<row><entry>code</entry><entry>菜单项的代码</entry><entry>任意整形</entry><entry>此为可选属性</entry></row>
+                            </tbody>
+                        </tgroup>
+                    </table>
+				</para>
+			</note>
+		</para>
+	</sect1>
+
+	<sect1>
+		<title>body段详解</title>
+		<para>
+
+		</para>
+		<sect2>
+			<title>vlist标签</title>
+			<para></para>
+		</sect2>
+
+		<sect2>
+			<title>hlist标签</title>
+			<para></para>
+		</sect2>
+
+		<sect2>
+			<title>div标签</title>
+			<para></para>
+		</sect2>
+
+		<sect2>
+			<title>button标签</title>
+			<para></para>
+		</sect2>
+
+		<sect2>
+			<title>item标签</title>
+			<para></para>
+		</sect2>
+	</sect1>
 </article>
