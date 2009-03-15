@@ -2,7 +2,6 @@ package zincfish.zincwidget;
 
 import zincfish.zincdom.AbstractDOM;
 import zincfish.zincdom.ListItemDOM;
-
 import com.mediawoz.akebono.corefilter.CFMotion;
 import com.mediawoz.akebono.corerenderer.CRDisplay;
 import com.mediawoz.akebono.corerenderer.CRGraphics;
@@ -10,8 +9,6 @@ import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.coreservice.utils.CSDevice;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.filters.motion.FMLinear;
-import com.vodafone.io.RemoteControlData;
-
 import config.Config;
 import config.Resources;
 
@@ -33,7 +30,7 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 	/* 右脚注 */
 	private String rtail = null;
 
-	private boolean hasMore = false;
+	private boolean hasMore = true;
 
 	/* 列表弹出的motion */
 	private CFMotion motion = null;
@@ -209,7 +206,7 @@ public class SNSListItemComponent extends AbstractSNSComponent {
 		ltail2 = null;
 		rtail = null;
 		motion = null;
-		this.dom = null;
+		super.release();
 	}
 
 	public boolean keyPressed(int keyCode) {

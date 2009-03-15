@@ -5,12 +5,16 @@ import zincfish.zincdom.TextEditorDOM;
 
 import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.forms.lafs.simplegraph.FSGDirectTextBox;
+import com.mediawoz.akebono.ui.UComponent;
+
 import config.Config;
 import config.Resources;
 
-public class SNSTextEditorComponent extends AbstractSNSComponent {
+public class SNSTextEditorComponent extends AbstractSNSComponent implements
+		EComponentEventListener {
 	private static final int MARGIN = 4;
 	private static final int SPACE = 2;
 	private static final int PADDING = 6;
@@ -50,7 +54,7 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 		ld = Resources.getInstance().getTexteditor_ld();
 		rt = Resources.getInstance().getTexteditor_rt();
 		rd = Resources.getInstance().getTexteditor_rd();
-		iWidth = getContainingPanel().getWidth();
+		iWidth = 220;// getContainingPanel().getWidth();
 		int fieldY = MARGIN;
 		if (this.label != null) {
 			fieldY += Config.PLAIN_SMALL_FONT.getHeight();
@@ -65,6 +69,7 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 		textArea.setInputModeIndicatorTextColor(0x292929);
 		textArea.setInputModeIndicatorBgColor(0xECECEC, 0xC0DAB0);
 		textArea.enableTransparentBackground(true);
+		textArea.setComponentEventListener(this);
 		addComponent(textArea);
 		iHeight = fieldY + textArea.getHeight() + MARGIN + PADDING;
 		leftMarginImage = CRImage.createImage(10, textArea.getHeight()
@@ -88,7 +93,7 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 		rd = null;
 		leftMarginImage = null;
 		topMarginImage = null;
-		this.dom = null;
+		super.release();
 	}
 
 	public void setFocus(boolean isFocused) {
@@ -98,13 +103,7 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 	}
 
 	public boolean keyPressed(int keyCode) {
-		if (textArea.isBeingEdited()) {// 如果编辑框处于编辑状态，按键响应交由编辑框处理
-			return textArea.keyPressed(keyCode);
-		} else {// 非编辑状态
-			cel.componentEventFired(this,
-					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
-			return true;
-		}
+		return textArea.keyPressed(keyCode);
 	}
 
 	public boolean keyReleased(int keyCode) {
@@ -113,5 +112,10 @@ public class SNSTextEditorComponent extends AbstractSNSComponent {
 
 	public boolean keyRepeated(int keyCode) {
 		return false;
+	}
+
+	public void componentEventFired(UComponent c, int eventId, Object paramObj,
+			int param) {
+		System.out.println("texteditor = " + eventId);
 	}
 }

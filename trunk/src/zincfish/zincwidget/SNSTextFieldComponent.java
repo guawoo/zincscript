@@ -5,8 +5,11 @@ import zincfish.zincdom.TextFieldDOM;
 
 import com.mediawoz.akebono.corerenderer.CRGraphics;
 import com.mediawoz.akebono.corerenderer.CRImage;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.forms.lafs.simplegraph.FSGDirectTextBox;
+import com.mediawoz.akebono.ui.UComponent;
+
 import config.Config;
 import config.Resources;
 
@@ -44,7 +47,8 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 		TextFieldDOM textFieldDOM = (TextFieldDOM) this.dom;
 		this.label = textFieldDOM.label;
 		int fieldY = MARGIN;
-		iWidth = getContainingPanel().getWidth();
+		iWidth = 220;// getContainingPanel().getWidth();
+		System.out.println("iWidth = " + iWidth);
 		leftImage = Resources.getInstance().getTextfield_left();
 		rightImage = Resources.getInstance().getTextfield_right();
 		if (this.label != null) {
@@ -55,7 +59,7 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 		textField.getPreferredHeight();
 		textField.iX = MARGIN + 10;
 		textField.iY = fieldY + 2;
-		textField.setBgColor(-1);
+		textField.setBgColor(0xffffff);
 		// textField.setBorder(0, 0x707070);
 		textField.setInputModeIndicatorTextColor(0x292929);
 		textField.setInputModeIndicatorBgColor(0xECECEC, 0xC0DAB0);
@@ -79,16 +83,19 @@ public class SNSTextFieldComponent extends AbstractSNSComponent {
 		label = null;
 		leftImage = null;
 		rightImage = null;
-		this.dom = null;
+		super.release();
 	}
 
 	public boolean keyPressed(int keyCode) {
-		if (textField.isBeingEdited()) {// 如果编辑框处于编辑状态，按键响应交由编辑框处理
-			return textField.keyPressed(keyCode);
-		} else {// 非编辑状态
+		int keyAction = CSDevice.getGameAction(keyCode);
+		switch (keyAction) {
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_UP:
 			cel.componentEventFired(this,
 					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
 			return true;
+		default:
+			return textField.keyPressed(keyCode);
 		}
 	}
 

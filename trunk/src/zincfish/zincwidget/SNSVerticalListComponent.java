@@ -79,7 +79,7 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 			c.release();
 			c = null;
 		}
-		this.dom = null;
+		super.release();
 		System.gc();
 	}
 
@@ -89,20 +89,33 @@ public class SNSVerticalListComponent extends AbstractSNSComponent {
 		case CSDevice.KEY_DOWN:
 		case CSDevice.KEY_RIGHT:
 			index++;
+			if (index >= getComponentCount()) {
+				index = getComponentCount() - 1;
+				cel.componentEventFired(this,
+						EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			} else {
+				cel
+						.componentEventFired(this,
+								EComponentEventListener.EVENT_SEL_CHANGING,
+								null, index);
+			}
 			break;
 		case CSDevice.KEY_UP:
 		case CSDevice.KEY_LEFT:
 			index--;
+			if (index < 0) {
+				index = 0;
+				cel.componentEventFired(this,
+						EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			} else {
+				cel
+						.componentEventFired(this,
+								EComponentEventListener.EVENT_SEL_CHANGING,
+								null, index);
+			}
 			break;
 		default:
 			return false;
-		}
-		if (index < 0 || index >= getComponentCount()) {
-			cel.componentEventFired(this,
-					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
-		} else {
-			cel.componentEventFired(this,
-					EComponentEventListener.EVENT_SEL_CHANGING, null, index);
 		}
 		return true;
 	}

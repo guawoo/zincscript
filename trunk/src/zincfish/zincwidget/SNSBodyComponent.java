@@ -3,6 +3,8 @@ package zincfish.zincwidget;
 import zincfish.zincdom.AbstractDOM;
 
 import com.mediawoz.akebono.corerenderer.CRDisplay;
+import com.mediawoz.akebono.coreservice.utils.CSDevice;
+import com.mediawoz.akebono.events.EComponentEventListener;
 
 public class SNSBodyComponent extends AbstractSNSComponent {
 
@@ -18,7 +20,6 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 		iX = startX;
 		iY = startY;
 		iWidth = CRDisplay.getWidth();
-		// iWidth = getContainingScreen().getWidth();
 		int subX = 0, subY = 0;
 		int lineHeight = 0;
 		for (int i = 0; i < getComponentCount(); i++) {
@@ -27,7 +28,7 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 			int tmpX = component.iX + component.getWidth();
 			int tmpY = component.iY;
 			if (tmpX > iWidth) {
-				component.iX = 0;
+				tmpX = component.iX = 0;
 				component.iY += lineHeight;
 				tmpY = component.iY;
 				lineHeight = component.getHeight();
@@ -43,14 +44,6 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 		iHeight = CRDisplay.getHeight();
 	}
 
-	public int getNextX() {
-		return 0;
-	}
-
-	public int getNextY() {
-		return iY + iHeight;
-	}
-
 	public void setMotion(int startX, int startY) {
 		// TODO Auto-generated method stub
 
@@ -62,13 +55,45 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 			c.release();
 			c = null;
 		}
-		this.dom = null;
+		super.release();
 		System.gc();
 	}
 
-	public boolean keyPressed(int keycode) {
-		
-		return false;
+	public boolean keyPressed(int keyCode) {
+		int keyAction = CSDevice.getGameAction(keyCode);
+		switch (keyAction) {
+		case CSDevice.KEY_DOWN:
+		case CSDevice.KEY_RIGHT:
+			index++;
+			if (index >= getComponentCount()) {
+				index = getComponentCount() - 1;
+				cel.componentEventFired(this,
+						EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			} else {
+				cel
+						.componentEventFired(this,
+								EComponentEventListener.EVENT_SEL_CHANGING,
+								null, index);
+			}
+			break;
+		case CSDevice.KEY_UP:
+		case CSDevice.KEY_LEFT:
+			index--;
+			if (index < 0) {
+				index = 0;
+				cel.componentEventFired(this,
+						EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+			} else {
+				cel
+						.componentEventFired(this,
+								EComponentEventListener.EVENT_SEL_CHANGING,
+								null, index);
+			}
+			break;
+		default:
+			return false;
+		}
+		return true;
 	}
 
 	public boolean keyReleased(int keycode) {

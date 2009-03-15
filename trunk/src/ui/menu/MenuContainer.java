@@ -107,6 +107,10 @@ public class MenuContainer extends UPanel implements IKeyInputHandler {
 			isOpened = false;
 			isAction = true;
 			closeAll();
+		} else if (iKeyCode == CSDevice.NK_RSOFT && (!isOpened)) {
+			cel.componentEventFired(this,
+					2,
+					null, 0);
 		} else if (isOpened) {
 			isAction = true;
 			if (iKeyCode == CSDevice.NK_LSOFT) {
@@ -160,8 +164,10 @@ public class MenuContainer extends UPanel implements IKeyInputHandler {
 								.getOperable()) { // �ɲ���
 							closeAll();
 							isOpened = false;
-							cel.componentEventFired(this, CSDevice.KEY_FIRE,
-									getCurSelecItem().getCmdString(), getCurSelecItem().getCmdCode()); // �׳�ǰѡ�в˵���Ĺ�����
+							cel.componentEventFired(this,
+									EComponentEventListener.EVENT_SEL_CLICKED,
+									getCurSelecItem().getCmdString(),
+									getCurSelecItem().getCmdCode()); // �׳�ǰѡ�в˵���Ĺ�����
 						}
 					}
 					break;

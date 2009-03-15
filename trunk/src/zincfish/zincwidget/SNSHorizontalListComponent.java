@@ -45,7 +45,7 @@ public class SNSHorizontalListComponent extends AbstractSNSComponent {
 			c.release();
 			c = null;
 		}
-		this.dom = null;
+		super.release();
 		System.gc();
 	}
 

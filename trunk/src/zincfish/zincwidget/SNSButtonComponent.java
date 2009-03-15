@@ -91,7 +91,7 @@ public class SNSButtonComponent extends AbstractSNSComponent {
 		bgImageHighLight = null;
 		text = null;
 		motion = null;
-		this.dom = null;
+		super.release();
 	}
 
 	public boolean keyPressed(int keyCode) {

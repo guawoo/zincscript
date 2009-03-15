@@ -131,7 +131,10 @@ public final class UnitBuffer {
 	}
 
 	public void prev() {
-
+		if (index > 0) {
+			index--;
+			domChangeListener.updateView();
+		}
 	}
 
 	public void next() {

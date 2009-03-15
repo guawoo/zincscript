@@ -32,7 +32,7 @@ public abstract class AbstractSNSComponent extends UPanel implements
 	 */
 	protected boolean canFocus = true;
 
-	protected int index = 0;
+	protected int index = -1;
 
 	public int getIndex() {
 		return index;
@@ -93,48 +93,54 @@ public abstract class AbstractSNSComponent extends UPanel implements
 	}
 
 	public boolean hasChildren() {
+		if (dom == null)
+			System.out.println("DOM is NULL");
 		return (dom.children != null && dom.children.size() > 0);
 	}
 
-	private void switchFocus(int ikeycode) {
-		AbstractSNSComponent currentComonent = (AbstractSNSComponent) componentAt(index);
-		int key = CSDevice.getGameAction(ikeycode);
-		switch (key) {
-		case CSDevice.KEY_DOWN:
-			index++;
-			if (index >= getComponentCount()) {
-				--index;
-				throw new IndexOutOfBoundsException();
-			}
-			break;
-		case CSDevice.KEY_UP:
-			index--;
-			if (index < 0) {
-				++index;
-				throw new IndexOutOfBoundsException();
-			}
-			break;
-		}
-		if (currentComonent.hasChildren()) {
-			currentComonent.setFocus(false);
-			if (currentComonent.hasChildren()) {
-				currentComonent = (AbstractSNSComponent) currentComonent
-						.componentAt(currentComonent.index);
-			}
-		}
-		currentComonent.setFocus(false);
-		currentComonent = (AbstractSNSComponent) componentAt(index);
-		if (currentComonent.hasChildren()) {
-			currentComonent = (AbstractSNSComponent) currentComonent
-					.componentAt(currentComonent.index);
-		}
-		currentComonent.setFocus(true);
-		currentComonent = null;
-	}
+	// private void switchFocus(int ikeycode) {
+	// AbstractSNSComponent currentComonent = (AbstractSNSComponent)
+	// componentAt(index);
+	// int key = CSDevice.getGameAction(ikeycode);
+	// switch (key) {
+	// case CSDevice.KEY_DOWN:
+	// index++;
+	// if (index >= getComponentCount()) {
+	// --index;
+	// throw new IndexOutOfBoundsException();
+	// }
+	// break;
+	// case CSDevice.KEY_UP:
+	// index--;
+	// if (index < 0) {
+	// ++index;
+	// throw new IndexOutOfBoundsException();
+	// }
+	// break;
+	// }
+	// if (currentComonent.hasChildren()) {
+	// currentComonent.setFocus(false);
+	// if (currentComonent.hasChildren()) {
+	// currentComonent = (AbstractSNSComponent) currentComonent
+	// .componentAt(currentComonent.index);
+	// }
+	// }
+	// currentComonent.setFocus(false);
+	// currentComonent = (AbstractSNSComponent) componentAt(index);
+	// if (currentComonent.hasChildren()) {
+	// currentComonent = (AbstractSNSComponent) currentComonent
+	// .componentAt(currentComonent.index);
+	// }
+	// currentComonent.setFocus(true);
+	// currentComonent = null;
+	// }
 
-	public String toString() {
-		return dom.id;
-	}
+	// public String toString() {
+	// return dom.id;
+	// }
 
-	public abstract void release();
+	public void release(){
+		this.dom.setComponent(null);
+		this.dom = null;
+	}
 }

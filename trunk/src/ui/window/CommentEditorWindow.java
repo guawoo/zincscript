@@ -87,12 +87,9 @@ public class CommentEditorWindow extends ULayer {
 		if (uscreen == null || isDismissed() == false) {
 			return;
 		}
-		setEntryEffect(ULayer.ENTRY_FLY, new int[] {
-				(uscreen.getWidth() - getWidth()) / 2,
-				(uscreen.getHeight() - getHeight()) / 2, ULayer.FLY_LEFT });
-		setExitEffect(ULayer.EXIT_FLY, new int[] {
-				(uscreen.getWidth() - getWidth()) / 2,
-				(uscreen.getHeight() - getHeight()) / 2, ULayer.FLY_RIGHT });
+		setEntryEffect(ULayer.ENTRY_FADE,
+				new int[] { 0, 255, ULayer.ENTRY_FADE });
+		setExitEffect(ULayer.EXIT_FADE, new int[] { 255, 0, ULayer.EXIT_FADE });
 		show(uscreen, false, false);
 		index = 0;
 		changeEditStatus();

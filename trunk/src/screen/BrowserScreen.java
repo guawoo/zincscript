@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import ui.menu.MCascadeMenuItem;
 import ui.menu.MenuContainer;
+import ui.window.CommentEditorWindow;
 import zincfish.zincdom.AbstractDOM;
 import zincfish.zincdom.MenuItemDOM;
 import zincfish.zincparser.zmlparser.ZMLParser;
@@ -11,13 +12,13 @@ import zincfish.zincscript.ZSException;
 import zincfish.zincscript.ZincScript;
 import zincfish.zincwidget.*;
 import com.mediawoz.akebono.components.CSimpleImageBox;
+import com.mediawoz.akebono.corerenderer.CRDisplay;
 import com.mediawoz.akebono.corerenderer.CRImage;
 import com.mediawoz.akebono.events.EComponentEventListener;
 import com.mediawoz.akebono.ui.UComponent;
 import com.mediawoz.akebono.ui.UScreen;
-import com.sun.perseus.model.Switch;
-
 import config.Config;
+import config.Resources;
 import data.IDOMChangeListener;
 import data.UnitBuffer;
 import data.Unit;
@@ -161,6 +162,10 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 	}
 
 	public void keyPressed(int iKeyCode) {
+		if (window != null) {
+			window.keyPress(iKeyCode);
+			return;
+		}
 		if (menu.keyPressed(iKeyCode)) {
 			return;
 		}
@@ -172,6 +177,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 
 	public void componentEventFired(UComponent component, int eventID,
 			Object paramObj, int param) {
+		System.out.println("eventID = " + eventID);
 		switch (eventID) {
 		case EVENT_SEL_CLICKED:
 		case 0:
@@ -179,11 +185,18 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			String func = (String) paramObj;
 			if (func != null) {
 				try {
-					zinc.callFunction(func);
+					if (func.indexOf('(') == -1) {
+						zinc.callFunction(func, null);
+					} else {
+						zinc.callFunction(func);
+					}
 				} catch (ZSException e) {
 					e.printStackTrace();
 				}
 			}
+			break;
+		case 2:
+			buffer.prev();
 			break;
 		case EVENT_SEL_EDGE:
 			AbstractSNSComponent father = (AbstractSNSComponent) component
@@ -197,46 +210,50 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 			AbstractSNSComponent c = (AbstractSNSComponent) component;
 			c = c.getCurrentChild();
 			if (c != null) {
+				currentComponent.setFocus(false);
 				currentComponent = c;
+				currentComponent.setFocus(true);
 			}
 			c = null;
 			break;
 		default:
 			break;
 		}
-		if (component instanceof AbstractSNSComponent) {
-			AbstractSNSComponent com = (AbstractSNSComponent) component;
-			if (eventID == EVENT_SEL_CLICKED) {
-				String onclick = com.getDom().onClick;
-				System.out.println("onclick = " + onclick);
-				if (onclick != null) {
-					try {
-						zinc.callFunction(onclick);
-					} catch (ZSException e) {
-						e.printStackTrace();
-					}
-				}
-				onclick = null;
-			}
-			com = null;
-		} else if (component instanceof MenuContainer) {
-			String onclick = (String) paramObj;
-			System.out.println("menu onclick = " + onclick);
-			if (onclick != null) {
-				try {
-					zinc.callFunction(onclick, null);
-				} catch (ZSException e) {
-					e.printStackTrace();
-				}
-			}
-			onclick = null;
-		}
+		// if (component instanceof AbstractSNSComponent) {
+		// AbstractSNSComponent com = (AbstractSNSComponent) component;
+		// if (eventID == EVENT_SEL_CLICKED) {
+		// String onclick = com.getDom().onClick;
+		// System.out.println("onclick = " + onclick);
+		// if (onclick != null) {
+		// try {
+		// zinc.callFunction(onclick);
+		// } catch (ZSException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// onclick = null;
+		// }
+		// com = null;
+		// } else if (component instanceof MenuContainer) {
+		// String onclick = (String) paramObj;
+		// System.out.println("menu onclick = " + onclick);
+		// if (onclick != null) {
+		// try {
+		// zinc.callFunction(onclick, null);
+		// } catch (ZSException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// onclick = null;
+		// }
 	}
 
 	public void updateView() {
 		Unit unit = buffer.getCurrentBuffer();
 		AbstractDOM root = unit.getDomTree();
+		System.out.println("update = " + root.toString());
 		SNSBodyComponent newBody = (SNSBodyComponent) DOMTree2ViewTree(root);
+		System.out.println("I Like new Tree");
 		if (this.body != newBody) {
 			if (this.body != null) {
 				this.removeComponent(this.body);
@@ -258,9 +275,9 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 		}
 		this.addComponent(menu);
 		// 响应onload
-		if (unit.getOnLoad() != null) {
+		String onload = unit.getOnLoad();
+		if (onload != null) {
 			try {
-				String onload = unit.getOnLoad();
 				if (onload.indexOf('(') == -1) {
 					zinc.callFunction(onload, null);
 				} else {
@@ -271,6 +288,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 				e.printStackTrace();
 			}
 		}
+		onload = null;
 		unit = null;
 	}
 
@@ -280,7 +298,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 				AbstractSNSComponent c = (AbstractSNSComponent) root
 						.componentAt(i);
 				if (findFirstFocus(c)) {
-					c.setIndex(i);
+					root.setIndex(i);
 					return true;
 				}
 				c = null;
@@ -304,5 +322,19 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 
 	public ZMLParser getParse() {
 		return parse;
+	}
+
+	private CommentEditorWindow window = null;
+
+	public void showWindow() {
+		CRImage[] a = { Resources.getInstance().getListTail1(),
+				Resources.getInstance().getListTail2() };
+		CRImage[] b = { Resources.getInstance().getListTail2(),
+				Resources.getInstance().getListTail1() };
+		int[] c = { 0, 1 };
+		window = new CommentEditorWindow(200, 300, a, b, c);
+		window.iX = (CRDisplay.getWidth() - 200) / 2;
+		window.iY = (CRDisplay.getHeight() - 300) / 2;
+		window.showEditDialog(this);
 	}
 }

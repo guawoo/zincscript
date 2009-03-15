@@ -42,7 +42,7 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		RichTextViewerDOM richTextViewerDOM = (RichTextViewerDOM) this.dom;
 		Callback callback = new RichTextViewerCallback();
 		iWidth = getContainingPanel().getWidth();
-		iHeight = 300;
+		// iHeight = 300;
 		richTextViewer = new FSGRichTextViewer(1, iWidth, iHeight, callback);
 		// richTextViewer.setBgColor(-1);
 		addComponent(richTextViewer);
@@ -50,33 +50,34 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		if (richTextViewerDOM.content != null
 				&& richTextViewerDOM.content.size() > 0) {
 			int imageIndex = 0;
-			for (int i = 0; i < richTextViewerDOM.content.size(); i++) {
+			for (int i = 0; i < 1; i++) {
 				AbstractDOM child = (AbstractDOM) richTextViewerDOM.content
 						.get(i);
-				System.out.println("content = " + child.toString());
 				if (child.type == AbstractDOM.TYPE_PLAIN_TEXT) {
 					PlainTextDOM plainTextDOM = (PlainTextDOM) child;
-					if (fontList == null || colorList == null
-							|| converageColorFontList == null)
-						generateFont(plainTextDOM.text);
-					System.out.println(plainTextDOM.text);
+					generateFont(plainTextDOM.text);
+					System.out.println("text = " + plainTextDOM.text);
 					richTextViewer.appendText(plainTextDOM.text, fontList,
 							converageColorFontList, colorList,
 							converageColorFontList);
-					System.out.println("ADD a Text");
+					System.out.println("text over");
 					plainTextDOM = null;
 				} else if (child.type == AbstractDOM.TYPE_IMAGE) {
-					System.out.println("ADD a Image");
 					ImageDOM imageDOM = (ImageDOM) child;
 					richTextViewer.appendImage(imageIndex, 0, 0, 0, -1);
 					imageIndex++;
 					imageDOM = null;
 				}
 			}
+		} else {
+			System.out.println("defalt");
+			// generateFont("正在加载内容请稍候");
+			// richTextViewer.appendText("正在加载内容请稍候", fontList,
+			// converageColorFontList, colorList, converageColorFontList);
+			// System.out.println("OK");
 		}
-		System.out.println("ADD Content OK");
-		// iHeight = richTextViewer.getContentTotalHeight();
-		// richTextViewer.setSize(iWidth, iHeight);
+		iHeight = richTextViewer.getContentTotalHeight();
+		richTextViewer.setSize(iWidth, iHeight);
 		// System.out.println("iHeight = " + iHeight);
 	}
 
@@ -130,7 +131,7 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 		fontList = null;
 		converageColorFontList = null;
 		colorList = null;
-		this.dom = null;
+		super.release();
 	}
 
 	public boolean keyPressed(int keyCode) {

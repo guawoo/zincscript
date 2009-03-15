@@ -17,6 +17,8 @@ public class NetLib extends AbstactLib {
 	private static final byte SEND_CODE = 1;
 	private static final String COPY = "_zsnCopy";
 	private static final byte COPY_CODE = 2;
+	private static final String SHOW_WINDOW = "_zsnShowWindow";
+	private static final byte SHOW_WINDOW_CODE = 3;
 	/**
 	 * 所有库都采用单例模式，确保内存中已有一份库的实例
 	 */
@@ -41,6 +43,9 @@ public class NetLib extends AbstactLib {
 			case COPY_CODE:
 				_zsnCopy(params);
 				return null;
+			case SHOW_WINDOW_CODE:
+				_zsnShowWindow(params);
+				return null;
 			}
 			return null;
 		} else {
@@ -53,6 +58,7 @@ public class NetLib extends AbstactLib {
 			functionMap = new Hashtable(FUNCTION_NUM);
 		functionMap.put(SEND, new Byte(SEND_CODE));
 		functionMap.put(COPY, new Byte(COPY_CODE));
+		functionMap.put(SHOW_WINDOW, new Byte(SHOW_WINDOW_CODE));
 	}
 
 	private void _zsnSend(ArrayList params) {
@@ -105,10 +111,16 @@ public class NetLib extends AbstactLib {
 			tarList.ltail1 = srcList.ltail1;
 			tarList.ltail2 = srcList.ltail2;
 			tarList.imageScr = srcList.imageScr;
+			tarList.imageScr = "http://";
+			target.isAvailable = false;
 			srcList = null;
 			target = null;
 		}
 		resouce = null;
 		target = null;
+	}
+	
+	private void _zsnShowWindow(ArrayList params){
+		BrowserScreen.getInstance().showWindow();
 	}
 }

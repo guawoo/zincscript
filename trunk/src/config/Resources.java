@@ -134,7 +134,7 @@ public final class Resources {
 		if (emotion_faces == null)
 			emotion_faces = new CRImage[10];
 		for (int i = 0; i < emotion_faces.length; i++)
-			emotion_faces[i] = CRImage.loadFromResource("/img/face" + i
+			emotion_faces[i] = CRImage.loadFromResource("/img/face/" + i
 					+ ".png");
 		return emotion_faces;
 	}
