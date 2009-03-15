@@ -17,9 +17,7 @@
 	</menu>
 
 	<body id="diary" onload="getDiaryList">
-
 		<item src="http" id="mypanel" content="于鑫的日记" ltail1="2" ctype="1" />
-
-		<list id="diarylist" />
+		<vlist id="diarylist" />
 	</body>
 </unit>

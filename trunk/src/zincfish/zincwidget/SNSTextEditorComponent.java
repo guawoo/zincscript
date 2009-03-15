@@ -103,7 +103,13 @@ public class SNSTextEditorComponent extends AbstractSNSComponent implements
 	}
 
 	public boolean keyPressed(int keyCode) {
-		return textArea.keyPressed(keyCode);
+		boolean b = false;
+		b = textArea.keyPressed(keyCode);
+		if (!b) {
+			cel.componentEventFired(this,
+					EComponentEventListener.EVENT_SEL_EDGE, null, keyCode);
+		}
+		return true;
 	}
 
 	public boolean keyReleased(int keyCode) {

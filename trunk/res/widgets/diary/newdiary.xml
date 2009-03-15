@@ -2,7 +2,6 @@
 <unit>
 	<menu>
 		<mi text="回复" onclick="newDiary" />
-		<mi text="删除" onclick="draft" />
 		<mi text="编辑" onclick="edit" />
 	</menu>
 	<body id="editor">
