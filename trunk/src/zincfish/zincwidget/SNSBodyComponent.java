@@ -25,20 +25,17 @@ public class SNSBodyComponent extends AbstractSNSComponent {
 		for (int i = 0; i < getComponentCount(); i++) {
 			AbstractSNSComponent component = (AbstractSNSComponent) componentAt(i);
 			component.doLayout(subX, subY);
-			int tmpX = component.iX + component.getWidth();
-			int tmpY = component.iY;
-			if (tmpX > iWidth) {
-				tmpX = component.iX = 0;
-				component.iY += lineHeight;
-				tmpY = component.iY;
+			if (component.iX + component.getWidth() > iX + iWidth) {
+				component.doLayout(0, component.iY + lineHeight);
 				lineHeight = component.getHeight();
 			}
-			if (tmpY == subY) {// 同一行
+			if (component.iY == subY)
 				lineHeight = lineHeight < component.getHeight() ? component
 						.getHeight() : lineHeight;
-			}
-			subX = tmpX;
-			subY = tmpY;
+			else
+				lineHeight = component.getHeight();
+			subX = component.iX + component.getWidth();
+			subY = component.iY;
 			component = null;
 		}
 		iHeight = CRDisplay.getHeight();

@@ -251,9 +251,7 @@ public class BrowserScreen extends UScreen implements EComponentEventListener,
 	public void updateView() {
 		Unit unit = buffer.getCurrentBuffer();
 		AbstractDOM root = unit.getDomTree();
-		System.out.println("update = " + root.toString());
 		SNSBodyComponent newBody = (SNSBodyComponent) DOMTree2ViewTree(root);
-		System.out.println("I Like new Tree");
 		if (this.body != newBody) {
 			if (this.body != null) {
 				this.removeComponent(this.body);

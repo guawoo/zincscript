@@ -33,7 +33,6 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 	}
 
 	protected void drawCurrentFrame(CRGraphics g) {
-		System.out.println("Paint");
 		richTextViewer.paintCurrentFrame(g, 0, 0);
 	}
 
@@ -56,11 +55,9 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 				if (child.type == AbstractDOM.TYPE_PLAIN_TEXT) {
 					PlainTextDOM plainTextDOM = (PlainTextDOM) child;
 					generateFont(plainTextDOM.text);
-					System.out.println("text = " + plainTextDOM.text);
 					richTextViewer.appendText(plainTextDOM.text, fontList,
 							converageColorFontList, colorList,
 							converageColorFontList);
-					System.out.println("text over");
 					plainTextDOM = null;
 				} else if (child.type == AbstractDOM.TYPE_IMAGE) {
 					ImageDOM imageDOM = (ImageDOM) child;
@@ -70,11 +67,11 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 				}
 			}
 		} else {
-			System.out.println("defalt");
-			// generateFont("正在加载内容请稍候");
-			// richTextViewer.appendText("正在加载内容请稍候", fontList,
+			// generateFont("正在加载内容, 请稍候...");
+			// System.out.println("appent text");
+			// richTextViewer.appendText("正在加载内容,请稍候...", fontList,
 			// converageColorFontList, colorList, converageColorFontList);
-			// System.out.println("OK");
+			// System.out.println("appent text OK");
 		}
 		iHeight = richTextViewer.getContentTotalHeight();
 		richTextViewer.setSize(iWidth, iHeight);
@@ -83,13 +80,16 @@ public class SNSRichTextViewerComponent extends AbstractSNSComponent {
 
 	private void generateFont(String textStr) {
 		int[] converage = { 0, textStr.length() };
+		converageColorFontList = null;
 		converageColorFontList = new CSList();
 		converageColorFontList.addElement(converage);
 		converage = null;
 		int[] color = { 0x292929 };
+		colorList = null;
 		colorList = new CSList();
 		colorList.addElement(color);
 		color = null;
+		fontList = null;
 		fontList = new CSList();
 		fontList.addElement(Config.PLAIN_SMALL_FONT);
 	}
