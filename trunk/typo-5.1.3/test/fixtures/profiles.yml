@@ -1,0 +1,22 @@
+admin:
+  label: admin
+  nicename: Typo administrator
+  modules:
+  - :dashboard
+  - :write
+  - :content
+  - :feedback
+  - :themes
+  - :sidebar
+  - :users
+  - :settings
+
+publisher:
+  label: publisher
+  nicename: Blog publisher
+  modules:
+  - :users
+
+contributor:
+  label: contributor
+  nicename: Contributor

@@ -1,0 +1,17 @@
+<% content_for('tasks') do %>
+<%= subtab _("Typo documentation"), "", "http://typosphere.org/main_page" %>
+<% end %> 
+
+<hr />
+
+<%= render_partial "welcome" %>
+<%= render_partial "overview" %>
+
+<hr />
+
+<%= render_partial "sysinfo" %>
+<%= render_partial "comments" %>
+<%= render_partial "posts" %>
+<%= render_partial "popular" %>
+
+<hr />
