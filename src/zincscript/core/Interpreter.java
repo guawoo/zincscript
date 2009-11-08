@@ -924,7 +924,7 @@ public class Interpreter {
 					if (parser.type == Syntax.KEYWORD_IF_TYPE
 							|| parser.type == Syntax.KEYWORD_WHILE_TYPE)
 						endNum++;
-					else if (parser.type != Syntax.KEYWORD_END_TYPE) {
+					else if (parser.type == Syntax.KEYWORD_END_TYPE) {
 						endNum--;
 						if (endNum < 0)
 							break;
