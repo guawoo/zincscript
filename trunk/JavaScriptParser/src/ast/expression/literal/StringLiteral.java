@@ -1,0 +1,42 @@
+package ast.expression.literal;
+
+import interpreter.AbstractInterpreter;
+import parser.ParserException;
+import ast.expression.AbstractExpression;
+
+/**
+ * <code>StringLiteral</code>
+ * 
+ * @author Jarod Yv
+ */
+public class StringLiteral extends AbstractLiteral {
+	public String string;
+
+	public StringLiteral(String string) {
+		this.string = string;
+	}
+
+	public boolean equals(Object object) {
+		if (object == null) {
+			return false;
+		}
+
+		if (this.getClass() != object.getClass()) {
+			return false;
+		}
+
+		StringLiteral other = (StringLiteral) object;
+
+		return this.string.equals(other.string);
+	}
+
+	public int hashCode() {
+		return string.hashCode();
+	}
+
+	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+			throws ParserException {
+		return analyzer.interpret(this);
+	}
+
+}
