@@ -24,16 +24,16 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 	private boolean hasFunctionLiteral = false;
 
 	public Program interpret(Program program) throws ParserException {
-		ArrayList oldFunctionVector = functionList;
+		ArrayList oldFunctionList = functionList;
 
 		functionList = new ArrayList();
 
-		program.functions = visitStatementArray(program.functions);
-		program.statements = visitStatementArray(program.statements);
+		program.statements = interpretStatementArray(program.statements);
 
 		program.functions = Util.listToStatementArray(functionList);
 
-		functionList = oldFunctionVector;
+		functionList = oldFunctionList;
+		oldFunctionList = null;
 
 		return program;
 	}
@@ -41,39 +41,39 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 	public AbstractStatement interpret(
 			FunctionDeclarationStatement functionDeclarationStatement)
 			throws ParserException {
-		functionDeclarationStatement.function = (FunctionLiteral) visitExpression(functionDeclarationStatement.function);
+		functionDeclarationStatement.function = (FunctionLiteral) interpretExpression(functionDeclarationStatement.function);
 		return functionDeclarationStatement;
 	}
 
 	public AbstractStatement interpret(BlockStatement blockStatement)
 			throws ParserException {
-		blockStatement.statements = visitStatementArray(blockStatement.statements);
+		blockStatement.statements = interpretStatementArray(blockStatement.statements);
 		return blockStatement;
 	}
 
 	public AbstractStatement interpret(BreakStatement breakStatement)
 			throws ParserException {
-		breakStatement.identifier = visitIdentifier(breakStatement.identifier);
+		breakStatement.identifier = interpreteIdentifier(breakStatement.identifier);
 		return breakStatement;
 	}
 
 	public AbstractStatement interpret(CaseStatement caseStatement)
 			throws ParserException {
-		caseStatement.expression = visitExpression(caseStatement.expression);
-		caseStatement.statements = visitStatementArray(caseStatement.statements);
+		caseStatement.expression = interpretExpression(caseStatement.expression);
+		caseStatement.statements = interpretStatementArray(caseStatement.statements);
 		return caseStatement;
 	}
 
 	public AbstractStatement interpret(ContinueStatement continueStatement)
 			throws ParserException {
-		continueStatement.identifier = visitIdentifier(continueStatement.identifier);
+		continueStatement.identifier = interpreteIdentifier(continueStatement.identifier);
 		return continueStatement;
 	}
 
 	public AbstractStatement interpret(DoStatement doStatement)
 			throws ParserException {
-		doStatement.statement = visitStatement(doStatement.statement);
-		doStatement.expression = visitExpression(doStatement.expression);
+		doStatement.statement = interpretStatement(doStatement.statement);
+		doStatement.expression = interpretExpression(doStatement.expression);
 		return doStatement;
 	}
 
@@ -84,67 +84,67 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 
 	public AbstractStatement interpret(ExpressionStatement expressionStatement)
 			throws ParserException {
-		expressionStatement.expression = visitExpression(expressionStatement.expression);
+		expressionStatement.expression = interpretExpression(expressionStatement.expression);
 		return expressionStatement;
 	}
 
 	public AbstractStatement interpret(ForStatement forStatement)
 			throws ParserException {
-		forStatement.initial = visitExpression(forStatement.initial);
-		forStatement.condition = visitExpression(forStatement.condition);
-		forStatement.increment = visitExpression(forStatement.increment);
-		forStatement.statement = visitStatement(forStatement.statement);
+		forStatement.initial = interpretExpression(forStatement.initial);
+		forStatement.condition = interpretExpression(forStatement.condition);
+		forStatement.increment = interpretExpression(forStatement.increment);
+		forStatement.statement = interpretStatement(forStatement.statement);
 		return forStatement;
 	}
 
 	public AbstractStatement interpret(ForInStatement forInStatement)
 			throws ParserException {
-		forInStatement.variable = visitExpression(forInStatement.variable);
-		forInStatement.expression = visitExpression(forInStatement.expression);
-		forInStatement.statement = visitStatement(forInStatement.statement);
+		forInStatement.variable = interpretExpression(forInStatement.variable);
+		forInStatement.expression = interpretExpression(forInStatement.expression);
+		forInStatement.statement = interpretStatement(forInStatement.statement);
 		return forInStatement;
 	}
 
 	public AbstractStatement interpret(IfStatement ifStatement)
 			throws ParserException {
-		ifStatement.expression = visitExpression(ifStatement.expression);
-		ifStatement.trueStatement = visitStatement(ifStatement.trueStatement);
-		ifStatement.falseStatement = visitStatement(ifStatement.falseStatement);
+		ifStatement.expression = interpretExpression(ifStatement.expression);
+		ifStatement.trueStatement = interpretStatement(ifStatement.trueStatement);
+		ifStatement.falseStatement = interpretStatement(ifStatement.falseStatement);
 		return ifStatement;
 	}
 
 	public AbstractStatement interpret(LabelledStatement labelledStatement)
 			throws ParserException {
-		labelledStatement.identifier = visitIdentifier(labelledStatement.identifier);
-		labelledStatement.statement = visitStatement(labelledStatement.statement);
+		labelledStatement.identifier = interpreteIdentifier(labelledStatement.identifier);
+		labelledStatement.statement = interpretStatement(labelledStatement.statement);
 		return labelledStatement;
 	}
 
 	public AbstractStatement interpret(ReturnStatement returnStatement)
 			throws ParserException {
-		returnStatement.expression = visitExpression(returnStatement.expression);
+		returnStatement.expression = interpretExpression(returnStatement.expression);
 		return returnStatement;
 	}
 
 	public AbstractStatement interpret(SwitchStatement switchStatement)
 			throws ParserException {
-		switchStatement.expression = visitExpression(switchStatement.expression);
-		switchStatement.clauses = (CaseStatement[]) visitStatementArray(switchStatement.clauses);
+		switchStatement.expression = interpretExpression(switchStatement.expression);
+		switchStatement.clauses = (CaseStatement[]) interpretStatementArray(switchStatement.clauses);
 		return switchStatement;
 	}
 
 	public AbstractStatement interpret(ThrowStatement throwStatement)
 			throws ParserException {
-		throwStatement.expression = visitExpression(throwStatement.expression);
+		throwStatement.expression = interpretExpression(throwStatement.expression);
 		return throwStatement;
 	}
 
 	public AbstractStatement interpret(TryStatement tryStatement)
 			throws ParserException {
-		tryStatement.tryBlock = visitStatement(tryStatement.tryBlock);
-		tryStatement.catchIdentifier = visitIdentifier(tryStatement.catchIdentifier);
-		tryStatement.catchBlock = visitStatement(tryStatement.catchBlock);
-		tryStatement.finallyBlock = visitStatement(tryStatement.finallyBlock);
+		tryStatement.tryBlock = interpretStatement(tryStatement.tryBlock);
+		tryStatement.catchIdentifier = interpreteIdentifier(tryStatement.catchIdentifier);
+		tryStatement.catchBlock = interpretStatement(tryStatement.catchBlock);
+		tryStatement.finallyBlock = interpretStatement(tryStatement.finallyBlock);
 		return tryStatement;
 	}
 
@@ -153,7 +153,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		ArrayList statements = new ArrayList();
 
 		for (int i = 0; i < variableStatement.declarations.length; i++) {
-			AbstractExpression expression = visitExpression(variableStatement.declarations[i]);
+			AbstractExpression expression = interpretExpression(variableStatement.declarations[i]);
 
 			if (expression != null) {
 				AbstractStatement statement = new ExpressionStatement(
@@ -174,89 +174,89 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 
 	public AbstractStatement interpret(WhileStatement whileStatement)
 			throws ParserException {
-		whileStatement.expression = visitExpression(whileStatement.expression);
-		whileStatement.statement = visitStatement(whileStatement.statement);
+		whileStatement.expression = interpretExpression(whileStatement.expression);
+		whileStatement.statement = interpretStatement(whileStatement.statement);
 
 		return whileStatement;
 	}
 
 	public AbstractStatement interpret(WithStatement withStatement)
 			throws ParserException {
-		withStatement.expression = visitExpression(withStatement.expression);
-		withStatement.statement = visitStatement(withStatement.statement);
+		withStatement.expression = interpretExpression(withStatement.expression);
+		withStatement.statement = interpretStatement(withStatement.statement);
 		hasWithStatement = true;
 		return withStatement;
 	}
 
 	public AbstractExpression interpret(
 			AssignmentExpression assignmentExpression) throws ParserException {
-		return visitBinaryExpression(assignmentExpression);
+		return interpretBinaryExpression(assignmentExpression);
 	}
 
 	public AbstractExpression interpret(
 			AssignmentOperatorExpression assignmentOperatorExpression)
 			throws ParserException {
-		return visitBinaryExpression(assignmentOperatorExpression);
+		return interpretBinaryExpression(assignmentOperatorExpression);
 	}
 
 	public AbstractExpression interpret(
 			BinaryOperatorExpression binaryOperatorExpression)
 			throws ParserException {
-		return visitBinaryExpression(binaryOperatorExpression);
+		return interpretBinaryExpression(binaryOperatorExpression);
 	}
 
 	public AbstractExpression interpret(
 			CallFunctionExpression callFunctionExpression)
 			throws ParserException {
-		callFunctionExpression.function = visitExpression(callFunctionExpression.function);
-		callFunctionExpression.arguments = visitExpressionArray(callFunctionExpression.arguments);
+		callFunctionExpression.function = interpretExpression(callFunctionExpression.function);
+		callFunctionExpression.arguments = interpretExpressionArray(callFunctionExpression.arguments);
 		return callFunctionExpression;
 	}
 
 	public AbstractExpression interpret(
 			ConditionalExpression conditionalExpression) throws ParserException {
-		conditionalExpression.expression = visitExpression(conditionalExpression.expression);
-		conditionalExpression.trueExpression = visitExpression(conditionalExpression.trueExpression);
-		conditionalExpression.falseExpression = visitExpression(conditionalExpression.falseExpression);
+		conditionalExpression.expression = interpretExpression(conditionalExpression.expression);
+		conditionalExpression.trueExpression = interpretExpression(conditionalExpression.trueExpression);
+		conditionalExpression.falseExpression = interpretExpression(conditionalExpression.falseExpression);
 		return conditionalExpression;
 	}
 
 	public AbstractExpression interpret(DeleteExpression deleteExpression)
 			throws ParserException {
-		return visitUnaryExpression(deleteExpression);
+		return interpretUnaryExpression(deleteExpression);
 	}
 
 	public AbstractExpression interpret(IncrementExpression incrementExpression)
 			throws ParserException {
-		return visitUnaryExpression(incrementExpression);
+		return interpretUnaryExpression(incrementExpression);
 	}
 
 	public AbstractExpression interpret(
 			LogicalAndExpression logicalAndExpression) throws ParserException {
-		return visitBinaryExpression(logicalAndExpression);
+		return interpretBinaryExpression(logicalAndExpression);
 	}
 
 	public AbstractExpression interpret(LogicalOrExpression logicalOrExpression)
 			throws ParserException {
-		return visitBinaryExpression(logicalOrExpression);
+		return interpretBinaryExpression(logicalOrExpression);
 	}
 
 	public AbstractExpression interpret(NewExpression newExpression)
 			throws ParserException {
-		newExpression.objName = visitExpression(newExpression.objName);
-		newExpression.arguments = visitExpressionArray(newExpression.arguments);
+		newExpression.objName = interpretExpression(newExpression.objName);
+		newExpression.arguments = interpretExpressionArray(newExpression.arguments);
 		return newExpression;
 	}
 
 	public AbstractExpression interpret(PropertyExpression propertyExpression)
 			throws ParserException {
-		return visitBinaryExpression(propertyExpression);
+		return interpretBinaryExpression(propertyExpression);
 	}
 
 	public AbstractExpression interpret(
 			UnaryOperatorExpression unaryOperatorExpression)
 			throws ParserException {
-		return visitUnaryExpression(unaryOperatorExpression);
+		return interpretUnaryExpression(unaryOperatorExpression);
 	}
 
 	public AbstractExpression interpret(VariableExpression variableExpression)
@@ -264,7 +264,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		AbstractExpression result = null;
 
 		for (int i = 0; i < variableExpression.declarations.length; i++) {
-			AbstractExpression expression = visitExpression(variableExpression.declarations[i]);
+			AbstractExpression expression = interpretExpression(variableExpression.declarations[i]);
 
 			if (expression != null) {
 				if (result == null) {
@@ -282,8 +282,8 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 	public AbstractExpression interpret(
 			VariableDeclarationExpression variableDeclarationExpression)
 			throws ParserException {
-		IdentifierLiteral identifier = visitIdentifier(variableDeclarationExpression.identifier);
-		AbstractExpression initializer = visitExpression(variableDeclarationExpression.initializer);
+		IdentifierLiteral identifier = interpreteIdentifier(variableDeclarationExpression.identifier);
+		AbstractExpression initializer = interpretExpression(variableDeclarationExpression.initializer);
 		AbstractExpression result = null;
 
 		if (variableList != null) {
@@ -334,7 +334,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 
 	public AbstractLiteral interpret(ArrayLiteral arrayLiteral)
 			throws ParserException {
-		arrayLiteral.elements = visitExpressionArray(arrayLiteral.elements);
+		arrayLiteral.elements = interpretExpressionArray(arrayLiteral.elements);
 		return arrayLiteral;
 	}
 
@@ -356,11 +356,11 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 			addVariable(parameters[i]);
 		}
 
-		functionLiteral.funcName = visitIdentifier(functionLiteral.funcName);
-		functionLiteral.parameters = visitIdentifierArray(functionLiteral.parameters);
-		functionLiteral.variables = visitIdentifierArray(functionLiteral.variables);
-		functionLiteral.functions = visitStatementArray(functionLiteral.functions);
-		functionLiteral.statements = visitStatementArray(functionLiteral.statements);
+		functionLiteral.funcName = interpreteIdentifier(functionLiteral.funcName);
+		functionLiteral.parameters = interpretIdentifierArray(functionLiteral.parameters);
+		functionLiteral.variables = interpretIdentifierArray(functionLiteral.variables);
+		functionLiteral.functions = interpretStatementArray(functionLiteral.functions);
+		functionLiteral.statements = interpretStatementArray(functionLiteral.statements);
 
 		functionLiteral.functions = Util.listToStatementArray(functionList);
 		functionLiteral.variables = Util.listToIdentifierArray(variableList);
@@ -387,18 +387,18 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 
 	public AbstractLiteral interpret(ObjectLiteral objectLiteral)
 			throws ParserException {
-		objectLiteral.properties = (ObjectPropertyLiteral[]) visitExpressionArray(objectLiteral.properties);
+		objectLiteral.properties = (ObjectPropertyLiteral[]) interpretExpressionArray(objectLiteral.properties);
 		return objectLiteral;
 	}
 
 	public AbstractLiteral interpret(ObjectPropertyLiteral objectPropertyLiteral)
 			throws ParserException {
-		objectPropertyLiteral.name = visitExpression(objectPropertyLiteral.name);
-		objectPropertyLiteral.value = visitExpression(objectPropertyLiteral.value);
+		objectPropertyLiteral.name = interpretExpression(objectPropertyLiteral.name);
+		objectPropertyLiteral.value = interpretExpression(objectPropertyLiteral.value);
 		return objectPropertyLiteral;
 	}
 
-	private AbstractStatement visitStatement(AbstractStatement statement)
+	private AbstractStatement interpretStatement(AbstractStatement statement)
 			throws ParserException {
 		if (statement != null) {
 			statement = statement.interpretStatement(this);
@@ -406,18 +406,18 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		return statement;
 	}
 
-	private AbstractStatement[] visitStatementArray(
+	private AbstractStatement[] interpretStatementArray(
 			AbstractStatement[] statements) throws ParserException {
 		if (statements != null) {
 			for (int i = 0; i < statements.length; i++) {
-				statements[i] = visitStatement(statements[i]);
+				statements[i] = interpretStatement(statements[i]);
 			}
 		}
 
 		return statements;
 	}
 
-	private AbstractExpression visitExpression(AbstractExpression expression)
+	private AbstractExpression interpretExpression(AbstractExpression expression)
 			throws ParserException {
 		if (expression != null) {
 			expression = expression.interpretExpression(this);
@@ -426,29 +426,18 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		return expression;
 	}
 
-	protected AbstractExpression[] visitExpressionArray(
+	protected AbstractExpression[] interpretExpressionArray(
 			AbstractExpression[] expressions) throws ParserException {
 		if (expressions != null) {
 			for (int i = 0; i < expressions.length; i++) {
-				expressions[i] = visitExpression(expressions[i]);
+				expressions[i] = interpretExpression(expressions[i]);
 			}
 		}
 
 		return expressions;
 	}
 
-	private IdentifierLiteral[] visitIdentifierArray(
-			IdentifierLiteral[] identifiers) throws ParserException {
-		if (identifiers != null) {
-			for (int i = 0; i < identifiers.length; i++) {
-				identifiers[i] = visitIdentifier(identifiers[i]);
-			}
-		}
-
-		return identifiers;
-	}
-
-	private IdentifierLiteral visitIdentifier(IdentifierLiteral identifier)
+	private IdentifierLiteral interpreteIdentifier(IdentifierLiteral identifier)
 			throws ParserException {
 		if (identifier != null) {
 			identifier = (IdentifierLiteral) identifier
@@ -458,24 +447,34 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		return identifier;
 	}
 
+	private IdentifierLiteral[] interpretIdentifierArray(
+			IdentifierLiteral[] identifiers) throws ParserException {
+		if (identifiers != null) {
+			for (int i = 0; i < identifiers.length; i++) {
+				identifiers[i] = interpreteIdentifier(identifiers[i]);
+			}
+		}
+
+		return identifiers;
+	}
+
+	private AbstractExpression interpretBinaryExpression(
+			AbstractBinaryExpression expression) throws ParserException {
+		expression.leftExpression = interpretExpression(expression.leftExpression);
+		expression.rightExpression = interpretExpression(expression.rightExpression);
+		return expression;
+	}
+
+	private AbstractExpression interpretUnaryExpression(
+			AbstractUnaryExpression expression) throws ParserException {
+		expression.expression = interpretExpression(expression.expression);
+		return expression;
+	}
+
 	private void addVariable(IdentifierLiteral identifier) {
 		if (variableList.indexOf(identifier) == -1) {
 			identifier.index = variableList.size();
 			variableList.add(identifier);
 		}
-	}
-
-	private AbstractExpression visitBinaryExpression(
-			AbstractBinaryExpression expression) throws ParserException {
-		expression.leftExpression = visitExpression(expression.leftExpression);
-		expression.rightExpression = visitExpression(expression.rightExpression);
-		return expression;
-	}
-
-	private AbstractExpression visitUnaryExpression(
-			AbstractUnaryExpression expression) throws ParserException {
-		expression.expression = visitExpression(expression.expression);
-
-		return expression;
 	}
 }
