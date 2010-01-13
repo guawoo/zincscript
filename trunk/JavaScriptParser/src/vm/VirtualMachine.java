@@ -2,19 +2,149 @@ package vm;
 
 import java.util.Enumeration;
 
+import vm.object.VMObject;
+import vm.object.VMObjectFactory;
+import vm.object.nativeobject.ArrayObject;
+import vm.object.nativeobject.ErrorObject;
+import vm.object.nativeobject.FunctionObject;
+
 public class VirtualMachine {
+
+	public static final int OP_NOP = 0x00;
+	public static final int OP_ADD = 0x01;
+	public static final int OP_AND = 0x02;
+	public static final int OP_APPEND = 0X03;
+	public static final int OP_ASR = 0x04;
+	public static final int OP_ENUM = 0x05;
+	public static final int OP_IN = 0x06;
+	public static final int OP_DIV = 0x07;
+	public static final int OP_DUP = 0x08;
+	public static final int OP_EQEQ = 0x09;
+	public static final int OP_CTX_GET = 0x0a;
+	public static final int OP_GET = 0x0b;
+	public static final int OP_CTX = 0x0c;
+	public static final int OP_DEL = 0x0d;
+	public static final int OP_GT = 0x0e;
+	public static final int OP_THROW = 0x0F;
+
+	public static final int OP_INC = 0x10;
+	public static final int OP_DEC = 0x11;
+	public static final int OP_LT = 0x12;
+	public static final int OP_MOD = 0x13;
+	public static final int OP_MUL = 0x14;
+	public static final int OP_NEG = 0x15;
+	public static final int OP_NEW_ARR = 0x16;
+	public static final int OP_NEW_OBJ = 0x17;
+	public static final int OP_NEW = 0x18;
+	public static final int OP_NOT = 0x19;
+	public static final int OP_OR = 0x1a;
+	public static final int OP_DROP = 0x1b;
+	public static final int OP_PUSH_TRUE = 0x1c;
+	public static final int OP_PUSH_FALSE = 0x1d;
+	public static final int OP_RET = 0x1e;
+	public static final int OP_CTX_SET = 0x1f;
+
+	public static final int OP_SET_KC = 0x020;
+	public static final int OP_SET = 0x021;
+	public static final int OP_SHL = 0x022;
+	public static final int OP_SHR = 0x023;
+	public static final int OP_SUB = 0x024;
+	public static final int OP_SWAP = 0x025;
+	public static final int OP_PUSH_THIS = 0x026;
+	public static final int OP_PUSH_NULL = 0x027;
+	public static final int OP_PUSH_UNDEF = 0x028;
+	public static final int OP_DDUP = 0x29;
+	public static final int OP_ROT = 0x2A;
+	public static final int OP_EQEQEQ = 0x2B; // TODO
+	public static final int OP_XOR = 0x2C;
+	public static final int OP_INV = 0x2D;
+	public static final int OP_WITH_START = 0x2E;
+	public static final int OP_WITH_END = 0x2F;
+
+	public static final int OP_ABOVE = 0x30;
+	public static final int OP_INSTANCEOF = 0x31;
+	public static final int OP_TYPEOF = 0x32;
+	public static final int OP_PUSH_GLOBAL = 0x33;
+
+	public static final int XOP_TRY_CALL = 0xE6 >>> 1;
+	public static final int XOP_ADD = 0xE8 >>> 1; // add immediate to stacktop
+	public static final int XOP_PUSH_FN = 0xEA >>> 1;
+	public static final int XOP_PUSH_NUM = 0xEC >>> 1;
+	public static final int XOP_GO = 0xEE >>> 1;
+	public static final int XOP_IF = 0xF0 >>> 1;
+	public static final int XOP_CALL = 0xF2 >>> 1;
+	public static final int XOP_LCL_GET = 0xF6 >>> 1;
+	public static final int XOP_LCL_SET = 0xF8 >>> 1;
+	public static final int XOP_NEXT = 0xFA >>> 1;
+	public static final int XOP_PUSH_INT = 0xFC >>> 1;
+	public static final int XOP_PUSH_STR = 0xFE >>> 1;
+
+	public static final int TYPE_UNDEFINED = 0;
+	public static final int TYPE_NULL = 1;
+	public static final int TYPE_OBJECT = 2;
+	public static final int TYPE_BOOLEAN = 3;
+	public static final int TYPE_NUMBER = 4;
+	public static final int TYPE_STRING = 5;
+	public static final int TYPE_FUNCTION = 6;
+
+	/**
+	 * Javascript type names as returned by the typeof operator. Note that
+	 * TYPE_NULL and TYPE_OBJECT are mapped to object both.
+	 */
+	static final String[] TYPE_NAMES = { "undefined", "object", "object",
+			"boolean", "number", "string", "function" };
+
+	/** Number of declared parameters; -1 for native getter/setter */
+	private int expectedParameterCount;
+
+	/** Number of local variables */
+	private int varCount;
+
+	/** Byte code containing the implementation of this function */
+	private byte[] byteCode;
+
+	/** native method index if this function is implemented in Java */
+	int index;
+
+	String[] localNames;
+
+	/** String literal table, used when putting strings on the stack. */
+	private String[] stringLiterals;
+
+	/** function literal table, used when putting strings on the stack. */
+	private FunctionObject[] functionLiterals;
+
+	/** number literal table, used when putting strings on the stack. */
+	private double[] numberLiterals;
+
+	/**
+	 * Prototype object if this function is a constructor. Currently not used;
+	 * required to implement the JS prototype property.
+	 */
+	private VMObject prototype;
+
+	/** Object factory id if this is a native constructor. */
+	private int factoryTypeId;
+
+	/** Evaluation context for this function. */
+	private VMObject context;
+
+	private int[] lineNumbers;
+
+	private byte[] codeStream = null;
+
 	/**
 	 * Evaluate this function. The this-pointer, function object and parameters
 	 * must be on stack (sp + 0 = context, sp + 1=function, sp + 2 = first param
 	 * etc.). The result is expected at sp + 0.
 	 */
-	public void run(JsArray stack, int sp, int actualParameterCount) {
+	public void exec(ArrayObject stack, int sp, int actualParameterCount) {
 		// 对于实际参数数量小于期望参数数量的情况, 缺失的参数用用null代替
 		for (int i = actualParameterCount; i < expectedParameterCount; i++) {
 			stack.setObject(sp + i + 2, null);
 		}
 
-		JsObject thisPtr = stack.getJsObject(sp);
+		VMObject thisPtr = stack.getVMObject(sp);
 
 		if (byteCode == null) {
 			thisPtr.evalNative(index, stack, sp, actualParameterCount);
@@ -27,19 +157,19 @@ public class VirtualMachine {
 		sp += 2;
 		int bp = sp;
 
-		JsObject context;
+		VMObject context = null;
 
 		// note: arguments available here only!
 		if (localNames != null) {
-			context = new JsObject(JsObject.OBJECT_PROTOTYPE);
+			context = new VMObject(VMObject.OBJECT_PROTOTYPE);
 			context.scopeChain = this.context;
 			JsArguments args = new JsArguments(this, context);
 			for (int i = 0; i < expectedParameterCount; i++) {
-				context.addVar(localNames[i], stack.getObject(sp + i));
+				context.addProperty(localNames[i], stack.getObject(sp + i));
 				args.addVar("" + i, new Integer(i));
 			}
 			for (int i = expectedParameterCount; i < this.localNames.length; i++) {
-				context.addVar(localNames[i], null);
+				context.addProperty(localNames[i], null);
 			}
 			for (int i = expectedParameterCount; i < actualParameterCount; i++) {
 				args.setObject("" + i, stack.getObject(bp + i));
@@ -47,6 +177,7 @@ public class VirtualMachine {
 			args.setNumber("length", actualParameterCount);
 			args.setObject("callee", this);
 			context.addVar("arguments", args);
+			args = null;
 		} else {
 			context = this.context;
 			sp += expectedParameterCount + varCount;
@@ -81,29 +212,31 @@ public class VirtualMachine {
 						try {
 							sp = sp - imm - 2; // on stack: context, lambda,
 							// params
-							JsFunction m = (JsFunction) stack.getObject(sp + 1);
+							FunctionObject m = (FunctionObject) stack
+									.getObject(sp + 1);
 							m.eval(stack, sp, imm);
 							stack.setBoolean(sp + 1, true);
 							sp += 2;
-						} catch (JsException e) {
+						} catch (VMRuntimeException e) {
 							stack.setObject(sp++, e.getError());
 							stack.setBoolean(sp++, false); // not successfull
 						} catch (Exception e) {
-							stack.setObject(sp++, new JsError(e));
+							stack.setObject(sp++, new ErrorObject());
 							stack.setBoolean(sp++, false); // not successfull
 						}
 						break;
 
 					case XOP_CALL:
 						sp = sp - imm - 2; // on stack: context, lambda, params
-						JsFunction m = (JsFunction) stack.getObject(sp + 1);
+						FunctionObject m = (FunctionObject) stack
+								.getObject(sp + 1);
 						m.eval(stack, sp++, imm);
 						// System.out.println("Ret val received: "
 						// + stack.getObject(sp-1)+" sp: "+sp);
 						break;
 
 					case XOP_PUSH_FN:
-						stack.setObject(sp++, new JsFunction(
+						stack.setObject(sp++, new FunctionObject(
 								functionLiterals[imm], context));
 						break;
 
@@ -177,11 +310,12 @@ public class VirtualMachine {
 						break;
 
 					case OP_APPEND:
-						JsArray arr = (JsArray) stack.getObject(sp - 2);
+						ArrayObject arr = (ArrayObject) stack.getObject(sp - 2);
 						stack.copy(sp - 1, arr, arr.size());
 						// ((Array)
 						// stack.getObject(sp-2)).addElement(stack.getObject(sp-1));
 						sp--;
+						arr = null;
 						break;
 
 					case OP_ASR:
@@ -209,7 +343,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_DEL:
-						stack.setBoolean(sp - 2, stack.getJsObject(sp - 2)
+						stack.setBoolean(sp - 2, stack.getVMObject(sp - 2)
 								.delete(stack.getString(sp - 1)));
 						sp--;
 						break;
@@ -235,7 +369,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_ENUM:
-						stack.setObject(sp - 1, ((JsObject) stack
+						stack.setObject(sp - 1, ((VMObject) stack
 								.getObject(sp - 1)).keys());
 						break;
 
@@ -260,7 +394,6 @@ public class VirtualMachine {
 							case TYPE_NULL:
 								stack.setObject(sp - 2, Boolean.TRUE);
 								break;
-
 							case TYPE_NUMBER:
 								stack.setBoolean(sp - 2, stack
 										.getNumber(sp - 2) == stack
@@ -293,7 +426,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_GET:
-						JsObject ctx = stack.getJsObject(sp - 2);
+						VMObject ctx = stack.getVMObject(sp - 2);
 						// System.out.println("GetMember ctx: "+ctx);
 						// System.out.println("GetMember name: " +
 						// stack.getObject(sp - 1));
@@ -320,19 +453,23 @@ public class VirtualMachine {
 
 					case OP_IN:
 						Object o = stack.getObject(sp - 1);
-						if (o instanceof JsArray && stack.isNumber(sp - 2)) {
+						if (o instanceof ArrayObject && stack.isNumber(sp - 2)) {
 							int i = stack.getInt(sp - 2);
-							stack.setObject(sp - 2, i >= 0
-									&& i <= ((JsArray) o).size() ? Boolean.TRUE
-									: Boolean.FALSE);
-							sp--;
-							break;
-						}
-						if (o instanceof JsObject) {
 							stack
 									.setObject(
 											sp - 2,
-											((JsObject) o)
+											i >= 0
+													&& i <= ((ArrayObject) o)
+															.size() ? Boolean.TRUE
+													: Boolean.FALSE);
+							sp--;
+							break;
+						}
+						if (o instanceof VMObject) {
+							stack
+									.setObject(
+											sp - 2,
+											((VMObject) o)
 													.getRawInPrototypeChain(stack
 															.getString(sp - 2)) == null ? Boolean.TRUE
 													: Boolean.FALSE);
@@ -382,13 +519,13 @@ public class VirtualMachine {
 						break;
 
 					case OP_NEW_ARR:
-						stack.setObject(sp++, new JsArray());
+						stack.setObject(sp++, new ArrayObject());
 						break;
 
 					case OP_NEW:
-						JsFunction constructor = ((JsFunction) stack
+						FunctionObject constructor = ((FunctionObject) stack
 								.getObject(sp - 1));
-						ctx = constructor.factory
+						ctx = VMObjectFactory
 								.newInstance(constructor.factoryTypeId);
 						stack.setObject(sp - 1, ctx);
 						stack.setObject(sp++, ctx);
@@ -396,7 +533,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_NEW_OBJ:
-						stack.setObject(sp++, new JsObject(OBJECT_PROTOTYPE));
+						stack.setObject(sp++, new VMObject(null));
 						break;
 
 					case OP_NEG:
@@ -424,7 +561,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_PUSH_NULL:
-						stack.setObject(sp++, JsSystem.JS_NULL);
+						stack.setObject(sp++, VMUtils.EMPTY_OBJECT);
 						break;
 
 					case OP_PUSH_THIS:
@@ -455,7 +592,7 @@ public class VirtualMachine {
 						// property name: sp-2
 						// value to set: sp-1;
 
-						ctx = stack.getJsObject(sp - 3);
+						ctx = stack.getVMObject(sp - 3);
 						ctx.vmSetOperation(stack, sp - 2, sp - 1);
 
 						// key = (String) stack.getObject(sp-2);
@@ -468,7 +605,7 @@ public class VirtualMachine {
 						break;
 
 					case OP_SET:
-						ctx = stack.getJsObject(sp - 2);
+						ctx = stack.getVMObject(sp - 2);
 						ctx.vmSetOperation(stack, sp - 1, sp - 3);
 
 						// key = (String) stack.getObject(sp-1);
@@ -505,10 +642,10 @@ public class VirtualMachine {
 
 					case OP_THROW:
 						// line number is added in try..catch below
-						throw new JsException(stack.getJsObject(sp));
+						throw new VMRuntimeException(stack.getVMObject(sp));
 
 					case OP_WITH_START:
-						JsObject nc = new JsObject((JsObject) stack
+						VMObject nc = new VMObject((VMObject) stack
 								.getObject(sp - 1));
 						nc.scopeChain = context;
 						context = nc;
@@ -526,12 +663,14 @@ public class VirtualMachine {
 
 					case OP_INSTANCEOF:
 						o = stack.getObject(sp - 2);
-						JsObject p = stack.getJsObject(sp - 1);
-						if (p instanceof JsFunction && o instanceof JsObject) {
-							JsObject j = ((JsObject) o);
-							p = ((JsFunction) p).prototype;
-							while (j.__proto__ != null && j.__proto__ != p) {
-								j = j.__proto__;
+						VMObject p = stack.getVMObject(sp - 1);
+						if (p instanceof FunctionObject
+								&& o instanceof VMObject) {
+							VMObject j = ((VMObject) o);
+							p = ((FunctionObject) p).parentPrototype;
+							while (j.parentPrototype != null
+									&& j.parentPrototype != p) {
+								j = j.parentPrototype;
 							}
 							stack.setBoolean(sp - 2, j != null);
 						} else {
@@ -553,16 +692,16 @@ public class VirtualMachine {
 				}
 			}
 		} catch (Exception e) {
-			JsException jse;
-			if (e instanceof JsException) {
-				jse = (JsException) e;
+			VMRuntimeException jse;
+			if (e instanceof VMRuntimeException) {
+				jse = (VMRuntimeException) e;
 			} else {
 				e.printStackTrace();
-				jse = new JsException(e);
+				jse = new VMRuntimeException(e);
 			}
 			if (jse.pc == -1) {
 				jse.pc = pc - 1;
-				jse.lineNumber = getLineNumber(pc - 1);
+				jse.lineNumber = getLineNumber(jse.pc);
 			}
 			throw jse;
 		}
@@ -580,5 +719,23 @@ public class VirtualMachine {
 							+ actualParameterCount);
 		}
 		return;
+	}
+
+	private int getLineNumber(int pc) {
+		if (lineNumbers != null && lineNumbers.length > 0) {
+			int i = 0;
+			while (i + 2 < lineNumbers.length && lineNumbers[i + 2] <= pc) {
+				i += 2;
+			}
+			return lineNumbers[i + 1];
+		}
+		return -1;
+	}
+
+	/**
+	 * Returns the number of expected (declared) parameters.
+	 */
+	public int getParameterCount() {
+		return expectedParameterCount;
 	}
 }
