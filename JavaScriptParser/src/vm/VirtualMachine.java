@@ -1,9 +1,12 @@
 package vm;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.Enumeration;
 
 import vm.object.VMObject;
 import vm.object.VMObjectFactory;
+import vm.object.buildin.GlobalObject;
 import vm.object.nativeobject.ArrayObject;
 import vm.object.nativeobject.ErrorObject;
 import vm.object.nativeobject.FunctionObject;
@@ -87,6 +90,16 @@ public class VirtualMachine {
 	public static final int TYPE_STRING = 5;
 	public static final int TYPE_FUNCTION = 6;
 
+	public static final byte BLOCK_END = 0x00;
+	public static final byte BLOCK_GLOBAL_STRING_TABLE = 0x10;
+	public static final byte BLOCK_NUMBER_LITERALS = 0x20;
+	public static final byte BLOCK_STRING_LITERALS = 0x30;
+	public static final byte BLOCK_REGEX_LITERALS = 0x40;
+	public static final byte BLOCK_FUNCTION_LITERALS = 0x50;
+	public static final byte BLOCK_LOCAL_VARIABLE_NAMES = 0x60;
+	public static final byte BLOCK_BYTE_CODE = 0x70;
+	public static final byte BLOCK_LINE_NUMBERS = 0x7F;
+
 	/**
 	 * Javascript type names as returned by the typeof operator. Note that
 	 * TYPE_NULL and TYPE_OBJECT are mapped to object both.
@@ -94,60 +107,128 @@ public class VirtualMachine {
 	static final String[] TYPE_NAMES = { "undefined", "object", "object",
 			"boolean", "number", "string", "function" };
 
-	/** Number of declared parameters; -1 for native getter/setter */
-	private int expectedParameterCount;
+	private FunctionObject mainFunction = null;
 
-	/** Number of local variables */
-	private int varCount;
+	private GlobalObject global = null;
 
-	/** Byte code containing the implementation of this function */
-	private byte[] byteCode;
+	private FunctionObject generateFunctionObject(FunctionObject function,
+			DataInputStream dis, String[] globalStringTable) throws IOException {
+		if (function == null)
+			function = new FunctionObject(-1, -1);
 
-	/** native method index if this function is implemented in Java */
-	int index;
+		byte[] buf = null;
+		int flags = 0;
+		loop: while (true) {
+			int blockType = dis.read();
+			int count;
+			switch (blockType) {
+			case BLOCK_GLOBAL_STRING_TABLE:
+				count = dis.readUnsignedShort();
+				globalStringTable = new String[count];
+				for (int i = 0; i < count; i++) {
+					globalStringTable[i] = dis.readUTF();
+				}
+				break;
+			case BLOCK_STRING_LITERALS:
+				count = dis.readUnsignedShort();
+				String[] stringLiterals = new String[count];
+				for (int i = 0; i < count; i++) {
+					stringLiterals[i] = globalStringTable[dis.readShort()];
+				}
+				mainFunction.stringLiterals = stringLiterals;
+				stringLiterals = null;
+				break;
+			case BLOCK_NUMBER_LITERALS:
+				count = dis.readUnsignedShort();
+				double[] numberLiterals = new double[count];
+				for (int i = 0; i < count; i++) {
+					numberLiterals[i] = dis.readDouble();
+				}
+				mainFunction.numberLiterals = numberLiterals;
+				numberLiterals = null;
+				break;
+			case BLOCK_FUNCTION_LITERALS:
+				count = dis.readUnsignedShort();
+				FunctionObject[] functionLiterals = new FunctionObject[count];
+				for (int i = 0; i < count; i++) {
+					FunctionObject newFunction = new FunctionObject(-1, -1);
+					newFunction = generateFunctionObject(newFunction, dis,
+							globalStringTable);
+					functionLiterals[i] = newFunction;
+					newFunction = null;
+				}
+				mainFunction.functionLiterals = functionLiterals;
+				functionLiterals = null;
+				break;
+			case BLOCK_LOCAL_VARIABLE_NAMES:
+				count = dis.readUnsignedShort();
+				String[] localNames = new String[count];
+				for (int i = 0; i < count; i++) {
+					localNames[i] = globalStringTable[dis.readShort()];
+				}
+				mainFunction.localNames = localNames;
+				localNames = null;
+				break;
+			case BLOCK_BYTE_CODE:
+				int varCount = dis.readUnsignedShort();
+				int expectedParameterCount = dis.readUnsignedShort();
+				varCount -= expectedParameterCount;
+				mainFunction.varCount = varCount;
+				mainFunction.expectedParameterCount = expectedParameterCount;
+				flags = dis.read();
+				byte[] byteCode = new byte[dis.readShort()];
+				dis.readFully(byteCode);
+				mainFunction.byteCode = byteCode;
+				byteCode = null;
+				break;
+			case BLOCK_LINE_NUMBERS:
+				count = dis.readUnsignedShort();
+				int[] lineNumbers = new int[count * 2];
+				for (int i = 0; i < count; i++) {
+					lineNumbers[i << 1] = dis.readUnsignedShort();
+					lineNumbers[(i << 1) + 1] = dis.readUnsignedShort();
+				}
+				mainFunction.lineNumbers = lineNumbers;
+				lineNumbers = null;
+				break;
+			case BLOCK_END:
+				break loop;
+			default:
+				throw new IOException("Illegal Block type "
+						+ Integer.toString(blockType, 16));
+			}
+		}
 
-	String[] localNames;
+		return function;
+	}
 
-	/** String literal table, used when putting strings on the stack. */
-	private String[] stringLiterals;
+	public Object exec(DataInputStream dis) throws IOException {
+		mainFunction = new FunctionObject(-1, -1);
+		mainFunction = generateFunctionObject(mainFunction, dis, null);
+		ArrayObject stack = new ArrayObject();
+		stack.setObject(0, global);
+		stack.setObject(1, mainFunction);
+		stack.setObject(2, null);
 
-	/** function literal table, used when putting strings on the stack. */
-	private FunctionObject[] functionLiterals;
-
-	/** number literal table, used when putting strings on the stack. */
-	private double[] numberLiterals;
-
-	/**
-	 * Prototype object if this function is a constructor. Currently not used;
-	 * required to implement the JS prototype property.
-	 */
-	private VMObject prototype;
-
-	/** Object factory id if this is a native constructor. */
-	private int factoryTypeId;
-
-	/** Evaluation context for this function. */
-	private VMObject context;
-
-	private int[] lineNumbers;
-
-	private byte[] codeStream = null;
+		eval(stack, 1, 0);
+		return stack.getObject(3);
+	}
 
 	/**
 	 * Evaluate this function. The this-pointer, function object and parameters
 	 * must be on stack (sp + 0 = context, sp + 1=function, sp + 2 = first param
 	 * etc.). The result is expected at sp + 0.
 	 */
-	public void exec(ArrayObject stack, int sp, int actualParameterCount) {
-		// 对于实际参数数量小于期望参数数量的情况, 缺失的参数用用null代替
-		for (int i = actualParameterCount; i < expectedParameterCount; i++) {
+	public void eval(ArrayObject stack, int sp, int actualParameterCount) {
+		VMObject thisPtr = stack.getVMObject(sp);
+		FunctionObject function = (FunctionObject) stack.getVMObject(sp + 1);
+		// 对于实际参数数量小于期望参数数量的情况, 缺失的参数用null代替
+		for (int i = actualParameterCount; i < function.expectedParameterCount; i++) {
 			stack.setObject(sp + i + 2, null);
 		}
 
-		VMObject thisPtr = stack.getVMObject(sp);
-
-		if (byteCode == null) {
-			thisPtr.evalNative(index, stack, sp, actualParameterCount);
+		if (function.byteCode == null) {
+			thisPtr.evalNative(function.index, stack, sp, actualParameterCount);
 			return;
 		}
 
@@ -160,16 +241,17 @@ public class VirtualMachine {
 		VMObject context = null;
 
 		// note: arguments available here only!
-		if (localNames != null) {
+		if (function.localNames != null) {
 			context = new VMObject(VMObject.OBJECT_PROTOTYPE);
 			context.scopeChain = this.context;
 			JsArguments args = new JsArguments(this, context);
 			for (int i = 0; i < expectedParameterCount; i++) {
-				context.addProperty(localNames[i], stack.getObject(sp + i));
+				context.addProperty(function.localNames[i], stack.getObject(sp
+						+ i));
 				args.addVar("" + i, new Integer(i));
 			}
-			for (int i = expectedParameterCount; i < this.localNames.length; i++) {
-				context.addProperty(localNames[i], null);
+			for (int i = expectedParameterCount; i < function.localNames.length; i++) {
+				context.addProperty(function.localNames[i], null);
 			}
 			for (int i = expectedParameterCount; i < actualParameterCount; i++) {
 				args.setObject("" + i, stack.getObject(bp + i));
@@ -179,13 +261,13 @@ public class VirtualMachine {
 			context.addVar("arguments", args);
 			args = null;
 		} else {
-			context = this.context;
+			context = function.context;
 			sp += expectedParameterCount + varCount;
 		}
 
 		int initialSp = sp;
 		int opcode;
-		byte[] byteCode = this.byteCode;
+		byte[] byteCode = function.byteCode;
 		int pc = 0;
 		int end = byteCode.length;
 
@@ -719,23 +801,5 @@ public class VirtualMachine {
 							+ actualParameterCount);
 		}
 		return;
-	}
-
-	private int getLineNumber(int pc) {
-		if (lineNumbers != null && lineNumbers.length > 0) {
-			int i = 0;
-			while (i + 2 < lineNumbers.length && lineNumbers[i + 2] <= pc) {
-				i += 2;
-			}
-			return lineNumbers[i + 1];
-		}
-		return -1;
-	}
-
-	/**
-	 * Returns the number of expected (declared) parameters.
-	 */
-	public int getParameterCount() {
-		return expectedParameterCount;
 	}
 }

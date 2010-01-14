@@ -28,18 +28,6 @@ import ast.statement.*;
  * @author Jarod Yv
  */
 public class CompilationInterpreter extends AbstractInterpreter {
-	public static final byte BLOCK_COMMENT = (byte) 0x00;
-	public static final byte BLOCK_GLOBAL_STRING_TABLE = (byte) 0x10;
-	public static final byte BLOCK_NUMBER_LITERALS = (byte) 0x20;
-	public static final byte BLOCK_STRING_LITERALS = (byte) 0x30;
-	public static final byte BLOCK_REGEX_LITERALS = (byte) 0x40;
-	public static final byte BLOCK_FUNCTION_LITERALS = (byte) 0x50;
-	public static final byte BLOCK_LOCAL_VARIABLE_NAMES = (byte) 0x60;
-	public static final byte BLOCK_CODE = (byte) 0x80;
-	public static final byte BLOCK_LINENUMBER = (byte) 0xE0;
-	public static final byte BLOCK_DEBUG = (byte) 0xF0;
-	public static final byte BLOCK_END = (byte) 0xFF;
-
 	private DataOutputStream dos = null;
 	private ByteArrayOutputStream codeStream = new ByteArrayOutputStream(0);
 
@@ -101,7 +89,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 				function.functions[i].interpretStatement(this);
 			}
 		}
-		
+
 		// 处理函数中的语句
 		for (int i = 0; i < function.statements.length; i++) {
 			if (function.statements[i] != null) {
@@ -115,9 +103,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		int flags = Config.FASTLOCALS && function.enableLocalsOptimization ? 0x01
 				: 0x00;
 
-		if (function.funcName != null) {
-			writeCommentBlock("function " + function.funcName.string);
-		}
+		// if (function.funcName != null) {
+		// writeCommentBlock("function " + function.funcName.string);
+		// }
 
 		writeStringLiteralBlock();
 		writeNumberLiteralBlock();
@@ -138,7 +126,6 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			program.statements[i].interpretStatement(this);
 		}
 
-		writeMagic();
 		writeGlobalStringTableBlock();
 		writeStringLiteralBlock();
 		writeNumberLiteralBlock();
@@ -192,7 +179,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		return continueStatement;
 	}
 
-	public AbstractStatement interpret(DoStatement doStatement)
+	public AbstractStatement interpret(DoWhileStatement doStatement)
 			throws ParserException {
 		addLineNumber(doStatement);
 
@@ -364,8 +351,8 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		String defaultLabel = "break";
 
-		for (int i = 0; i < switchStatement.clauses.length; i++) {
-			CaseStatement cs = switchStatement.clauses[i];
+		for (int i = 0; i < switchStatement.cases.length; i++) {
+			CaseStatement cs = switchStatement.cases[i];
 			if (cs.expression == null) {
 				defaultLabel = "case" + i;
 			} else {
@@ -380,9 +367,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		writeOp(VirtualMachine.OP_DROP);
 		writeJump(VirtualMachine.XOP_GO, switchStatement, defaultLabel);
 
-		for (int i = 0; i < switchStatement.clauses.length; i++) {
+		for (int i = 0; i < switchStatement.cases.length; i++) {
 			setLabel(switchStatement, "case" + i);
-			AbstractStatement[] statements = switchStatement.clauses[i].statementList;
+			AbstractStatement[] statements = switchStatement.cases[i].statementList;
 			for (int j = 0; j < statements.length; j++) {
 				statements[j].interpretStatement(this);
 			}
@@ -657,7 +644,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	public AbstractExpression interpret(NewExpression newExpression)
 			throws ParserException {
-		newExpression.objName.interpretExpression(this);
+		newExpression.function.interpretExpression(this);
 		writeOp(VirtualMachine.OP_NEW);
 		if (newExpression.arguments != null) {
 			for (int i = 0; i < newExpression.arguments.length; i++) {
@@ -894,36 +881,10 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		return objectPropertyLiteral;
 	}
 
-	private void writeMagic() throws ParserException {
-		try {
-			dos.write('M');
-			dos.write('i');
-			dos.write('n');
-			dos.write('i');
-			dos.write('J');
-			dos.write('o');
-			dos.write('e');
-			dos.write(0x00); // version
-		} catch (IOException e) {
-			throw new ParserException(e);
-		}
-	}
-
-	private void writeCommentBlock(String comment) throws ParserException {
-		try {
-			if (comment != null) {
-				dos.write(BLOCK_COMMENT);
-				dos.writeUTF(comment);
-			}
-		} catch (IOException e) {
-			throw new ParserException(e);
-		}
-	}
-
 	private void writeGlobalStringTableBlock() throws ParserException {
 		try {
 			if (globalStringTable.size() > 0) {
-				dos.write(BLOCK_GLOBAL_STRING_TABLE);
+				dos.write(VirtualMachine.BLOCK_GLOBAL_STRING_TABLE);
 				dos.writeShort(globalStringTable.size());
 				for (int i = 0; i < globalStringTable.size(); i++) {
 					dos.writeUTF((String) globalStringTable.get(i));
@@ -937,7 +898,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeNumberLiteralBlock() throws ParserException {
 		try {
 			if (numberLiterals.size() > 0) {
-				dos.write(BLOCK_NUMBER_LITERALS);
+				dos.write(VirtualMachine.BLOCK_NUMBER_LITERALS);
 				dos.writeShort(numberLiterals.size());
 				for (int i = 0; i < numberLiterals.size(); i++) {
 					dos.writeDouble(((Double) numberLiterals.get(i))
@@ -952,7 +913,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeStringLiteralBlock() throws ParserException {
 		try {
 			if (stringLiterals.size() > 0) {
-				dos.write(BLOCK_STRING_LITERALS);
+				dos.write(VirtualMachine.BLOCK_STRING_LITERALS);
 				dos.writeShort(stringLiterals.size());
 				for (int i = 0; i < stringLiterals.size(); i++) {
 					dos.writeShort((short) ((Integer) globalStringMap
@@ -968,7 +929,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		try {
 			if (variables != null) {
-				dos.write(BLOCK_LOCAL_VARIABLE_NAMES);
+				dos.write(VirtualMachine.BLOCK_LOCAL_VARIABLE_NAMES);
 				dos.writeShort(variables.length);
 				for (int i = 0; i < variables.length; i++) {
 					dos.writeShort((short) ((Integer) globalStringMap
@@ -983,7 +944,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeFunctionLiteralBlock() throws ParserException {
 		try {
 			if (functionLiterals.size() > 0) {
-				dos.write(BLOCK_FUNCTION_LITERALS);
+				dos.write(VirtualMachine.BLOCK_FUNCTION_LITERALS);
 				dos.writeShort(functionLiterals.size());
 				for (int i = 0; i < functionLiterals.size(); i++) {
 					dos.write((byte[]) functionLiterals.get(i));
@@ -997,7 +958,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeCodeBlock(int localVariableCount, int paramenterCount,
 			int flags, byte[] code) throws ParserException {
 		try {
-			dos.write(BLOCK_CODE);
+			dos.write(VirtualMachine.BLOCK_BYTE_CODE);
 			dos.writeShort(localVariableCount);
 			dos.writeShort(paramenterCount);
 			dos.write(flags);
@@ -1026,7 +987,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	private void writeLineNumberBlock() throws ParserException {
 		try {
-			dos.write(BLOCK_LINENUMBER);
+			dos.write(VirtualMachine.BLOCK_LINE_NUMBERS);
 			int lineNumberCount = lineNumberList.size();
 			dos.writeShort(lineNumberList.size());
 			for (int i = 0; i < lineNumberCount; i++) {
@@ -1046,7 +1007,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	 */
 	private void writeEndMarker() throws ParserException {
 		try {
-			dos.write(BLOCK_END);
+			dos.write(VirtualMachine.BLOCK_END);
 		} catch (IOException e) {
 			throw new ParserException(e);
 		}
@@ -1080,7 +1041,8 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		}
 	}
 
-	private void visitWithNewLabelSet(AbstractSyntaxNode node) throws ParserException {
+	private void visitWithNewLabelSet(AbstractSyntaxNode node)
+			throws ParserException {
 		ArrayList saveLabelSet = labelSet;
 		labelSet = new ArrayList();
 		if (node instanceof AbstractStatement) {
