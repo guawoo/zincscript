@@ -5,9 +5,18 @@ import parser.ParserException;
 import ast.expression.VariableDeclarationExpression;
 
 /**
- * <code>VariableStatement</code> 对函数定义表达式进行了封装. 按照语法定义, 一条变量声明语句包含一个或多个变量声明表达式.
+ * <code>VariableStatement</code> 对变量声明表达式进行了封装. 按照语法定义, 一条变量声明语句包含一个或多个变量声明表达式.
+ * <p>
+ * 变量声明语句的语法结构如下:
+ * 
+ * <pre>
+ * <b><i>VariableStatement:</i></b>
+ * 	<strong><code>var</code></strong> <em>VariableDeclarationList</em>
+ * </pre>
  * 
  * @author Jarod Yv
+ * @see {@link VariableDeclarationExpression}
+ * @see ECMA-262 62页 12.2.Variable statement
  */
 public class VariableStatement extends AbstractStatement {
 	/** 变量声明表达式集合 */
@@ -23,15 +32,14 @@ public class VariableStatement extends AbstractStatement {
 		this.declarations = declarations;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeast.statement.AbstractStatement#interpretStatement(interpreter.
-	 * AbstractInterpreter)
-	 */
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		release(declarations);
+		declarations = null;
 	}
 
 }

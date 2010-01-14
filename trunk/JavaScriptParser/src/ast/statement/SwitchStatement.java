@@ -5,23 +5,41 @@ import parser.ParserException;
 import ast.expression.AbstractExpression;
 
 /**
- * <code>SwitchStatement</code> 定义了<strong>switch</strong>关键字语法的语法树
+ * <code>SwitchStatement</code> 定义了<strong><code>switch</code></strong>关键字语法的语法树
+ * <p>
+ * <strong><code>switch</code></strong>关键字语句的语法结构如下:
+ * 
+ * <pre>
+ * SwitchStatement:</i></b>
+ * 	<strong><code>switch</code></strong> (Expression) CaseBlock
+ * </pre>
  * 
  * @author Jarod Yv
+ * @see CaseStatement
+ * @see ECMA-262 68页 12.11.The <strong><code>switch</code></strong> Statement
  */
 public class SwitchStatement extends AbstractStatement {
-	public AbstractExpression expression;
-	public CaseStatement[] clauses;
+	public AbstractExpression expression = null;
+	public CaseStatement[] cases = null;
 
-	public SwitchStatement(AbstractExpression expression,
-			CaseStatement[] clauses) {
+	public SwitchStatement(AbstractExpression expression, CaseStatement[] cases) {
 		this.expression = expression;
-		this.clauses = clauses;
+		this.cases = cases;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		release(cases);
+		cases = null;
+		if (expression != null) {
+			expression.release();
+			expression = null;
+		}
+
 	}
 
 }

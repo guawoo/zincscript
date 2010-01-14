@@ -5,20 +5,35 @@ import parser.ParserException;
 import ast.expression.AbstractExpression;
 
 /**
- * <code>ThrowStatement</code>
+ * <code>ThrowStatement</code> 定义了<strong><code>throw</code></strong>关键字语法的语法树
+ * <p>
+ * <strong><code>throw</code></strong>关键字语句的语法结构如下:
+ * 
+ * <pre>
+ * ThrowStatement:</i></b>
+ * 	<strong><code>throw</code></strong> [no LineTerminator here] <em>Expression</em>;
+ * </pre>
  * 
  * @author Jarod Yv
+ * @see ECMA-262 69页 12.13.The <strong><code>throw</code></strong> statement
  */
 public class ThrowStatement extends AbstractStatement {
-	public AbstractExpression expression;
+	public AbstractExpression expression = null;
 
 	public ThrowStatement(AbstractExpression expression) {
 		this.expression = expression;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (expression != null) {
+			expression.release();
+			expression = null;
+		}
 	}
 
 }

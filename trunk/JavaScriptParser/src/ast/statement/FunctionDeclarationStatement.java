@@ -32,16 +32,16 @@ public class FunctionDeclarationStatement extends AbstractStatement {
 		this.function = function;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.statement.AbstractStatement#analyseStatement(analyzer.AbstractAnalyzer
-	 * )
-	 */
 	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (function != null) {
+			function.release();
+			function = null;
+		}
 	}
 
 }
