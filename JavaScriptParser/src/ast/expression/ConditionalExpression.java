@@ -10,11 +10,11 @@ import parser.ParserException;
  */
 public class ConditionalExpression extends AbstractExpression {
 	/** 条件判断表达式 */
-	public AbstractExpression expression;
+	public AbstractExpression expression = null;
 	/** 条件为真时执行的表达式 */
-	public AbstractExpression trueExpression;
+	public AbstractExpression trueExpression = null;
 	/** 条件为假时执行的表达式 */
-	public AbstractExpression falseExpression;
+	public AbstractExpression falseExpression = null;
 
 	/**
 	 * 构造函数
@@ -34,16 +34,25 @@ public class ConditionalExpression extends AbstractExpression {
 		this.falseExpression = falseExpression;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.expression.AbstractExpression#analyseExpression(analyzer.AbstractAnalyzer
-	 * )
-	 */
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (expression != null) {
+			expression.release();
+			expression = null;
+		}
+		if (trueExpression != null) {
+			trueExpression.release();
+			trueExpression = null;
+		}
+		if (falseExpression != null) {
+			falseExpression.release();
+			falseExpression = null;
+		}
 	}
 
 }

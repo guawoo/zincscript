@@ -10,8 +10,8 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class ObjectPropertyLiteral extends AbstractLiteral {
-	public AbstractExpression name;
-	public AbstractExpression value;
+	public AbstractExpression name = null;
+	public AbstractExpression value = null;
 
 	public ObjectPropertyLiteral(AbstractExpression name,
 			AbstractExpression value) {
@@ -22,6 +22,17 @@ public class ObjectPropertyLiteral extends AbstractLiteral {
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (name != null) {
+			name.release();
+			name = null;
+		}
+		if (value != null) {
+			value.release();
+			value = null;
+		}
 	}
 
 }

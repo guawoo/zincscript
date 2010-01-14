@@ -17,17 +17,17 @@ import ast.statement.AbstractStatement;
  */
 public class FunctionLiteral extends AbstractLiteral {
 	/** 函数名 */
-	public IdentifierLiteral funcName;
+	public IdentifierLiteral funcName = null;
 	/** 参数列表 */
-	public IdentifierLiteral[] parameters;
+	public IdentifierLiteral[] parameters = null;
 	/** 函数体语句 */
-	public AbstractStatement[] statements;
+	public AbstractStatement[] statements = null;
 
-	public IdentifierLiteral[] variables;
-	public AbstractStatement[] functions;
-	public boolean enableLocalsOptimization;
+	public IdentifierLiteral[] variables = null;
+	public AbstractStatement[] functions = null;
+	public boolean enableLocalsOptimization = false;
 
-	public int index;
+	public int index = 0;
 
 	/**
 	 * 构造函数
@@ -46,16 +46,24 @@ public class FunctionLiteral extends AbstractLiteral {
 		this.statements = statements;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.expression.AbstractExpression#analyseExpression(analyzer.AbstractAnalyzer
-	 * )
-	 */
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (funcName != null) {
+			funcName.release();
+			funcName = null;
+		}
+		release(parameters);
+		parameters = null;
+		release(statements);
+		statements = null;
+		release(functions);
+		functions = null;
+		release(variables);
+		variables = null;
 	}
 
 }

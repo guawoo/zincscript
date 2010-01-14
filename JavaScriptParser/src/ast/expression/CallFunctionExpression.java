@@ -4,15 +4,15 @@ import interpreter.AbstractInterpreter;
 import parser.ParserException;
 
 /**
- * <code>CallFunctionExpression</code> 定义了函数调用的语法树
+ * <code>CallFunctionExpression</code> 定义了函数调用表达式的语法树
  * 
  * @author Jarod Yv
  */
 public class CallFunctionExpression extends AbstractExpression {
 	/** 函数名 */
-	public AbstractExpression function;
+	public AbstractExpression function = null;
 	/** 参数列表 */
-	public AbstractExpression[] arguments;
+	public AbstractExpression[] arguments = null;
 
 	/**
 	 * 构造函数
@@ -28,12 +28,18 @@ public class CallFunctionExpression extends AbstractExpression {
 		this.arguments = arguments;
 	}
 
-	/* (non-Javadoc)
-	 * @see ast.expression.AbstractExpression#analyseExpression(analyzer.AbstractAnalyzer)
-	 */
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (function != null) {
+			function.release();
+			function = null;
+		}
+		release(arguments);
+		arguments = null;
 	}
 
 }

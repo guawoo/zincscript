@@ -5,7 +5,7 @@ import parser.ParserException;
 import ast.expression.AbstractExpression;
 
 public class IdentifierLiteral extends AbstractLiteral {
-	public String string;
+	public String string = null;
 	public int index = -1;
 
 	public IdentifierLiteral(String string) {
@@ -37,6 +37,10 @@ public class IdentifierLiteral extends AbstractLiteral {
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		string = null;
 	}
 
 }

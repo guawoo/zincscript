@@ -16,9 +16,9 @@ public class PropertyExpression extends AbstractBinaryExpression {
 		super(leftExpression, rightExpression);
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
 	}
 
 }

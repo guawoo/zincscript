@@ -18,4 +18,7 @@ public class ThisLiteral extends AbstractLiteral {
 		return interpreter.interpret(this);
 	}
 
+	public void release() {
+	}
+
 }

@@ -10,7 +10,7 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class ObjectLiteral extends AbstractLiteral {
-	public ObjectPropertyLiteral[] properties;
+	public ObjectPropertyLiteral[] properties = null;
 
 	public ObjectLiteral(ObjectPropertyLiteral[] properties) {
 		this.properties = properties;
@@ -19,5 +19,10 @@ public class ObjectLiteral extends AbstractLiteral {
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		release(properties);
+		properties = null;
 	}
 }
