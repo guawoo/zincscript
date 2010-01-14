@@ -2,14 +2,37 @@ package ast.statement;
 
 import interpreter.AbstractInterpreter;
 import parser.ParserException;
-import ast.AbstractNode;
+import ast.AbstractSyntaxNode;
 
 /**
- * <code>AbstracStatement</code> 是语法树上所有声明节点的基类
+ * <code>AbstracStatement</code> 是语法树上所有语句节点的基类
+ * <p>
+ * Statement的语法如下:
+ * 
+ * <pre>
+ * <i><b>Statement:</b></i>
+ * 	Block
+ * 	VariableStatement
+ * 	EmptyStatement
+ * 	ExpressionStatement
+ * 	IfStatement
+ * 	IterationStatement
+ * 	ContinueStatement
+ * 	BreakStatement
+ * 	ReturnStatement
+ * 	WithStatement
+ * 	LabelledStatement
+ * 	SwitchStatement
+ * 	ThrowStatement
+ * 	TryStatement
+ * </pre>
+ * 
+ * 这些语句都将是<code>AbstracStatement</code>的子类
  * 
  * @author Jarod Yv
+ * @see EMCA-262 61页 12.Statements
  */
-public abstract class AbstractStatement extends AbstractNode {
+public abstract class AbstractStatement extends AbstractSyntaxNode {
 	/** 声明语句的行号 */
 	protected int lineNumber;
 

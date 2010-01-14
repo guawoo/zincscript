@@ -23,15 +23,9 @@ public class BooleanLiteral extends AbstractLiteral {
 		this.value = value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.literal.AbstractLiteral#analyseLiteral(analyzer.AbstractAnalyzer)
-	 */
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
 	}
 
 }

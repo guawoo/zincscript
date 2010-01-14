@@ -11,8 +11,9 @@ public class ArrayLiteral extends AbstractLiteral {
 		this.elements = elements;
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
 	}
+
 }

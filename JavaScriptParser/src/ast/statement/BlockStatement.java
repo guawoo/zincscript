@@ -4,30 +4,40 @@ import interpreter.AbstractInterpreter;
 import parser.ParserException;
 
 /**
- * <code>BlockStatement</code>
+ * <code>BlockStatement</code> 定义了代码块的语法树结构
+ * <p>
+ * Block的语法结构如下:
+ * 
+ * <pre>
+ * <i><b>Block:</b></i>
+ * 	{StatementList(opt)}
+ * </pre>
  * 
  * @author Jarod Yv
+ * @see ECMA-262 61页 12.1.Block
  */
 public class BlockStatement extends AbstractStatement {
-	/** 代码块中的所有声明 */
-	public AbstractStatement[] statements;
+	/** 代码块中的所有语句 */
+	public AbstractStatement[] statementList = null;
 
 	/**
 	 * 构造函数
 	 * 
-	 * @param statements
-	 *            {@link #statements}
+	 * @param statementList
+	 *            {@link #statementList}
 	 */
-	public BlockStatement(AbstractStatement[] statements) {
-		this.statements = statements;
+	public BlockStatement(AbstractStatement[] statementList) {
+		this.statementList = statementList;
 	}
 
-	/* (non-Javadoc)
-	 * @see ast.statement.AbstractStatement#analyseStatement(analyzer.AbstractAnalyzer)
-	 */
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		release(statementList);
+		statementList = null;
 	}
 
 }

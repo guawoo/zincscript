@@ -9,9 +9,15 @@ import ast.expression.unary.*;
 import ast.statement.*;
 
 /**
- * <code>AbstractInterpreter</code> 是所有语义分析器的基类。
+ * <code>AbstractInterpreter</code> 是所有语义分析器的基类, 定义了对语法树的操作集合.
+ * <p>
+ * 由于抽象语法树是一个数据结构相对未定的系统, 因此这里采用<b><code>Visitor</code> </b>模式将数据结构和作用于结构上的操作解耦,
+ * 使得操作集合可以相对自由地修改和维护.
+ * <p>
+ * <code>AbstractInterpreter</code> 相当于Visitor模式中的抽象访问者
  * 
  * @author Jarod Yv
+ * @see {@link AbstractSyntaxNode}
  */
 public abstract class AbstractInterpreter {
 
@@ -25,13 +31,6 @@ public abstract class AbstractInterpreter {
 	 */
 	public abstract Program interpret(Program program) throws ParserException;
 
-	/**
-	 * 解释 <code>FunctionDeclarationStatement</code> 语法节点的语法
-	 * 
-	 * @param statement
-	 * @return
-	 * @throws ParserException
-	 */
 	public abstract AbstractStatement interpret(
 			FunctionDeclarationStatement functionDeclarationStatement)
 			throws ParserException;

@@ -10,7 +10,7 @@ import ast.expression.literal.IdentifierLiteral;
  * @author Jarod Yv
  */
 public class ContinueStatement extends AbstractStatement {
-	public IdentifierLiteral identifier;
+	public IdentifierLiteral identifier = null;
 
 	/**
 	 * 构造函数
@@ -22,16 +22,16 @@ public class ContinueStatement extends AbstractStatement {
 		this.identifier = identifier;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.statement.AbstractStatement#analyseStatement(analyzer.AbstractAnalyzer
-	 * )
-	 */
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (identifier != null) {
+			identifier.release();
+			identifier = null;
+		}
 	}
 
 }

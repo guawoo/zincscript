@@ -20,7 +20,7 @@ import ast.expression.literal.FunctionLiteral;
  */
 public class FunctionDeclarationStatement extends AbstractStatement {
 	/** 函数结构 */
-	public FunctionLiteral function;
+	public FunctionLiteral function = null;
 
 	/**
 	 * 构造函数
@@ -39,9 +39,9 @@ public class FunctionDeclarationStatement extends AbstractStatement {
 	 * ast.statement.AbstractStatement#analyseStatement(analyzer.AbstractAnalyzer
 	 * )
 	 */
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
+	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
 	}
 
 }
