@@ -13,9 +13,9 @@ public class NullLiteral extends AbstractLiteral {
 	public NullLiteral() {
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
 	}
 
 }

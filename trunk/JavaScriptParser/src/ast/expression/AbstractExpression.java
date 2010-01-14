@@ -2,14 +2,14 @@ package ast.expression;
 
 import interpreter.AbstractInterpreter;
 import parser.ParserException;
-import ast.AbstractNode;
+import ast.AbstractSyntaxNode;
 
 /**
  * <code>AbstractExpression</code> 是语法树上所有表达式节点的基类
  * 
  * @author Jarod Yv
  */
-public abstract class AbstractExpression extends AbstractNode {
+public abstract class AbstractExpression extends AbstractSyntaxNode {
 	/**
 	 * 分析表达式语法
 	 * 

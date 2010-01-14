@@ -34,9 +34,9 @@ public class StringLiteral extends AbstractLiteral {
 		return string.hashCode();
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
 	}
 
 }

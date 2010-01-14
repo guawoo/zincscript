@@ -8,6 +8,7 @@ import parser.Config;
 import parser.ParserException;
 import parser.Token;
 import utils.ArrayList;
+import vm.VirtualMachine;
 import ast.*;
 import ast.expression.*;
 import ast.expression.binary.*;
@@ -55,7 +56,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private ArrayList unresolvedJumps = new ArrayList();
 	private ArrayList labelSet = new ArrayList();
 
-	private ArrayList lineNumberVector = new ArrayList();
+	private ArrayList lineNumberList = new ArrayList();
 
 	private AbstractExpression pendingAssignment;
 
@@ -100,6 +101,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 				function.functions[i].interpretStatement(this);
 			}
 		}
+		
 		// 处理函数中的语句
 		for (int i = 0; i < function.statements.length; i++) {
 			if (function.statements[i] != null) {
@@ -153,14 +155,14 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		addLineNumber(functionDeclarationStatement);
 		functionDeclarationStatement.function.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_DROP);
 		return functionDeclarationStatement;
 	}
 
 	public AbstractStatement interpret(BlockStatement blockStatement)
 			throws ParserException {
-		for (int i = 0; i < blockStatement.statements.length; i++) {
-			blockStatement.statements[i].interpretStatement(this);
+		for (int i = 0; i < blockStatement.statementList.length; i++) {
+			blockStatement.statementList[i].interpretStatement(this);
 		}
 		return blockStatement;
 	}
@@ -169,7 +171,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		addLineNumber(breakStatement);
 		writeJump(
-				JsFunctionObject.XOP_GO,
+				VirtualMachine.XOP_GO,
 				breakStatement.identifier == null ? (Object) currentBreakStatement
 						: breakStatement.identifier.string, "break");
 		return breakStatement;
@@ -184,7 +186,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		addLineNumber(continueStatement);
 		writeJump(
-				JsFunctionObject.XOP_GO,
+				VirtualMachine.XOP_GO,
 				continueStatement.identifier == null ? (Object) currentBreakStatement
 						: continueStatement.identifier.string, "continue");
 		return continueStatement;
@@ -205,8 +207,8 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		setLabel(doStatement, "continue");
 		visitWithNewLabelSet(doStatement.expression);
-		writeOp(JsFunctionObject.OP_NOT);
-		writeJump(JsFunctionObject.XOP_IF, doStatement, "do");
+		writeOp(VirtualMachine.OP_NOT);
+		writeJump(VirtualMachine.XOP_IF, doStatement, "do");
 		setLabel(doStatement, "break");
 
 		currentBreakStatement = saveBreakStatement;
@@ -223,7 +225,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		addLineNumber(expressionStatement);
 		expressionStatement.expression.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_DROP);
 		return expressionStatement;
 	}
 
@@ -234,7 +236,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		if (forStatement.initial != null) {
 			forStatement.initial.interpretExpression(this);
 			if (!(forStatement.initial instanceof VariableExpression)) {
-				writeOp(JsFunctionObject.OP_DROP);
+				writeOp(VirtualMachine.OP_DROP);
 			}
 		}
 
@@ -248,7 +250,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		if (forStatement.condition != null) {
 			visitWithNewLabelSet(forStatement.condition);
-			writeJump(JsFunctionObject.XOP_IF, forStatement, "break");
+			writeJump(VirtualMachine.XOP_IF, forStatement, "break");
 		}
 
 		if (forStatement.statement != null) {
@@ -259,10 +261,10 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		if (forStatement.increment != null) {
 			visitWithNewLabelSet(forStatement.increment);
-			writeOp(JsFunctionObject.OP_DROP);
+			writeOp(VirtualMachine.OP_DROP);
 		}
 
-		writeJump(JsFunctionObject.XOP_GO, forStatement, "start");
+		writeJump(VirtualMachine.XOP_GO, forStatement, "start");
 
 		setLabel(forStatement, "break");
 
@@ -283,15 +285,15 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		currentContinueStatement = forInStatement;
 
 		forInStatement.expression.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_ENUM);
+		writeOp(VirtualMachine.OP_ENUM);
 		setLabel(forInStatement, "continue");
-		writeJump(JsFunctionObject.XOP_NEXT, forInStatement, "break");
+		writeJump(VirtualMachine.XOP_NEXT, forInStatement, "break");
 
 		if (forInStatement.variable instanceof IdentifierLiteral) {
 			writeXop(
-					JsFunctionObject.XOP_PUSH_STR,
+					VirtualMachine.XOP_PUSH_STR,
 					getStringLiteralIndex(((IdentifierLiteral) forInStatement.variable).string));
-			writeOp(JsFunctionObject.OP_CTX_SET);
+			writeOp(VirtualMachine.OP_CTX_SET);
 		} else if (forInStatement.variable instanceof VariableDeclarationExpression) {
 			writeVarDef(
 					((VariableDeclarationExpression) forInStatement.variable).identifier.string,
@@ -299,12 +301,12 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		} else {
 			throw new IllegalArgumentException();
 		}
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_DROP);
 
 		forInStatement.statement.interpretStatement(this);
-		writeJump(JsFunctionObject.XOP_GO, forInStatement, "continue");
+		writeJump(VirtualMachine.XOP_GO, forInStatement, "continue");
 		setLabel(forInStatement, "break");
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_DROP);
 
 		currentBreakStatement = saveBreakStatement;
 		currentContinueStatement = saveContinueStatement;
@@ -318,12 +320,12 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		ifStatement.expression.interpretExpression(this);
 		if (ifStatement.falseStatement == null) {
-			writeJump(JsFunctionObject.XOP_IF, ifStatement, "endif");
+			writeJump(VirtualMachine.XOP_IF, ifStatement, "endif");
 			ifStatement.trueStatement.interpretStatement(this);
 		} else {
-			writeJump(JsFunctionObject.XOP_IF, ifStatement, "else");
+			writeJump(VirtualMachine.XOP_IF, ifStatement, "else");
 			ifStatement.trueStatement.interpretStatement(this);
-			writeJump(JsFunctionObject.XOP_GO, ifStatement, "endif");
+			writeJump(VirtualMachine.XOP_GO, ifStatement, "endif");
 			setLabel(ifStatement, "else");
 			ifStatement.falseStatement.interpretStatement(this);
 		}
@@ -343,11 +345,11 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		addLineNumber(returnStatement);
 
 		if (returnStatement.expression == null) {
-			writeOp(JsFunctionObject.OP_PUSH_UNDEF);
+			writeOp(VirtualMachine.OP_PUSH_UNDEF);
 		} else {
 			returnStatement.expression.interpretExpression(this);
 		}
-		writeOp(JsFunctionObject.OP_RET);
+		writeOp(VirtualMachine.OP_RET);
 		return returnStatement;
 	}
 
@@ -367,20 +369,20 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			if (cs.expression == null) {
 				defaultLabel = "case" + i;
 			} else {
-				writeOp(JsFunctionObject.OP_DUP);
+				writeOp(VirtualMachine.OP_DUP);
 				cs.expression.interpretExpression(this);
-				writeOp(JsFunctionObject.OP_EQEQEQ);
-				writeOp(JsFunctionObject.OP_NOT);
-				writeJump(JsFunctionObject.XOP_IF, switchStatement, "case" + i);
+				writeOp(VirtualMachine.OP_EQEQEQ);
+				writeOp(VirtualMachine.OP_NOT);
+				writeJump(VirtualMachine.XOP_IF, switchStatement, "case" + i);
 			}
 		}
 
-		writeOp(JsFunctionObject.OP_DROP);
-		writeJump(JsFunctionObject.XOP_GO, switchStatement, defaultLabel);
+		writeOp(VirtualMachine.OP_DROP);
+		writeJump(VirtualMachine.XOP_GO, switchStatement, defaultLabel);
 
 		for (int i = 0; i < switchStatement.clauses.length; i++) {
 			setLabel(switchStatement, "case" + i);
-			AbstractStatement[] statements = switchStatement.clauses[i].statements;
+			AbstractStatement[] statements = switchStatement.clauses[i].statementList;
 			for (int j = 0; j < statements.length; j++) {
 				statements[j].interpretStatement(this);
 			}
@@ -397,9 +399,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		throwStatement.expression.interpretExpression(this);
 		if (currentTryStatement == null) {
-			writeOp(JsFunctionObject.OP_THROW);
+			writeOp(VirtualMachine.OP_THROW);
 		} else {
-			writeJump(JsFunctionObject.XOP_GO, currentTryStatement, "catch");
+			writeJump(VirtualMachine.XOP_GO, currentTryStatement, "catch");
 		}
 		return throwStatement;
 	}
@@ -416,7 +418,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		tryStatement.tryBlock.interpretStatement(this);
 
-		writeJump(JsFunctionObject.XOP_GO, tryStatement, "end");
+		writeJump(VirtualMachine.XOP_GO, tryStatement, "end");
 
 		if (tryStatement.catchBlock != null) {
 			setLabel(tryStatement, "catch");
@@ -429,10 +431,10 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 			// add var and init from stack
 			writeVarDef(tryStatement.catchIdentifier.string, true);
-			writeOp(JsFunctionObject.OP_DROP);
+			writeOp(VirtualMachine.OP_DROP);
 			tryStatement.catchBlock.interpretStatement(this);
 
-			writeJump(JsFunctionObject.XOP_GO, tryStatement, "end");
+			writeJump(VirtualMachine.XOP_GO, tryStatement, "end");
 		}
 
 		// reset everything
@@ -446,9 +448,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			tryStatement.finallyBlock.interpretStatement(this);
 
 			if (currentTryStatement == null) {
-				writeOp(JsFunctionObject.OP_THROW);
+				writeOp(VirtualMachine.OP_THROW);
 			} else {
-				writeJump(JsFunctionObject.XOP_GO, currentTryStatement, "catch");
+				writeJump(VirtualMachine.XOP_GO, currentTryStatement, "catch");
 			}
 		}
 
@@ -482,11 +484,11 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		setLabel(whileStatement, "continue");
 		visitWithNewLabelSet(whileStatement.expression);
-		writeJump(JsFunctionObject.XOP_IF, whileStatement, "break");
+		writeJump(VirtualMachine.XOP_IF, whileStatement, "break");
 
 		visitWithNewLabelSet(whileStatement.statement);
 
-		writeJump(JsFunctionObject.XOP_GO, whileStatement, "continue");
+		writeJump(VirtualMachine.XOP_GO, whileStatement, "continue");
 
 		setLabel(whileStatement, "break");
 
@@ -501,9 +503,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		if (currentTryStatement == null) {
 			withStatement.expression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_WITH_START);
+			writeOp(VirtualMachine.OP_WITH_START);
 			withStatement.statement.interpretStatement(this);
-			writeOp(JsFunctionObject.OP_WITH_END);
+			writeOp(VirtualMachine.OP_WITH_END);
 		} else {
 			// if an exception is thrown inside the with statement,
 			// it is necessary to restore the context
@@ -512,17 +514,17 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			currentTryLabel = "finally";
 			currentTryStatement = withStatement;
 			withStatement.expression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_WITH_END);
+			writeOp(VirtualMachine.OP_WITH_END);
 			withStatement.statement.interpretStatement(this);
-			writeOp(JsFunctionObject.OP_WITH_END);
-			writeJump(JsFunctionObject.XOP_GO, withStatement, "end");
+			writeOp(VirtualMachine.OP_WITH_END);
+			writeJump(VirtualMachine.XOP_GO, withStatement, "end");
 
 			currentTryStatement = saveTryStatement;
 			currentTryLabel = saveTryLabel;
 
 			setLabel(withStatement, "finally");
-			writeOp(JsFunctionObject.OP_WITH_END);
-			writeOp(JsFunctionObject.OP_THROW);
+			writeOp(VirtualMachine.OP_WITH_END);
+			writeOp(VirtualMachine.OP_THROW);
 			setLabel(withStatement, "end");
 		}
 		return withStatement;
@@ -568,11 +570,11 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		if (callFunctionExpression.function instanceof PropertyExpression) {
 			PropertyExpression pe = (PropertyExpression) callFunctionExpression.function;
 			pe.leftExpression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_DUP);
+			writeOp(VirtualMachine.OP_DUP);
 			pe.rightExpression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_GET);
+			writeOp(VirtualMachine.OP_GET);
 		} else {
-			writeOp(JsFunctionObject.OP_PUSH_GLOBAL);
+			writeOp(VirtualMachine.OP_PUSH_GLOBAL);
 			callFunctionExpression.function.interpretExpression(this);
 		}
 		// push arguments
@@ -581,12 +583,12 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		}
 
 		if (currentTryStatement == null) {
-			writeXop(JsFunctionObject.XOP_CALL,
+			writeXop(VirtualMachine.XOP_CALL,
 					callFunctionExpression.arguments.length);
 		} else {
-			writeXop(JsFunctionObject.XOP_TRY_CALL,
+			writeXop(VirtualMachine.XOP_TRY_CALL,
 					callFunctionExpression.arguments.length);
-			writeJump(JsFunctionObject.XOP_IF, currentTryStatement,
+			writeJump(VirtualMachine.XOP_IF, currentTryStatement,
 					currentTryLabel);
 		}
 		return callFunctionExpression;
@@ -595,9 +597,9 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	public AbstractExpression interpret(
 			ConditionalExpression conditionalExpression) throws ParserException {
 		conditionalExpression.expression.interpretExpression(this);
-		writeJump(JsFunctionObject.XOP_IF, conditionalExpression, "else");
+		writeJump(VirtualMachine.XOP_IF, conditionalExpression, "else");
 		conditionalExpression.trueExpression.interpretExpression(this);
-		writeJump(JsFunctionObject.XOP_GO, conditionalExpression, "endif");
+		writeJump(VirtualMachine.XOP_GO, conditionalExpression, "endif");
 		setLabel(conditionalExpression, "else");
 		conditionalExpression.falseExpression.interpretExpression(this);
 		setLabel(conditionalExpression, "endif");
@@ -631,10 +633,10 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	public AbstractExpression interpret(
 			LogicalAndExpression logicalAndExpression) throws ParserException {
 		logicalAndExpression.leftExpression.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_DUP);
+		writeOp(VirtualMachine.OP_DUP);
 		// jump (= skip) if false since false && any = false
-		writeJump(JsFunctionObject.XOP_IF, logicalAndExpression, "end");
-		writeOp(JsFunctionObject.OP_DROP);
+		writeJump(VirtualMachine.XOP_IF, logicalAndExpression, "end");
+		writeOp(VirtualMachine.OP_DROP);
 		logicalAndExpression.rightExpression.interpretExpression(this);
 		setLabel(logicalAndExpression, "end");
 		return logicalAndExpression;
@@ -643,11 +645,11 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	public AbstractExpression interpret(LogicalOrExpression logicalOrExpression)
 			throws ParserException {
 		logicalOrExpression.leftExpression.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_DUP);
+		writeOp(VirtualMachine.OP_DUP);
 		// jump (= skip) if true since true && any =
-		writeOp(JsFunctionObject.OP_NOT);
-		writeJump(JsFunctionObject.XOP_IF, logicalOrExpression, "end");
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_NOT);
+		writeJump(VirtualMachine.XOP_IF, logicalOrExpression, "end");
+		writeOp(VirtualMachine.OP_DROP);
 		logicalOrExpression.rightExpression.interpretExpression(this);
 		setLabel(logicalOrExpression, "end");
 		return logicalOrExpression;
@@ -656,16 +658,16 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	public AbstractExpression interpret(NewExpression newExpression)
 			throws ParserException {
 		newExpression.objName.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_NEW);
+		writeOp(VirtualMachine.OP_NEW);
 		if (newExpression.arguments != null) {
 			for (int i = 0; i < newExpression.arguments.length; i++) {
 				newExpression.arguments[i].interpretExpression(this);
 			}
-			writeXop(JsFunctionObject.XOP_CALL, newExpression.arguments.length);
+			writeXop(VirtualMachine.XOP_CALL, newExpression.arguments.length);
 		} else {
-			writeXop(JsFunctionObject.XOP_CALL, 0);
+			writeXop(VirtualMachine.XOP_CALL, 0);
 		}
-		writeOp(JsFunctionObject.OP_DROP);
+		writeOp(VirtualMachine.OP_DROP);
 		return newExpression;
 	}
 
@@ -677,7 +679,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		if (pa == null) {
 			propertyExpression.leftExpression.interpretExpression(this);
 			propertyExpression.rightExpression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_GET);
+			writeOp(VirtualMachine.OP_GET);
 		} else if (pa instanceof AssignmentExpression) {
 			// push value
 			((AssignmentExpression) pa).rightExpression
@@ -686,41 +688,41 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			propertyExpression.leftExpression.interpretExpression(this);
 			// push property
 			propertyExpression.rightExpression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_SET);
+			writeOp(VirtualMachine.OP_SET);
 		} else if (pa instanceof AssignmentOperatorExpression) {
 			// this case is a bit tricky...
 			AssignmentOperatorExpression aoe = (AssignmentOperatorExpression) pa;
 			propertyExpression.leftExpression.interpretExpression(this);
 			propertyExpression.rightExpression.interpretExpression(this);
 			// duplicate object and member
-			writeOp(JsFunctionObject.OP_DDUP);
-			writeOp(JsFunctionObject.OP_GET);
+			writeOp(VirtualMachine.OP_DDUP);
+			writeOp(VirtualMachine.OP_GET);
 			// push value
 			aoe.rightExpression.interpretExpression(this);
 			// exec assignment op
 			writeBinaryOperator(aoe.type);
 			// move result value below object and property
-			writeOp(JsFunctionObject.OP_ROT);
-			writeOp(JsFunctionObject.OP_SET);
+			writeOp(VirtualMachine.OP_ROT);
+			writeOp(VirtualMachine.OP_SET);
 		} else if (pa instanceof IncrementExpression) {
 			IncrementExpression ie = (IncrementExpression) pa;
 			propertyExpression.leftExpression.interpretExpression(this);
 			propertyExpression.rightExpression.interpretExpression(this);
 			// duplicate object and member
-			writeOp(JsFunctionObject.OP_DDUP);
-			writeOp(JsFunctionObject.OP_GET);
+			writeOp(VirtualMachine.OP_DDUP);
+			writeOp(VirtualMachine.OP_GET);
 			// increment / decrement
-			writeXop(JsFunctionObject.XOP_ADD, ie.value);
+			writeXop(VirtualMachine.XOP_ADD, ie.value);
 			// move result value below object and property
-			writeOp(JsFunctionObject.OP_ROT);
-			writeOp(JsFunctionObject.OP_SET);
+			writeOp(VirtualMachine.OP_ROT);
+			writeOp(VirtualMachine.OP_SET);
 			if (ie.post) {
-				writeXop(JsFunctionObject.XOP_ADD, -ie.value);
+				writeXop(VirtualMachine.XOP_ADD, -ie.value);
 			}
 		} else if (pa instanceof DeleteExpression) {
 			propertyExpression.leftExpression.interpretExpression(this);
 			propertyExpression.rightExpression.interpretExpression(this);
-			writeOp(JsFunctionObject.OP_DEL);
+			writeOp(VirtualMachine.OP_DEL);
 		}
 		return propertyExpression;
 	}
@@ -747,7 +749,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		if (variableDeclarationExpression.initializer != null) {
 			variableDeclarationExpression.initializer.interpretExpression(this);
 			writeVarDef(variableDeclarationExpression.identifier.string, true);
-			writeOp(JsFunctionObject.OP_DROP);
+			writeOp(VirtualMachine.OP_DROP);
 		} else {
 			writeVarDef(variableDeclarationExpression.identifier.string, false);
 		}
@@ -781,17 +783,17 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		} else if (pa instanceof IncrementExpression) {
 			IncrementExpression ie = (IncrementExpression) pa;
 			writeOpGet(identifierLiteral);
-			writeXop(JsFunctionObject.XOP_ADD, ((IncrementExpression) pa).value);
+			writeXop(VirtualMachine.XOP_ADD, ((IncrementExpression) pa).value);
 			writeOpSet(identifierLiteral);
 			if (ie.post) {
-				writeXop(JsFunctionObject.XOP_ADD,
+				writeXop(VirtualMachine.XOP_ADD,
 						-((IncrementExpression) pa).value);
 			}
 		} else if (pa instanceof DeleteExpression) {
-			writeOp(JsFunctionObject.OP_CTX);
-			writeXop(JsFunctionObject.XOP_PUSH_STR,
+			writeOp(VirtualMachine.OP_CTX);
+			writeXop(VirtualMachine.XOP_PUSH_STR,
 					getStringLiteralIndex(identifierLiteral.string));
-			writeOp(JsFunctionObject.OP_DEL);
+			writeOp(VirtualMachine.OP_DEL);
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -801,20 +803,20 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	public AbstractLiteral interpret(ThisLiteral thisLiteral)
 			throws ParserException {
-		writeOp(JsFunctionObject.OP_PUSH_THIS);
+		writeOp(VirtualMachine.OP_PUSH_THIS);
 		return thisLiteral;
 	}
 
 	public AbstractLiteral interpret(NullLiteral nullLiteral)
 			throws ParserException {
-		writeOp(JsFunctionObject.OP_PUSH_NULL);
+		writeOp(VirtualMachine.OP_PUSH_NULL);
 		return nullLiteral;
 	}
 
 	public AbstractLiteral interpret(BooleanLiteral booleanLiteral)
 			throws ParserException {
-		writeOp(booleanLiteral.value ? JsFunctionObject.OP_PUSH_TRUE
-				: JsFunctionObject.OP_PUSH_FALSE);
+		writeOp(booleanLiteral.value ? VirtualMachine.OP_PUSH_TRUE
+				: VirtualMachine.OP_PUSH_FALSE);
 		return booleanLiteral;
 	}
 
@@ -822,7 +824,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		double v = numberLiteral.value;
 		if (32767 >= v && v >= -32767 && v == Math.floor(v)) {
-			writeXop(JsFunctionObject.XOP_PUSH_INT, (int) v);
+			writeXop(VirtualMachine.XOP_PUSH_INT, (int) v);
 		} else {
 			Double d = new Double(v);
 			int i = numberLiterals.indexOf(d);
@@ -830,7 +832,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 				i = numberLiterals.size();
 				numberLiterals.add(d);
 			}
-			writeXop(JsFunctionObject.XOP_PUSH_NUM, i);
+			writeXop(VirtualMachine.XOP_PUSH_NUM, i);
 		}
 
 		return numberLiteral;
@@ -838,21 +840,21 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	public AbstractLiteral interpret(StringLiteral stringLiteral)
 			throws ParserException {
-		writeXop(JsFunctionObject.XOP_PUSH_STR,
+		writeXop(VirtualMachine.XOP_PUSH_STR,
 				getStringLiteralIndex(stringLiteral.string));
 		return stringLiteral;
 	}
 
 	public AbstractLiteral interpret(ArrayLiteral arrayLiteral)
 			throws ParserException {
-		writeOp(JsFunctionObject.OP_NEW_ARR);
+		writeOp(VirtualMachine.OP_NEW_ARR);
 		for (int i = 0; i < arrayLiteral.elements.length; i++) {
 			if (arrayLiteral.elements[i] == null) {
-				writeOp(JsFunctionObject.OP_PUSH_UNDEF);
+				writeOp(VirtualMachine.OP_PUSH_UNDEF);
 			} else {
 				arrayLiteral.elements[i].interpretExpression(this);
 			}
-			writeOp(JsFunctionObject.OP_APPEND);
+			writeOp(VirtualMachine.OP_APPEND);
 		}
 		return arrayLiteral;
 	}
@@ -866,7 +868,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		functionLiterals.add(baos.toByteArray());
 
-		writeXop(JsFunctionObject.XOP_PUSH_FN, functionLiterals.size() - 1);
+		writeXop(VirtualMachine.XOP_PUSH_FN, functionLiterals.size() - 1);
 
 		if (functionLiteral.funcName != null) {
 			writeVarDef(functionLiteral.funcName.string, true);
@@ -876,7 +878,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	public AbstractLiteral interpret(ObjectLiteral objectLiteral)
 			throws ParserException {
-		writeOp(JsFunctionObject.OP_NEW_OBJ);
+		writeOp(VirtualMachine.OP_NEW_OBJ);
 		for (int i = 0; i < objectLiteral.properties.length; i++) {
 			objectLiteral.properties[i].interpretExpression(this);
 		}
@@ -887,7 +889,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		objectPropertyLiteral.name.interpretExpression(this);
 		objectPropertyLiteral.value.interpretExpression(this);
-		writeOp(JsFunctionObject.OP_SET_KC);
+		writeOp(VirtualMachine.OP_SET_KC);
 
 		return objectPropertyLiteral;
 	}
@@ -1025,10 +1027,10 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeLineNumberBlock() throws ParserException {
 		try {
 			dos.write(BLOCK_LINENUMBER);
-			int lineNumberCount = lineNumberVector.size();
-			dos.writeShort(lineNumberVector.size());
+			int lineNumberCount = lineNumberList.size();
+			dos.writeShort(lineNumberList.size());
 			for (int i = 0; i < lineNumberCount; i++) {
-				LineNumber lineNumber = (LineNumber) lineNumberVector.get(i);
+				LineNumber lineNumber = (LineNumber) lineNumberList.get(i);
 				dos.writeShort(lineNumber.programCounter & 0xffff);
 				dos.writeShort(lineNumber.lineNumber & 0xffff);
 			}
@@ -1058,11 +1060,11 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		int index = identifier.index;
 
 		if (Config.FASTLOCALS && enableLocalsOptimization && index >= 0) {
-			writeXop(JsFunctionObject.XOP_LCL_GET, index);
+			writeXop(VirtualMachine.XOP_LCL_GET, index);
 		} else {
-			writeXop(JsFunctionObject.XOP_PUSH_STR,
+			writeXop(VirtualMachine.XOP_PUSH_STR,
 					getStringLiteralIndex(identifier.string));
-			writeOp(JsFunctionObject.OP_CTX_GET);
+			writeOp(VirtualMachine.OP_CTX_GET);
 		}
 	}
 
@@ -1070,15 +1072,15 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		int index = identifier.index;
 
 		if (Config.FASTLOCALS && enableLocalsOptimization && index >= 0) {
-			writeXop(JsFunctionObject.XOP_LCL_SET, index);
+			writeXop(VirtualMachine.XOP_LCL_SET, index);
 		} else {
-			writeXop(JsFunctionObject.XOP_PUSH_STR,
+			writeXop(VirtualMachine.XOP_PUSH_STR,
 					getStringLiteralIndex(identifier.string));
-			writeOp(JsFunctionObject.OP_CTX_SET);
+			writeOp(VirtualMachine.OP_CTX_SET);
 		}
 	}
 
-	private void visitWithNewLabelSet(AbstractNode node) throws ParserException {
+	private void visitWithNewLabelSet(AbstractSyntaxNode node) throws ParserException {
 		ArrayList saveLabelSet = labelSet;
 		labelSet = new ArrayList();
 		if (node instanceof AbstractStatement) {
@@ -1094,13 +1096,13 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	 * given output stream.
 	 */
 	void writeXop(int opcode, int param) {
-		if (opcode == JsFunctionObject.XOP_ADD) {
+		if (opcode == VirtualMachine.XOP_ADD) {
 			switch (param) {
 			case 1:
-				writeOp(JsFunctionObject.OP_INC);
+				writeOp(VirtualMachine.OP_INC);
 				return;
 			case -1:
-				writeOp(JsFunctionObject.OP_DEC);
+				writeOp(VirtualMachine.OP_DEC);
 				return;
 			}
 		}
@@ -1120,7 +1122,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 		if (base instanceof String) {
 			type = type + "-" + base;
-		} else if (base instanceof AbstractNode) {
+		} else if (base instanceof AbstractSyntaxNode) {
 			type = type + "=" + base.hashCode();
 		} else if (base == null) {
 			throw new RuntimeException("Invalid position for " + type);
@@ -1151,7 +1153,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		}
 	}
 
-	private void setLabel(AbstractNode node, String label) {
+	private void setLabel(AbstractSyntaxNode node, String label) {
 		Integer pos = new Integer(codeStream.size());
 		jumpLabels.put(label + "=" + node.hashCode(), pos);
 		for (int i = 0; i < labelSet.size(); i++) {
@@ -1162,68 +1164,68 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	private void writeBinaryOperator(Token type) {
 		if (type == Token.OPERATOR_ASSIGN) {
 			// should be handled as special case
-			writeOp(JsFunctionObject.OP_DROP);
+			writeOp(VirtualMachine.OP_DROP);
 		} else if (type == Token.OPERATOR_ARITHMETICAL_AND
 				|| type == Token.OPERATOR_ARITHMETICAL_AND_ASSIGN) {
-			writeOp(JsFunctionObject.OP_AND);
+			writeOp(VirtualMachine.OP_AND);
 		} else if (type == Token.OPERATOR_ARITHMETICAL_OR
 				|| type == Token.OPERATOR_ARITHMETICAL_OR_ASSIGN) {
-			writeOp(JsFunctionObject.OP_OR);
+			writeOp(VirtualMachine.OP_OR);
 		} else if (type == Token.OPERATOR_ARITHMETICAL_XOR
 				|| type == Token.OPERATOR_ARITHMETICAL_XOR_ASSIGN) {
-			writeOp(JsFunctionObject.OP_XOR);
+			writeOp(VirtualMachine.OP_XOR);
 		} else if (type == Token.OPERATOR_COMMA) {
 			// should be handled as special case in caller to avoid swap
-			writeOp(JsFunctionObject.OP_SWAP);
-			writeOp(JsFunctionObject.OP_DROP);
+			writeOp(VirtualMachine.OP_SWAP);
+			writeOp(VirtualMachine.OP_DROP);
 		} else if (type == Token.OPERATOR_DIVIDE
 				|| type == Token.OPERATOR_DIVIDE_ASSIGN) {
-			writeOp(JsFunctionObject.OP_DIV);
+			writeOp(VirtualMachine.OP_DIV);
 		} else if (type == Token.OPERATOR_EQUAL) {
-			writeOp(JsFunctionObject.OP_EQEQ);
+			writeOp(VirtualMachine.OP_EQEQ);
 		} else if (type == Token.OPERATOR_STRICT_EQUAL) {
-			writeOp(JsFunctionObject.OP_EQEQEQ);
+			writeOp(VirtualMachine.OP_EQEQEQ);
 		} else if (type == Token.OPERATOR_GT) {
-			writeOp(JsFunctionObject.OP_GT);
+			writeOp(VirtualMachine.OP_GT);
 		} else if (type == Token.OPERATOR_GTE) {
-			writeOp(JsFunctionObject.OP_LT);
-			writeOp(JsFunctionObject.OP_NOT);
+			writeOp(VirtualMachine.OP_LT);
+			writeOp(VirtualMachine.OP_NOT);
 		} else if (type == Token.OPERATOR_LT) {
-			writeOp(JsFunctionObject.OP_LT);
+			writeOp(VirtualMachine.OP_LT);
 		} else if (type == Token.OPERATOR_LTE) {
-			writeOp(JsFunctionObject.OP_GT);
-			writeOp(JsFunctionObject.OP_NOT);
+			writeOp(VirtualMachine.OP_GT);
+			writeOp(VirtualMachine.OP_NOT);
 		} else if (type == Token.OPERATOR_MINUS
 				|| type == Token.OPERATOR_MINUS_ASSIGN) {
-			writeOp(JsFunctionObject.OP_SUB);
+			writeOp(VirtualMachine.OP_SUB);
 		} else if (type == Token.OPERATOR_MOD
 				|| type == Token.OPERATOR_MOD_ASSIGN) {
-			writeOp(JsFunctionObject.OP_MOD);
+			writeOp(VirtualMachine.OP_MOD);
 		} else if (type == Token.OPERATOR_MUL
 				|| type == Token.OPERATOR_MUL_ASSIGN) {
-			writeOp(JsFunctionObject.OP_MUL);
+			writeOp(VirtualMachine.OP_MUL);
 		} else if (type == Token.OPERATOR_NOT_EQUAL) {
-			writeOp(JsFunctionObject.OP_EQEQ);
-			writeOp(JsFunctionObject.OP_NOT);
+			writeOp(VirtualMachine.OP_EQEQ);
+			writeOp(VirtualMachine.OP_NOT);
 		} else if (type == Token.OPERATOR_NOT_STRICT_EQUAL) {
-			writeOp(JsFunctionObject.OP_EQEQEQ);
-			writeOp(JsFunctionObject.OP_NOT);
+			writeOp(VirtualMachine.OP_EQEQEQ);
+			writeOp(VirtualMachine.OP_NOT);
 		} else if (type == Token.OPERATOR_PLUS
 				|| type == Token.OPERATOR_PLUS_ASSIGN) {
-			writeOp(JsFunctionObject.OP_ADD);
+			writeOp(VirtualMachine.OP_ADD);
 		} else if (type == Token.OPERATOR_SHL
 				|| type == Token.OPERATOR_SHL_ASSIGN) {
-			writeOp(JsFunctionObject.OP_SHL);
+			writeOp(VirtualMachine.OP_SHL);
 		} else if (type == Token.OPERATOR_SHR
 				|| type == Token.OPERATOR_SHR_ASSIGN) {
-			writeOp(JsFunctionObject.OP_SHR);
+			writeOp(VirtualMachine.OP_SHR);
 		} else if (type == Token.OPERATOR_ASR
 				|| type == Token.OPERATOR_ASR_ASSIGN) {
-			writeOp(JsFunctionObject.OP_ASR);
+			writeOp(VirtualMachine.OP_ASR);
 		} else if (type == Token.KEYWORD_IN) {
-			writeOp(JsFunctionObject.OP_IN);
+			writeOp(VirtualMachine.OP_IN);
 		} else if (type == Token.KEYWORD_INSTANCEOF) {
-			writeOp(JsFunctionObject.OP_INSTANCEOF);
+			writeOp(VirtualMachine.OP_INSTANCEOF);
 		} else {
 			throw new IllegalArgumentException("Not binary: " + type.toString());
 		}
@@ -1231,18 +1233,18 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	private void writeUnaryOperator(Token type) {
 		if (type == Token.OPERATOR_PLUS) {
-			writeXop(JsFunctionObject.XOP_ADD, 0);
+			writeXop(VirtualMachine.XOP_ADD, 0);
 		} else if (type == Token.OPERATOR_MINUS) {
-			writeOp(JsFunctionObject.OP_NEG);
+			writeOp(VirtualMachine.OP_NEG);
 		} else if (type == Token.OPERATOR_ARITHMETICAL_NOT) {
-			writeOp(JsFunctionObject.OP_INV);
+			writeOp(VirtualMachine.OP_INV);
 		} else if (type == Token.OPERATOR_LOGICAL_NOT) {
-			writeOp(JsFunctionObject.OP_NOT);
+			writeOp(VirtualMachine.OP_NOT);
 		} else if (type == Token.KEYWORD_VOID) {
-			writeOp(JsFunctionObject.OP_DROP);
-			writeOp(JsFunctionObject.OP_PUSH_UNDEF);
+			writeOp(VirtualMachine.OP_DROP);
+			writeOp(VirtualMachine.OP_PUSH_UNDEF);
 		} else if (type == Token.KEYWORD_TYPEOF) {
-			writeOp(JsFunctionObject.OP_TYPEOF);
+			writeOp(VirtualMachine.OP_TYPEOF);
 		} else {
 			throw new IllegalArgumentException("Not unary: " + type.toString());
 		}
@@ -1251,8 +1253,8 @@ public class CompilationInterpreter extends AbstractInterpreter {
 	/** value must be on stack, is kept on stack */
 	private void writeVarDef(String name, boolean initialize) {
 		if (initialize) {
-			writeXop(JsFunctionObject.XOP_PUSH_STR, getStringLiteralIndex(name));
-			writeOp(JsFunctionObject.OP_CTX_SET);
+			writeXop(VirtualMachine.XOP_PUSH_STR, getStringLiteralIndex(name));
+			writeOp(VirtualMachine.OP_CTX_SET);
 		}
 	}
 
@@ -1281,7 +1283,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	private void addLineNumber(AbstractStatement statement) {
 		if (Config.LINENUMBER) {
-			lineNumberVector.add(new LineNumber(codeStream.size(), statement
+			lineNumberList.add(new LineNumber(codeStream.size(), statement
 					.getLineNumber()));
 		}
 	}
