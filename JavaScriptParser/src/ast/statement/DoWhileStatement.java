@@ -5,25 +5,34 @@ import parser.ParserException;
 import ast.expression.AbstractExpression;
 
 /**
- * <code>WhileStatement</code> 定义了<strong><code>while</code></strong>关键字语法的语法树
+ * <code>DoStatement</code> 定义了<strong><code>do-while</code></strong>关键字语法的语法树
  * <p>
  * <strong><code>while</code></strong>关键字语句的语法结构如下:
  * 
  * <pre>
- * <b><i><code>while</code> Statement:</i></b>
- * 	<strong><code>while</code></strong>(<em>Expression</em>) Statement
+ * <b><i>do-while Statement:</i></b>
+ * 	<strong><code>do</code></strong> Statement <strong><code>while</code></strong>( Expression );
  * </pre>
  * 
  * @author Jarod Yv
  * @see ECMA-262 64页 12.6.Iteration Statements
  */
-public class WhileStatement extends AbstractStatement {
+public class DoWhileStatement extends AbstractStatement {
+	/** while后面的条件表达式 */
+	public AbstractExpression expression;
+	/** do后面要循环执行的语句 */
+	public AbstractStatement statement;
 
-	public AbstractExpression expression = null;
-	public AbstractStatement statement = null;
-
-	public WhileStatement(AbstractExpression expression,
-			AbstractStatement statement) {
+	/**
+	 * 构造函数
+	 * 
+	 * @param statement
+	 *            {@link #statement}
+	 * @param expression
+	 *            {@link #expression}
+	 */
+	public DoWhileStatement(AbstractStatement statement,
+			AbstractExpression expression) {
 		this.expression = expression;
 		this.statement = statement;
 	}
