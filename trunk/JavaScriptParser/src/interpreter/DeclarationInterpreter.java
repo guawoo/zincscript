@@ -38,7 +38,7 @@ import ast.statement.BlockStatement;
 import ast.statement.BreakStatement;
 import ast.statement.CaseStatement;
 import ast.statement.ContinueStatement;
-import ast.statement.DoStatement;
+import ast.statement.DoWhileStatement;
 import ast.statement.EmptyStatement;
 import ast.statement.ExpressionStatement;
 import ast.statement.ForInStatement;
@@ -139,9 +139,9 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 	}
 
 	/**
-	 * 解释{@link DoStatement}
+	 * 解释{@link DoWhileStatement}
 	 */
-	public AbstractStatement interpret(DoStatement doStatement)
+	public AbstractStatement interpret(DoWhileStatement doStatement)
 			throws ParserException {
 		doStatement.statement = interpretStatement(doStatement.statement);
 		doStatement.expression = interpretExpression(doStatement.expression);
@@ -224,7 +224,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 	public AbstractStatement interpret(SwitchStatement switchStatement)
 			throws ParserException {
 		switchStatement.expression = interpretExpression(switchStatement.expression);
-		switchStatement.clauses = (CaseStatement[]) interpretStatementArray(switchStatement.clauses);
+		switchStatement.cases = (CaseStatement[]) interpretStatementArray(switchStatement.cases);
 		return switchStatement;
 	}
 
@@ -352,7 +352,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 
 	public AbstractExpression interpret(NewExpression newExpression)
 			throws ParserException {
-		newExpression.objName = interpretExpression(newExpression.objName);
+		newExpression.function = interpretExpression(newExpression.function);
 		newExpression.arguments = interpretExpressionArray(newExpression.arguments);
 		return newExpression;
 	}

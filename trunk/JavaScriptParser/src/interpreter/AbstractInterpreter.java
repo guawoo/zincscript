@@ -47,7 +47,7 @@ public abstract class AbstractInterpreter {
 	public abstract AbstractStatement interpret(
 			ContinueStatement continueStatement) throws ParserException;
 
-	public abstract AbstractStatement interpret(DoStatement doStatement)
+	public abstract AbstractStatement interpret(DoWhileStatement doStatement)
 			throws ParserException;
 
 	public abstract AbstractStatement interpret(EmptyStatement emptyStatement)

@@ -32,7 +32,7 @@ import ast.statement.BlockStatement;
 import ast.statement.BreakStatement;
 import ast.statement.CaseStatement;
 import ast.statement.ContinueStatement;
-import ast.statement.DoStatement;
+import ast.statement.DoWhileStatement;
 import ast.statement.EmptyStatement;
 import ast.statement.ExpressionStatement;
 import ast.statement.ForInStatement;
@@ -321,7 +321,7 @@ public final class Parser {
 		expression = parseExpression(true);
 		nextSyntax(Token.OPERATOR_CLOSEPAREN);
 
-		return new DoStatement(statement, expression);
+		return new DoWhileStatement(statement, expression);
 	}
 
 	/**
