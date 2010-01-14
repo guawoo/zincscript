@@ -9,9 +9,9 @@ import ast.expression.AbstractExpression;
  */
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 	/** 左子树 */
-	public AbstractExpression leftExpression;
+	public AbstractExpression leftExpression = null;
 	/** 右子树 */
-	public AbstractExpression rightExpression;
+	public AbstractExpression rightExpression = null;
 
 	/**
 	 * 构造函数
@@ -28,5 +28,16 @@ public abstract class AbstractBinaryExpression extends AbstractExpression {
 		}
 		this.leftExpression = leftExpression;
 		this.rightExpression = rightExpression;
+	}
+
+	public void release() {
+		if (leftExpression != null) {
+			leftExpression.release();
+			leftExpression = null;
+		}
+		if (rightExpression != null) {
+			rightExpression.release();
+			rightExpression = null;
+		}
 	}
 }

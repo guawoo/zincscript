@@ -16,9 +16,10 @@ public class LogicalOrExpression extends AbstractBinaryExpression {
 		super(leftExpression, rightExpression);
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
 	}
 
 }

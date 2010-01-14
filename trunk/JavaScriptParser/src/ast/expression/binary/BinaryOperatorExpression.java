@@ -12,7 +12,7 @@ import ast.expression.AbstractExpression;
  */
 public class BinaryOperatorExpression extends AbstractBinaryExpression {
 	/** 运算符 */
-	public Token operator;
+	public Token operator = null;
 
 	/**
 	 * 构造函数
@@ -30,16 +30,14 @@ public class BinaryOperatorExpression extends AbstractBinaryExpression {
 		this.operator = operator;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.expression.AbstractExpression#analyseExpression(analyzer.AbstractAnalyzer
-	 * )
-	 */
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		super.release();
+		operator = null;
 	}
 
 }

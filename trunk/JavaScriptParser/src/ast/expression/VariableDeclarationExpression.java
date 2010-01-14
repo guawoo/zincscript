@@ -10,8 +10,8 @@ import ast.expression.literal.IdentifierLiteral;
  * @author Jarod Yv
  */
 public class VariableDeclarationExpression extends AbstractExpression {
-	public IdentifierLiteral identifier;
-	public AbstractExpression initializer;
+	public IdentifierLiteral identifier = null;
+	public AbstractExpression initializer = null;
 
 	public VariableDeclarationExpression(IdentifierLiteral identifier,
 			AbstractExpression initializer) {
@@ -19,9 +19,21 @@ public class VariableDeclarationExpression extends AbstractExpression {
 		this.initializer = initializer;
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		if (identifier != null) {
+			identifier.release();
+			identifier = null;
+		}
+		if (initializer != null) {
+			initializer.release();
+			initializer = null;
+		}
 	}
 
 }

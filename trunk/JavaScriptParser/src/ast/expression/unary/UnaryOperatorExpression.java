@@ -10,17 +10,21 @@ import ast.expression.AbstractExpression;
  * 
  */
 public class UnaryOperatorExpression extends AbstractUnaryExpression {
-	public Token operator;
+	public Token operator = null;
 
-	public UnaryOperatorExpression(AbstractExpression expression,
-			Token operator) {
+	public UnaryOperatorExpression(AbstractExpression expression, Token operator) {
 		super(expression);
 		this.operator = operator;
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
 	}
 
+	public void release() {
+		super.release();
+		operator = null;
+	}
 }

@@ -10,7 +10,7 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class StringLiteral extends AbstractLiteral {
-	public String string;
+	public String string = null;
 
 	public StringLiteral(String string) {
 		this.string = string;
@@ -39,4 +39,7 @@ public class StringLiteral extends AbstractLiteral {
 		return interpreter.interpret(this);
 	}
 
+	public void release() {
+		string=null;
+	}
 }

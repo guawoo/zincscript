@@ -9,15 +9,19 @@ import parser.ParserException;
  * @author Jarod Yv
  */
 public class VariableExpression extends AbstractExpression {
-	public VariableDeclarationExpression[] declarations;
+	public VariableDeclarationExpression[] declarations = null;
 
 	public VariableExpression(VariableDeclarationExpression[] declarations) {
 		this.declarations = declarations;
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
-			throws ParserException {
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter) throws ParserException {
 		return null;
 	}
 
+	public void release() {
+		release(declarations);
+		declarations = null;
+	}
 }

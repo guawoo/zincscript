@@ -11,7 +11,7 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class AssignmentOperatorExpression extends AbstractBinaryExpression {
-	public Token type;
+	public Token type = null;
 
 	public AssignmentOperatorExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression, Token type) {
@@ -19,9 +19,15 @@ public class AssignmentOperatorExpression extends AbstractBinaryExpression {
 		this.type = type;
 	}
 
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
+	}
+
+	public void release() {
+		super.release();
+		type = null;
 	}
 
 }

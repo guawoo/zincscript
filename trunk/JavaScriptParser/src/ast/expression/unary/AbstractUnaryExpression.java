@@ -9,7 +9,7 @@ import ast.expression.AbstractExpression;
  */
 public abstract class AbstractUnaryExpression extends AbstractExpression {
 	/** 一元运算符后跟的表达式 */
-	public AbstractExpression expression;
+	public AbstractExpression expression = null;
 
 	/**
 	 * 构造函数
@@ -19,5 +19,12 @@ public abstract class AbstractUnaryExpression extends AbstractExpression {
 	 */
 	public AbstractUnaryExpression(AbstractExpression expression) {
 		this.expression = expression;
+	}
+
+	public void release() {
+		if (expression != null) {
+			expression.release();
+			expression = null;
+		}
 	}
 }

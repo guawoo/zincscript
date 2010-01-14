@@ -21,16 +21,10 @@ public class DeleteExpression extends AbstractUnaryExpression {
 		super(expression);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ast.expression.AbstractExpression#analyseExpression(analyzer.AbstractAnalyzer
-	 * )
-	 */
-	public AbstractExpression interpretExpression(AbstractInterpreter analyzer)
+	public AbstractExpression interpretExpression(
+			AbstractInterpreter interpreter)
 			throws ParserException {
-		return analyzer.interpret(this);
+		return interpreter.interpret(this);
 	}
 
 }

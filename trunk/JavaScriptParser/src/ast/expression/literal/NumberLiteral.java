@@ -10,8 +10,8 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class NumberLiteral extends AbstractLiteral {
-	public double value;
-	public int index;
+	public double value = 0.0;
+	public int index = 0;
 
 	public NumberLiteral(double value) {
 		this.value = value;
@@ -20,6 +20,9 @@ public class NumberLiteral extends AbstractLiteral {
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
+	}
+
+	public void release() {
 	}
 
 }

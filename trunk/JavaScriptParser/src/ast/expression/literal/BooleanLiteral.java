@@ -11,7 +11,7 @@ import ast.expression.AbstractExpression;
  */
 public class BooleanLiteral extends AbstractLiteral {
 	/** 封装的布尔值 */
-	public boolean value;
+	public boolean value = false;
 
 	/**
 	 * 构造函数
@@ -28,4 +28,6 @@ public class BooleanLiteral extends AbstractLiteral {
 		return interpreter.interpret(this);
 	}
 
+	public void release() {
+	}
 }

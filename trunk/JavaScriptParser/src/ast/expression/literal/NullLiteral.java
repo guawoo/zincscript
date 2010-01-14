@@ -18,4 +18,7 @@ public class NullLiteral extends AbstractLiteral {
 		return interpreter.interpret(this);
 	}
 
+	public void release() {
+	}
+
 }
