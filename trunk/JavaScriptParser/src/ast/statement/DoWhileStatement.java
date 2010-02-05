@@ -18,10 +18,11 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 64页 12.6.Iteration Statements
  */
 public class DoWhileStatement extends AbstractStatement {
-	/** while后面的条件表达式 */
-	public AbstractExpression expression;
 	/** do后面要循环执行的语句 */
-	public AbstractStatement statement;
+	public AbstractStatement statement = null;
+	/** while后面的条件表达式 */
+	public AbstractExpression expression = null;
+	
 
 	/**
 	 * 构造函数

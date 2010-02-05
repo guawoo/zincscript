@@ -5,7 +5,7 @@ import parser.ParserException;
 import ast.AbstractSyntaxNode;
 
 /**
- * <code>AbstracStatement</code> 是语法树上所有语句节点的基类
+ * <code>AbstracStatement</code> 是语法树上所有语句语法节点的基类
  * <p>
  * Statement的语法如下:
  * 
@@ -27,13 +27,13 @@ import ast.AbstractSyntaxNode;
  * 	TryStatement
  * </pre>
  * 
- * 这些语句都将是<code>AbstracStatement</code>的子类
+ * 上述语法都会有自己的语法节点, 这些语法节点都是<code>AbstracStatement</code>的子类
  * 
  * @author Jarod Yv
  * @see EMCA-262 61页 12.Statements
  */
 public abstract class AbstractStatement extends AbstractSyntaxNode {
-	/** 声明语句的行号 */
+	/** 声明语句的行号. 此行号对脚本的执行没有意义, 主要用于Debug时输出方便定位问题 */
 	protected int lineNumber;
 
 	/**

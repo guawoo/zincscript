@@ -18,9 +18,16 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 67页 12.10.The <strong><code>with</code></strong> Statement
  */
 public class WithStatement extends AbstractStatement {
+	/** <strong><code>with</code></strong>关键字后的范围表达式 */
 	public AbstractExpression expression = null;
+	/** 条件为真时执行的语句 */
 	public AbstractStatement statement = null;
 
+	/**
+	 * 构造函数
+	 * @param expression {@link #expression}
+	 * @param statement {@link #statement}
+	 */
 	public WithStatement(AbstractExpression expression,
 			AbstractStatement statement) {
 		this.expression = expression;

@@ -24,11 +24,22 @@ import ast.expression.literal.IdentifierLiteral;
  * @see ECMA-262 70页 12.14.The <strong><code>try</code></strong> statement
  */
 public class TryStatement extends AbstractStatement {
+	/** try语句块 */
 	public AbstractStatement tryBlock = null;
+	/** catch后的标识符 */
 	public IdentifierLiteral catchIdentifier = null;
+	/** catch语句块 */
 	public AbstractStatement catchBlock = null;
+	/** finally语句块 */
 	public AbstractStatement finallyBlock = null;
 
+	/**
+	 * 构造函数
+	 * @param tryBlock {@link #tryBlock}
+	 * @param catchIdentifier {@link #catchIdentifier}
+	 * @param catchBlock {@link #catchBlock}
+	 * @param finallyBlock {@link #finallyBlock}
+	 */
 	public TryStatement(AbstractStatement tryBlock,
 			IdentifierLiteral catchIdentifier, AbstractStatement catchBlock,
 			AbstractStatement finallyBlock) {

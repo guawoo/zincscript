@@ -18,10 +18,16 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 64页 12.6.Iteration Statements
  */
 public class WhileStatement extends AbstractStatement {
-
+	/** <strong><code>while</code></strong>关键字后的条件表达式 */
 	public AbstractExpression expression = null;
+	/** 循环体 */
 	public AbstractStatement statement = null;
 
+	/**
+	 * 构造函数
+	 * @param expression {@link #expression}
+	 * @param statement {@link #statement}
+	 */
 	public WhileStatement(AbstractExpression expression,
 			AbstractStatement statement) {
 		this.expression = expression;

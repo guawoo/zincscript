@@ -10,8 +10,8 @@ import ast.expression.AbstractExpression;
  * <strong><code>return</code></strong>关键字语句的语法结构如下:
  * 
  * <pre>
- * <b><i><code>for-in</code> Statement:</i></b>
- * 	<strong><code>for</code></strong>(LeftHandSideExpression <strong><code>in</code></strong> Expression ) Statement
+ * <b><i><code>return</code> Statement:</i></b>
+ * 	<strong><code>return</code></strong>(LeftHandSideExpression <strong><code>in</code></strong> Expression ) Statement
  * 	<strong><code>for</code></strong>(<strong><code>var</code></strong> VariableDeclarationNoIn <strong><code>in</code></strong> Expression ) Statement
  * </pre>
  * 
@@ -19,8 +19,13 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 67页 12.9.The <strong><code>return</code></strong> Statement
  */
 public class ReturnStatement extends AbstractStatement {
-	public AbstractExpression expression;
+	/** <strong><code>return</code></strong>关键字后的表达式 */
+	public AbstractExpression expression = null;
 
+	/**
+	 * 构造函数
+	 * @param expression {@link #expression}
+	 */
 	public ReturnStatement(AbstractExpression expression) {
 		this.expression = expression;
 	}

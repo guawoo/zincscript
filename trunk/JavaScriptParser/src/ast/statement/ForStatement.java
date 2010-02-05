@@ -19,9 +19,13 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 64页 12.6.Iteration Statements
  */
 public class ForStatement extends AbstractStatement {
+	/** 变量初始化表达式 */
 	public AbstractExpression initial = null;
+	/** 条件判断表达式 */
 	public AbstractExpression condition = null;
+	/** 更改变量表达式 */
 	public AbstractExpression increment = null;
+	/** 循环体 */
 	public AbstractStatement statement = null;
 
 	public ForStatement(AbstractExpression initial,
