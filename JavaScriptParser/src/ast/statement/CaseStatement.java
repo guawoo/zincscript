@@ -19,9 +19,9 @@ import ast.expression.AbstractExpression;
  */
 public class CaseStatement extends AbstractStatement {
 	/** case后面的条件表达式 */
-	public AbstractExpression expression;
+	public AbstractExpression expression = null;
 	/** case块包含的执行语句 */
-	public AbstractStatement[] statementList;
+	public AbstractStatement[] statementList = null;
 
 	/**
 	 * 构造函数

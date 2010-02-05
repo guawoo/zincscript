@@ -19,8 +19,11 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 64页 12.6.Iteration Statements
  */
 public class ForInStatement extends AbstractStatement {
+	/** <strong><code>in</code></strong> 前面的表达式 */
 	public AbstractExpression variable = null;
+	/** <strong><code>in</code></strong> 后面的表达式 */
 	public AbstractExpression expression = null;
+	/** 循环体 */
 	public AbstractStatement statement = null;
 
 	public ForInStatement(AbstractExpression variable,

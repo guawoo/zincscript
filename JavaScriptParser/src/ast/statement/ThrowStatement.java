@@ -18,8 +18,13 @@ import ast.expression.AbstractExpression;
  * @see ECMA-262 69页 12.13.The <strong><code>throw</code></strong> statement
  */
 public class ThrowStatement extends AbstractStatement {
+	/** <strong><code>throw</code></strong>关键字后的表达式 */
 	public AbstractExpression expression = null;
 
+	/**
+	 * 构造函数
+	 * @param expression {@link #expression}
+	 */
 	public ThrowStatement(AbstractExpression expression) {
 		this.expression = expression;
 	}
