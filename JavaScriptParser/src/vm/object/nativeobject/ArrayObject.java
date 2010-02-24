@@ -4,6 +4,11 @@ import vm.VMUtils;
 import vm.VirtualMachine;
 import vm.object.VMObject;
 
+/**
+ * <code>ArrayObject</code> 实现了JavaScript中的数组对象
+ * 
+ * @author Jarod Yv
+ */
 public class ArrayObject extends VMObject {
 
 	private static final int INITIAL_SPACE = 16;
@@ -43,7 +48,7 @@ public class ArrayObject extends VMObject {
 	 * Marker object, used to indicate that the actual value is contained in the
 	 * longs array.
 	 */
-	private static final Object NUMBER_MARKER = new Object();
+	// private static final Object NUMBER_MARKER = new Object();
 
 	/**
 	 * Objects contained in this array.
@@ -54,7 +59,7 @@ public class ArrayObject extends VMObject {
 	 * numeric values contained in this array, represented as 64 bit fixed point
 	 * value (16 bit fraction).
 	 */
-	private double[] numbers = new double[INITIAL_SPACE];
+	// private double[] numbers = new double[INITIAL_SPACE];
 
 	/**
 	 * Active size of this array.
@@ -75,8 +80,9 @@ public class ArrayObject extends VMObject {
 	public final Object getObject(int i) {
 		if (i >= size)
 			return null;
-		Object o = objects[i];
-		return o == NUMBER_MARKER ? new Double(numbers[i]) : o;
+		return objects[i];
+		// Object o = objects[i];
+		// return o == NUMBER_MARKER ? new Double(numbers[i]) : o;
 	}
 
 	public VMObject getVMObject(int i) {
@@ -93,20 +99,20 @@ public class ArrayObject extends VMObject {
 		if (i >= size) {
 			size = i + 1;
 			if (i >= objects.length) {
-				double[] newNums = new double[i * 3 / 2];
-				System.arraycopy(numbers, 0, newNums, 0, numbers.length);
-				numbers = newNums;
-				Object[] newObjects = new Object[numbers.length];
+				// double[] newNums = new double[i * 3 / 2];
+				// System.arraycopy(numbers, 0, newNums, 0, numbers.length);
+				// numbers = newNums;
+				Object[] newObjects = new Object[i * 3 / 2];
 				System.arraycopy(objects, 0, newObjects, 0, objects.length);
 				objects = newObjects;
 			}
 		}
-		if (v instanceof Double) {
-			numbers[i] = ((Double) v).doubleValue();
-			objects[i] = NUMBER_MARKER;
-		} else {
-			objects[i] = v;
-		}
+		// if (v instanceof Double) {
+		// numbers[i] = ((Double) v).doubleValue();
+		// objects[i] = NUMBER_MARKER;
+		// } else {
+		objects[i] = v;
+		// }
 	}
 
 	public String getString(int i) {
@@ -138,8 +144,8 @@ public class ArrayObject extends VMObject {
 		}
 		Object o = objects[i];
 
-		if (o == NUMBER_MARKER) {
-			double d = numbers[i];
+		if (o instanceof Double) {
+			double d = ((Double) o).doubleValue();
 			return d != 0 && !Double.isNaN(d);
 		}
 		if (o == Boolean.TRUE) {
@@ -161,7 +167,8 @@ public class ArrayObject extends VMObject {
 			return 0;
 		}
 		Object o = objects[i];
-		return o == NUMBER_MARKER ? numbers[i] : VMUtils.toNumber(o);
+		return o instanceof Double ? ((Double) o).doubleValue() : VMUtils
+				.toNumber(o);
 	}
 
 	/**
@@ -192,8 +199,8 @@ public class ArrayObject extends VMObject {
 		if (i >= size) {
 			setObject(i, null);
 		}
-		objects[i] = NUMBER_MARKER;
-		numbers[i] = v;
+		objects[i] = new Double(v);
+		// numbers[i] = v;
 	}
 
 	/**
@@ -219,7 +226,7 @@ public class ArrayObject extends VMObject {
 			return true;
 		}
 		Object o = objects[i];
-		return o == NUMBER_MARKER || o == Boolean.TRUE || o == Boolean.FALSE
+		return o instanceof Double || o == Boolean.TRUE || o == Boolean.FALSE
 				|| (o instanceof DateObject);
 	}
 
@@ -235,11 +242,11 @@ public class ArrayObject extends VMObject {
 	 * size.
 	 */
 	public void swap(int i1, int i2) {
-		double f = numbers[i1];
+		// double f = numbers[i1];
 		Object o = objects[i1];
-		numbers[i1] = numbers[i2];
+		// numbers[i1] = numbers[i2];
 		objects[i1] = objects[i2];
-		numbers[i2] = f;
+		// numbers[i2] = f;
 		objects[i2] = o;
 	}
 
@@ -262,7 +269,7 @@ public class ArrayObject extends VMObject {
 		int maxIdx = Math.min(size, from + len);
 		int l = Math.max(0, maxIdx - from);
 
-		System.arraycopy(numbers, from, target.numbers, to, l);
+		// System.arraycopy(numbers, from, target.numbers, to, l);
 		System.arraycopy(objects, from, target.objects, to, l);
 
 		for (int i = to + l; i < maxIdx; i++) {
@@ -282,7 +289,7 @@ public class ArrayObject extends VMObject {
 		if (to >= target.size) {
 			target.setObject(to, null);
 		}
-		target.numbers[to] = numbers[from];
+		// target.numbers[to] = numbers[from];
 		target.objects[to] = objects[from];
 	}
 
@@ -298,9 +305,6 @@ public class ArrayObject extends VMObject {
 		if (i > size)
 			return VirtualMachine.TYPE_UNDEFINED;
 		Object o = objects[i];
-		if (o == NUMBER_MARKER) {
-			return VirtualMachine.TYPE_NUMBER;
-		}
 		if (o == Boolean.TRUE || o == Boolean.FALSE) {
 			return VirtualMachine.TYPE_BOOLEAN;
 		}
@@ -309,6 +313,9 @@ public class ArrayObject extends VMObject {
 		}
 		if (o == VMUtils.EMPTY_OBJECT) {
 			return VirtualMachine.TYPE_NULL;
+		}
+		if (o instanceof Double) {
+			return VirtualMachine.TYPE_NUMBER;
 		}
 		if (o instanceof String) {
 			return VirtualMachine.TYPE_STRING;

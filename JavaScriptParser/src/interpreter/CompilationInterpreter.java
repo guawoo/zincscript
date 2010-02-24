@@ -57,18 +57,30 @@ public class CompilationInterpreter extends AbstractInterpreter {
 
 	private CompilationInterpreter parent = null;
 
-	public CompilationInterpreter(DataOutputStream stream) {
-		this.dos = stream;
+	/**
+	 * 构造函数
+	 * 
+	 * @param dos
+	 *            源代码数据流
+	 */
+	public CompilationInterpreter(DataOutputStream dos) {
+		this.dos = dos;
 		this.globalStringMap = new Hashtable();
 		this.globalStringTable = new ArrayList();
 	}
 
-	public CompilationInterpreter(CompilationInterpreter parent,
+	/**
+	 * @param parent
+	 * @param function
+	 * @param dos
+	 * @throws ParserException
+	 */
+	private void CompileFunction(CompilationInterpreter parent,
 			FunctionLiteral function, DataOutputStream dos)
 			throws ParserException {
 		this.parent = parent;
-		this.globalStringMap = parent.globalStringMap;
-		this.globalStringTable = parent.globalStringTable;
+		this.globalStringMap = this.parent.globalStringMap;
+		this.globalStringTable = this.parent.globalStringTable;
 		this.dos = dos;
 		this.enableLocalsOptimization = function.enableLocalsOptimization;
 
@@ -850,8 +862,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			throws ParserException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		new CompilationInterpreter(this, functionLiteral, new DataOutputStream(
-				baos));
+		CompileFunction(this, functionLiteral, new DataOutputStream(baos));
 
 		functionLiterals.add(baos.toByteArray());
 
