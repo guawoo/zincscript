@@ -2,10 +2,6 @@ package vm.object;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import com.google.minijoe.sys.JsArrayObject;
-import com.google.minijoe.sys.JsFunctionObject;
-
 import vm.VMUtils;
 import vm.object.nativeobject.ArrayObject;
 import vm.object.nativeobject.FunctionObject;
@@ -227,7 +223,7 @@ public class VMObject {
 	public void setObject(String key, Object v) {
 		Object old = getRawInPrototypeChain(key);
 		if (old instanceof FunctionObject
-				&& ((FunctionObject) old).getParameterCount() == -1) {
+				&& ((FunctionObject) old).expectedParameterCount == -1) {
 			FunctionObject nat = (FunctionObject) old;
 			ArrayObject stack = new ArrayObject();
 			stack.setObject(0, v);
@@ -254,7 +250,7 @@ public class VMObject {
 		Object v = getRawInPrototypeChain(prop);
 		if (v instanceof FunctionObject) {
 			FunctionObject nat = (FunctionObject) v;
-			if (nat.getParameterCount() == -1) {
+			if (nat.expectedParameterCount == -1) {
 				ArrayObject stack = new ArrayObject();
 				evalNative(nat.index, stack, 0, 0);
 				return stack.getObject(0);
@@ -278,7 +274,7 @@ public class VMObject {
 
 		Object old = data.get(key);
 		if (old instanceof FunctionObject
-				&& ((FunctionObject) old).getParameterCount() == -1) {
+				&& ((FunctionObject) old).expectedParameterCount == -1) {
 			return false;
 		}
 
