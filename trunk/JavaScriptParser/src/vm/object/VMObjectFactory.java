@@ -10,20 +10,20 @@ import vm.object.nativeobject.StringObject;
 
 public final class VMObjectFactory {
 
-	private static final int FACTORY_ID_OBJECT = 0;
-	private static final int FACTORY_ID_ARRAY = 1;
-	private static final int FACTORY_ID_DATE = 2;
-	private static final int FACTORY_ID_BOOLEAN = 3;
-	private static final int FACTORY_ID_STRING = 4;
-	private static final int FACTORY_ID_NUMBER = 5;
-	private static final int FACTORY_ID_ERROR = 6;
-	private static final int FACTORY_ID_EVAL_ERROR = 7;
-	private static final int FACTORY_ID_RANGE_ERROR = 8;
-	private static final int FACTORY_ID_REFERENCE_ERROR = 9;
-	private static final int FACTORY_ID_SYNTAX_ERROR = 10;
-	private static final int FACTORY_ID_TYPE_ERROR = 11;
-	private static final int FACTORY_ID_URI_ERROR = 12;
-	private static final int FACTORY_ID_FUNCTION = 13;
+	public static final int FACTORY_ID_OBJECT = 0x00;
+	public static final int FACTORY_ID_ARRAY = 0x01;
+	public static final int FACTORY_ID_DATE = 0x02;
+	public static final int FACTORY_ID_BOOLEAN = 0x03;
+	public static final int FACTORY_ID_STRING = 0x04;
+	public static final int FACTORY_ID_NUMBER = 0x05;
+	public static final int FACTORY_ID_ERROR = 0x06;
+	public static final int FACTORY_ID_EVAL_ERROR = 0x07;
+	public static final int FACTORY_ID_RANGE_ERROR = 0x08;
+	public static final int FACTORY_ID_REFERENCE_ERROR = 0x09;
+	public static final int FACTORY_ID_SYNTAX_ERROR = 0x0a;
+	public static final int FACTORY_ID_TYPE_ERROR = 0x0b;
+	public static final int FACTORY_ID_URI_ERROR = 0x0c;
+	public static final int FACTORY_ID_FUNCTION = 0x0d;
 
 	/**
 	 * Creates a new instance of a JS object (Date, Object, Array), depending on

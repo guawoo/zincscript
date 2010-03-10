@@ -216,24 +216,8 @@ public final class Token {
 
 	/**
 	 * tokenType是一个由语法分析步骤使用的抽象符号, 用于定义词法单元的类型
-	 * 
-	 * @see #TYPE_DECIMAL
-	 * @see #TYPE_NEWLINE
-	 * @see #TYPE_SINGLELINE_COMMENT
-	 * @see #TYPE_MULTILINE_COMMENT
-	 * @see #TYPE_WHITESPACE
-	 * @see #TYPE_KEYWORD
-	 * @see #TYPE_OPERATOR
-	 * @see #TYPE_IDENTIFIER
-	 * @see #TYPE_STRING
-	 * @see #TYPE_REGEX
-	 * @see #TYPE_OCTAL
-	 * @see #TYPE_DECIMAL
-	 * @see #TYPE_HEXAL
-	 * @see #TYPE_FLOAT
-	 * @see #TYPE_EOF
 	 */
-	private int tokenType;
+	private int tokenType = TYPE_UNKNOWN;
 
 	/**
 	 * attributeValue记录了关于这个词法单元的条目
@@ -308,7 +292,9 @@ public final class Token {
 	}
 
 	/**
-	 * Implementation of hashcode.
+	 * 实现对象Hashcode的计算
+	 * 
+	 * @return 对象的Hashcode
 	 */
 	public int hashCode() {
 		return tokenType ^ attributeValue.hashCode();

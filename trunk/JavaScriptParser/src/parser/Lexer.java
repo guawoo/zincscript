@@ -11,9 +11,11 @@ import java.util.Hashtable;
  * @author Jarod Yv
  */
 public final class Lexer {
-	private static final int BASE_HEX = 16;
+	
 	private static final int BASE_OCT = 8;
+	private static final int BASE_HEX = 16;
 
+	// //////////////////// 一下常量用于标识数字解析过程中状态机的状态 ////////////////////
 	private static final int SYNTAX_NUMERIC_ENTRY_POINT = 0;
 	private static final int SYNTAX_NUMERIC_LEADING_ZERO = 1;
 	private static final int SYNTAX_NUMERIC_LEADING_DECIMAL = 2;
@@ -33,21 +35,29 @@ public final class Lexer {
 	private static final int SYNTAX_NUMERIC_RETURN_OCTAL = 16;
 	private static final int SYNTAX_NUMERIC_RETURN_HEXADECIMAL = 17;
 	private static final int SYNTAX_NUMERIC_RETURN_OPERATOR_DOT = 18;
+	// /////////////////////////////////////////////////////////////////////////////////
 
 	// 关键字表
 	private Hashtable keywords = null;
+	
 	// 待分析的脚本
 	private String script = null;
+	
 	// 行号(用于debug)
 	private int lineNumber = 1;
+	
 	// 脚本最大字符数
 	private int maxPosition;
+	
 	// 当前字符位置
 	private int curPosition;
+	
 	// 上一字符位置
 	private int oldPosition;
+	
 	// 当前字符
 	private int ch;
+	
 	// Lexer的唯一实例
 	private static Lexer instance = null;
 
@@ -107,6 +117,8 @@ public final class Lexer {
 
 	/**
 	 * 初始化关键字表
+	 * 
+	 * @see ECMA-262 26页 7.5.2 Keywords和7.5.3 Future Reserved Words
 	 */
 	private void initKeywords() {
 		keywords = new Hashtable(59);
@@ -195,6 +207,7 @@ public final class Lexer {
 	 *         <li><code>true</code> - 是换行符
 	 *         <li><code>false</code> - 不是换行符
 	 *         </ul>
+	 * @see ECMA-262 24页 7.3 Line Terminators
 	 */
 	private boolean isLineTerminator() {
 		return ch == '\n' || ch == '\r' || ch == '\u2028' || ch == '\u2029';
@@ -208,6 +221,7 @@ public final class Lexer {
 	 *         <li><code>true</code> - 是空白字符
 	 *         <li><code>false</code> - 不是空白字符
 	 *         </ul>
+	 * @see ECMA-262 23页 7.2 White Space
 	 */
 	private boolean isWhitespace() {
 		return ch == '\u0009' || ch == '\u000B' || ch == '\u000C'
@@ -271,6 +285,7 @@ public final class Lexer {
 	 *         <li><code>true</code> - 是合法的标识符字母
 	 *         <li><code>false</code> - 不是合法的标识符字母
 	 *         </ul>
+	 * @see ECMA-262 26页 7.6 Identifiers
 	 */
 	private boolean isIdentifierPart() {
 		return isIdentifierStart() || isDecimalDigit();
@@ -291,7 +306,7 @@ public final class Lexer {
 	/**
 	 * 返回上一个字符
 	 * <p>
-	 * <em>注:如果已经换行，则不能返回上一行的字符</em>
+	 * <em>注:如果遇到行终结符，则不能返回上一行的字符</em>
 	 * 
 	 * @exception ParserException
 	 */
@@ -554,9 +569,12 @@ public final class Lexer {
 
 	/**
 	 * 生成数字语法单元
+	 * <p>
+	 * <em>此处对数字的词法分析比较丑陋，但却是采用有限状态机思想实现的，希望能够找到一种更精简清晰的实现方式。</em>
 	 * 
 	 * @return 数字语法单元
 	 * @throws ParserException
+	 * @see ECMA-262 28页 7.8.3 NumericLiterals
 	 */
 	private Token syntaxNumeric() throws ParserException {
 		int state = SYNTAX_NUMERIC_ENTRY_POINT;

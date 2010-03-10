@@ -1,6 +1,7 @@
 package parser;
 
 import utils.ArrayList;
+import utils.ListUtil;
 import ast.Program;
 import ast.expression.AbstractExpression;
 import ast.expression.CallFunctionExpression;
@@ -54,11 +55,24 @@ import ast.statement.WithStatement;
  * @author Jarod Yv
  */
 public final class Parser {
+
+	// 词法分析器
 	private Lexer lexer = null;
+
+	// 当前词法单元
 	private Token syntax = null;
-	private boolean seenNewline = false;
+
+	// 标识是否要换到下一行
+	private boolean isNewline = false;
+
+	// 语法解析器的唯一实例
 	private static Parser instance = null;
 
+	/**
+	 * 获取语法分析器的唯一实例
+	 * 
+	 * @return {@link #instance}
+	 */
 	public static Parser getInstace() {
 		if (instance == null)
 			instance = new Parser();
@@ -72,18 +86,6 @@ public final class Parser {
 
 	/**
 	 * 将整个脚本解析成一棵抽象语法树(AST)
-	 * 
-	 * <pre>
-	 * &lt;b&gt;Syntax&lt;/b&gt; 
-	 * &lt;em&gt;Program:&lt;/em&gt;
-	 * 	SourceElements 
-	 * &lt;em&gt;SourceElements:&lt;/em&gt;
-	 * 	SourceElement
-	 * 	SourceElements SourceElement 
-	 * &lt;em&gt;SourceElement:&lt;/em&gt; 
-	 * 	Statement
-	 * 	FunctionDeclaration
-	 * </pre>
 	 * 
 	 * @param script
 	 *            脚本内容
@@ -100,17 +102,11 @@ public final class Parser {
 		while (Token.EOF != this.syntax) {
 			statements.add(parseSourceElement());
 		}
-		return new Program(Util.listToStatementArray(statements));
+		return new Program(ListUtil.list2StatementArray(statements));
 	}
 
 	/**
 	 * 解析<b><code>SourceElement</code></b>
-	 * 
-	 * <pre>
-	 * &lt;em&gt;SourceElement:&lt;/em&gt; 
-	 * 	Statement
-	 * 	FunctionDeclaration
-	 * </pre>
 	 * 
 	 * @return
 	 * @throws ParserException
@@ -137,6 +133,7 @@ public final class Parser {
 	}
 
 	/**
+	 * 解析语句语法
 	 * 
 	 * @see ECMA-262 61页~71页 12.Statements
 	 * @return
@@ -206,7 +203,7 @@ public final class Parser {
 		}
 		nextSyntax(Token.OPERATOR_CLOSEBRACE);
 
-		return new BlockStatement(Util.listToStatementArray(statements));
+		return new BlockStatement(ListUtil.list2StatementArray(statements));
 	}
 
 	/**
@@ -229,8 +226,8 @@ public final class Parser {
 		}
 
 		readTokenSemicolon();
-		return new VariableStatement(Util
-				.vectorToDeclarationArray(declarationVector));
+		return new VariableStatement(ListUtil
+				.list2DeclarationArray(declarationVector));
 	}
 
 	/**
@@ -302,10 +299,6 @@ public final class Parser {
 	 * 解析生成 <b><code>do-while</code></b> 语句的语法树节点
 	 * 
 	 * @see ECMA-262 64页 12.6.1.The <b><code>do-while</code></b> statement
-	 * @return
-	 * @throws ParserException
-	 */
-	/**
 	 * @return
 	 * @throws ParserException
 	 */
@@ -432,8 +425,8 @@ public final class Parser {
 					declarationVector
 							.add(parseVariableDeclarationException(false));
 				}
-				initial = new VariableExpression(Util
-						.vectorToDeclarationArray(declarationVector));
+				initial = new VariableExpression(ListUtil
+						.list2DeclarationArray(declarationVector));
 			case STATE_CASE_5:
 				// 第一个分号前的语句已经处理完, 此处无需进一步处理
 				nextSyntax(Token.OPERATOR_SEMICOLON);
@@ -586,8 +579,8 @@ public final class Parser {
 				caseStatements.add(parseStatement());
 			}
 
-			caseClauseVector.add(new CaseStatement(caseExpression, Util
-					.listToStatementArray(caseStatements)));
+			caseClauseVector.add(new CaseStatement(caseExpression, ListUtil
+					.list2StatementArray(caseStatements)));
 		}
 		nextSyntax(Token.OPERATOR_CLOSEBRACE);
 
@@ -1066,8 +1059,7 @@ public final class Parser {
 
 		// 然后调用 '*' '/' '%' 的解析
 		while (true) {
-			if (Token.OPERATOR_MUL == syntax
-					|| Token.OPERATOR_DIVIDE == syntax
+			if (Token.OPERATOR_MUL == syntax || Token.OPERATOR_DIVIDE == syntax
 					|| Token.OPERATOR_MOD == syntax) {
 				Token op = syntax;
 				nextSyntax();
@@ -1225,7 +1217,7 @@ public final class Parser {
 			}
 		}
 		nextSyntax(Token.OPERATOR_CLOSEPAREN);
-		return Util.vectorToExpressionArray(argumentList);
+		return ListUtil.list2ExpressionArray(argumentList);
 	}
 
 	/**
@@ -1295,7 +1287,7 @@ public final class Parser {
 
 		nextSyntax(Token.OPERATOR_CLOSESQUARE);
 
-		return new ArrayLiteral(Util.vectorToExpressionArray(arrayElements));
+		return new ArrayLiteral(ListUtil.list2ExpressionArray(arrayElements));
 	}
 
 	/**
@@ -1338,9 +1330,9 @@ public final class Parser {
 		nextSyntax(Token.OPERATOR_CLOSEBRACE);// 以'}'结束函数体定义
 
 		// 生成函数定义的语法结构
-		return new FunctionLiteral(funcName, Util
-				.listToIdentifierArray(parameters), Util
-				.listToStatementArray(statements));
+		return new FunctionLiteral(funcName, ListUtil
+				.list2IdentifierArray(parameters), ListUtil
+				.list2StatementArray(statements));
 	}
 
 	/**
@@ -1454,10 +1446,12 @@ public final class Parser {
 				value = Long.parseLong(syntax.getAttributeValue());
 				break;
 			case Token.TYPE_OCTAL:
-				value = Long.parseLong(syntax.getAttributeValue().substring(1), 8);
+				value = Long.parseLong(syntax.getAttributeValue().substring(1),
+						8);
 				break;
 			case Token.TYPE_HEXAL:
-				value = Long.parseLong(syntax.getAttributeValue().substring(2), 16);
+				value = Long.parseLong(syntax.getAttributeValue().substring(2),
+						16);
 				break;
 			default:
 				throwParserException("非法数字格式");
@@ -1484,10 +1478,10 @@ public final class Parser {
 	 * @throws ParserException
 	 */
 	private final void nextSyntax() throws ParserException {
-		seenNewline = false;
+		isNewline = false;
 		do {
 			syntax = lexer.nextToken();
-			seenNewline = (syntax.isEOF() || syntax.isNewLine());
+			isNewline = (syntax.isEOF() || syntax.isNewLine());
 		} while (syntax.isWhitespace());
 	}
 
@@ -1502,16 +1496,23 @@ public final class Parser {
 		if (syntax == targetSyntax) {
 			nextSyntax();
 		} else {
-			throwParserException("此处应当是 '" + targetSyntax.getAttributeValue() + "'");
+			throwParserException("此处应当是 '" + targetSyntax.getAttributeValue()
+					+ "'");
 		}
 	}
 
+	/**
+	 * 本方法用于校验语句是否正常终结<br/>
+	 * 如果当前词法单元为';'或者行终结符或者'}'，则认为是一条语句终结。
+	 * 
+	 * @throws ParserException
+	 */
 	private final void readTokenSemicolon() throws ParserException {
 		if (syntax == Token.OPERATOR_SEMICOLON) {
 			nextSyntax();
 		} else if (syntax == Token.OPERATOR_CLOSEBRACE) {
 			// semicolon insertion
-		} else if (seenNewline) {
+		} else if (isNewline) {
 			// semicolon insertion
 		} else {
 			throwParserException("expected '"

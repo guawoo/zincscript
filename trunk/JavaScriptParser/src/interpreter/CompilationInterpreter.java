@@ -1090,7 +1090,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 		}
 	}
 
-	void writeJump(int op, Object base, String type) {
+	private void writeJump(int op, Object base, String type) {
 		int pos = codeStream.size() + 1;
 
 		if (base instanceof String) {
