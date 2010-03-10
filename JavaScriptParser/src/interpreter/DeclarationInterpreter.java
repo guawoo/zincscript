@@ -2,8 +2,8 @@ package interpreter;
 
 import parser.ParserException;
 import parser.Token;
-import parser.Util;
 import utils.ArrayList;
+import utils.ListUtil;
 import ast.Program;
 import ast.expression.AbstractExpression;
 import ast.expression.CallFunctionExpression;
@@ -81,7 +81,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		ArrayList oldFunctionList = functionList;
 		functionList = new ArrayList();
 		program.statements = interpretStatementArray(program.statements);
-		program.functions = Util.listToStatementArray(functionList);
+		program.functions = ListUtil.list2StatementArray(functionList);
 		functionList = oldFunctionList;
 		oldFunctionList = null;
 
@@ -274,7 +274,7 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		} else if (statements.size() == 1) {
 			return (ExpressionStatement) statements.get(0);
 		} else {
-			return new BlockStatement(Util.listToStatementArray(statements));
+			return new BlockStatement(ListUtil.list2StatementArray(statements));
 		}
 	}
 
@@ -474,8 +474,8 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		functionLiteral.functions = interpretStatementArray(functionLiteral.functions);
 		functionLiteral.statements = interpretStatementArray(functionLiteral.statements);
 
-		functionLiteral.functions = Util.listToStatementArray(functionList);
-		functionLiteral.variables = Util.listToIdentifierArray(variableList);
+		functionLiteral.functions = ListUtil.list2StatementArray(functionList);
+		functionLiteral.variables = ListUtil.list2IdentifierArray(variableList);
 
 		// if this function literal:
 		// * contains a function literal

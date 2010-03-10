@@ -11,8 +11,6 @@ import vm.object.nativeobject.FunctionObject;
  */
 public class MathObject extends VMObject {
 
-	public static final Double NAN = new Double(Double.NaN);
-	public static final Double INFINITY = new Double(Double.POSITIVE_INFINITY);
 	public static final double LN2 = 0.6931471805599453;
 	/**
 	 * M因子, 用于计算ln(x). 根据网上资料, M=8就能够满足对精度的要求
@@ -80,7 +78,6 @@ public class MathObject extends VMObject {
 		MATH_PROTOTYPE.addProperty("sin", new FunctionObject(ID_SIN, 1));
 		MATH_PROTOTYPE.addProperty("sqrt", new FunctionObject(ID_SQRT, 1));
 		MATH_PROTOTYPE.addProperty("tan", new FunctionObject(ID_TAN, 1));
-
 	}
 
 	public MathObject() {

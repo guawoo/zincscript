@@ -302,7 +302,7 @@ public class VirtualMachine {
 		stack.setObject(1, mainFunction);
 		stack.setObject(2, null);
 
-		eval(stack, 1, 0);
+		eval(null, stack, 1, 0);
 		return stack.getObject(3);
 	}
 
@@ -311,9 +311,11 @@ public class VirtualMachine {
 	 * must be on stack (sp + 0 = context, sp + 1=function, sp + 2 = first param
 	 * etc.). The result is expected at sp + 0.
 	 */
-	public void eval(ArrayObject stack, int sp, int actualParameterCount) {
+	public void eval(FunctionObject function, ArrayObject stack, int sp,
+			int actualParameterCount) {
 		VMObject thisPtr = stack.getVMObject(sp);
-		FunctionObject function = (FunctionObject) stack.getVMObject(sp + 1);
+		if (function == null)
+			function = (FunctionObject) stack.getVMObject(sp + 1);
 		// 对于实际参数数量小于期望参数数量的情况, 缺失的参数用null代替
 		for (int i = actualParameterCount; i < function.expectedParameterCount; i++) {
 			stack.setObject(sp + i + 2, null);
@@ -336,22 +338,23 @@ public class VirtualMachine {
 		if (function.localVariableNames != null) {
 			context = new VMObject(VMObject.OBJECT_PROTOTYPE);
 			context.scopeChain = function.context;
-			VMArgument args = new VMArgument(function, context);
+			// VMArgument args = new VMArgument(function, context);
 			for (int i = 0; i < function.expectedParameterCount; i++) {
 				context.addProperty(function.localVariableNames[i], stack
 						.getObject(sp + i));
-				args.addVar(String.valueOf(i), new Integer(i));
+				// args.addVar(String.valueOf(i), new Integer(i));
 			}
 			for (int i = function.expectedParameterCount; i < function.localVariableNames.length; i++) {
 				context.addProperty(function.localVariableNames[i], null);
 			}
-			for (int i = function.expectedParameterCount; i < actualParameterCount; i++) {
-				args.setObject(String.valueOf(i), stack.getObject(bp + i));
-			}
-			args.setNumber("length", actualParameterCount);
-			args.setCaller(function);
-			context.addProperty("arguments", args);
-			args = null;
+			// for (int i = function.expectedParameterCount; i <
+			// actualParameterCount; i++) {
+			// args.setObject(String.valueOf(i), stack.getObject(bp + i));
+			// }
+			// args.setNumber("length", actualParameterCount);
+			// args.setCaller(function);
+			// context.addProperty("arguments", args);
+			// args = null;
 		} else {
 			context = function.context;
 			sp += function.expectedParameterCount + function.varCount;
@@ -388,7 +391,7 @@ public class VirtualMachine {
 							// params
 							FunctionObject m = (FunctionObject) stack
 									.getObject(sp + 1);
-							m.eval(stack, sp, imm);
+							eval(m, stack, sp, imm);
 							stack.setBoolean(sp + 1, true);
 							sp += 2;
 						} catch (VMRuntimeException e) {
@@ -404,7 +407,7 @@ public class VirtualMachine {
 						sp = sp - imm - 2; // on stack: context, lambda, params
 						FunctionObject m = (FunctionObject) stack
 								.getObject(sp + 1);
-						m.eval(stack, sp++, imm);
+						eval(m, stack, sp++, imm);
 						// System.out.println("Ret val received: "
 						// + stack.getObject(sp-1)+" sp: "+sp);
 						break;

@@ -1,6 +1,5 @@
-package parser;
+package utils;
 
-import utils.ArrayList;
 import ast.expression.AbstractExpression;
 import ast.expression.VariableDeclarationExpression;
 import ast.expression.literal.FunctionLiteral;
@@ -9,22 +8,27 @@ import ast.expression.literal.NumberLiteral;
 import ast.expression.literal.StringLiteral;
 import ast.statement.AbstractStatement;
 
-public final class Util {
+/**
+ * <code>ListUtil</code>是一个工具类，用于将List类型的数据转换成对应的静态数组形式。
+ * 
+ * @author Jarod Yv
+ */
+public final class ListUtil {
 
-	public static AbstractStatement[] listToStatementArray(ArrayList list) {
+	public static final AbstractStatement[] list2StatementArray(ArrayList list) {
 		AbstractStatement[] statementArray = new AbstractStatement[list.size()];
 		list.toArray(statementArray);
 		return statementArray;
 	}
 
-	public static AbstractExpression[] vectorToExpressionArray(ArrayList list) {
+	public static final AbstractExpression[] list2ExpressionArray(ArrayList list) {
 		AbstractExpression[] expressionArray = new AbstractExpression[list
 				.size()];
 		list.toArray(expressionArray);
 		return expressionArray;
 	}
 
-	public static VariableDeclarationExpression[] vectorToDeclarationArray(
+	public static final VariableDeclarationExpression[] list2DeclarationArray(
 			ArrayList list) {
 		VariableDeclarationExpression[] declarationArray = new VariableDeclarationExpression[list
 				.size()];
@@ -32,25 +36,26 @@ public final class Util {
 		return declarationArray;
 	}
 
-	public static IdentifierLiteral[] listToIdentifierArray(ArrayList list) {
+	public static final IdentifierLiteral[] list2IdentifierArray(ArrayList list) {
 		IdentifierLiteral[] identifierArray = new IdentifierLiteral[list.size()];
 		list.toArray(identifierArray);
 		return identifierArray;
 	}
 
-	public static FunctionLiteral[] vectorToFunctionLiteralArray(ArrayList list) {
+	public static final FunctionLiteral[] list2FunctionLiteralArray(
+			ArrayList list) {
 		FunctionLiteral[] literalArray = new FunctionLiteral[list.size()];
 		list.toArray(literalArray);
 		return literalArray;
 	}
 
-	public static NumberLiteral[] vectorToNumberLiteralArray(ArrayList list) {
+	public static final NumberLiteral[] list2NumberLiteralArray(ArrayList list) {
 		NumberLiteral[] literalArray = new NumberLiteral[list.size()];
 		list.toArray(literalArray);
 		return literalArray;
 	}
 
-	public static StringLiteral[] vectorToStringLiteralArray(ArrayList list) {
+	public static final StringLiteral[] list2StringLiteralArray(ArrayList list) {
 		StringLiteral[] literalArray = new StringLiteral[list.size()];
 		list.toArray(literalArray);
 		return literalArray;

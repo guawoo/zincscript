@@ -56,6 +56,26 @@ public class FunctionObject extends VMObject {
 	}
 
 	/**
+	 * Constructor for constructors implemented in Java
+	 * 
+	 * @param factory
+	 *            factory instance that is able to create new objects
+	 * @param factoryTypeId
+	 *            instance type id, used by the factory
+	 * @param prototype
+	 *            the prototype object
+	 * @param index
+	 *            the ID of the function call, used in evalNative
+	 * @param parCount
+	 */
+	public FunctionObject(int factoryTypeId, VMObject prototype, int nativeId,
+			int parCount) {
+		this(nativeId, parCount);
+		this.prototype = prototype;
+		this.factoryTypeId = factoryTypeId;
+	}
+
+	/**
 	 * 根据跟定的函数定义封装出新的函数对象
 	 * 
 	 * @param literal
