@@ -11,6 +11,7 @@ import parser.ParserException;
 public class CallFunctionExpression extends AbstractExpression {
 	/** 函数名 */
 	public AbstractExpression function = null;
+
 	/** 参数列表 */
 	public AbstractExpression[] arguments = null;
 

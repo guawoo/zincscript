@@ -11,14 +11,21 @@ import ast.expression.AbstractExpression;
  */
 public class LogicalOrExpression extends AbstractBinaryExpression {
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param leftExpression
+	 *            {@link #leftExpression}
+	 * @param rightExpression
+	 *            {@link #rightExpression}
+	 */
 	public LogicalOrExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression) {
 		super(leftExpression, rightExpression);
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

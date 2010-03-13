@@ -21,8 +21,7 @@ public class IncrementExpression extends AbstractUnaryExpression {
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

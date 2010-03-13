@@ -699,7 +699,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			// push value
 			aoe.rightExpression.interpretExpression(this);
 			// exec assignment op
-			writeBinaryOperator(aoe.type);
+			writeBinaryOperator(aoe.operator);
 			// move result value below object and property
 			writeOp(VirtualMachine.OP_ROT);
 			writeOp(VirtualMachine.OP_SET);
@@ -777,7 +777,7 @@ public class CompilationInterpreter extends AbstractInterpreter {
 			writeOpGet(identifierLiteral);
 			((AssignmentOperatorExpression) pa).rightExpression
 					.interpretExpression(this);
-			writeBinaryOperator(((AssignmentOperatorExpression) pa).type);
+			writeBinaryOperator(((AssignmentOperatorExpression) pa).operator);
 			writeOpSet(identifierLiteral);
 		} else if (pa instanceof IncrementExpression) {
 			IncrementExpression ie = (IncrementExpression) pa;

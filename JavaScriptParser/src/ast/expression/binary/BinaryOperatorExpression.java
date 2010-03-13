@@ -18,11 +18,11 @@ public class BinaryOperatorExpression extends AbstractBinaryExpression {
 	 * 构造函数
 	 * 
 	 * @param leftExpression
-	 *            左子式
+	 *            {@link #leftExpression}
 	 * @param rightExpression
-	 *            右子式
+	 *            {@link #rightExpression}
 	 * @param operator
-	 *            运算符
+	 *            {@link #operator}
 	 */
 	public BinaryOperatorExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression, Token operator) {

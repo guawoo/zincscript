@@ -11,8 +11,10 @@ import parser.ParserException;
 public class ConditionalExpression extends AbstractExpression {
 	/** 条件判断表达式 */
 	public AbstractExpression expression = null;
+	
 	/** 条件为真时执行的表达式 */
 	public AbstractExpression trueExpression = null;
+	
 	/** 条件为假时执行的表达式 */
 	public AbstractExpression falseExpression = null;
 
@@ -35,8 +37,7 @@ public class ConditionalExpression extends AbstractExpression {
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

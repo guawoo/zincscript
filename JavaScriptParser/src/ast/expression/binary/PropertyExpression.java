@@ -11,6 +11,14 @@ import ast.expression.AbstractExpression;
  */
 public class PropertyExpression extends AbstractBinaryExpression {
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param leftExpression
+	 *            {@link #leftExpression}
+	 * @param rightExpression
+	 *            {@link #rightExpression}
+	 */
 	public PropertyExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression) {
 		super(leftExpression, rightExpression);

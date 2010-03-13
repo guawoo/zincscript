@@ -10,8 +10,15 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class StringLiteral extends AbstractLiteral {
+	/** 封装的字符串内容 */
 	public String string = null;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param string
+	 *            {@link #string}
+	 */
 	public StringLiteral(String string) {
 		this.string = string;
 	}
@@ -40,6 +47,6 @@ public class StringLiteral extends AbstractLiteral {
 	}
 
 	public void release() {
-		string=null;
+		string = null;
 	}
 }

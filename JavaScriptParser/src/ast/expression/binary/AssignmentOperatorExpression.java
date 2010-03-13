@@ -11,23 +11,31 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class AssignmentOperatorExpression extends AbstractBinaryExpression {
-	public Token type = null;
+	/** 运算符 */
+	public Token operator = null;
 
+	/**
+	 * @param leftExpression
+	 *            {@link #leftExpression}
+	 * @param rightExpression
+	 *            {@link #rightExpression}
+	 * @param operator
+	 *            {@link #operator}
+	 */
 	public AssignmentOperatorExpression(AbstractExpression leftExpression,
-			AbstractExpression rightExpression, Token type) {
+			AbstractExpression rightExpression, Token operator) {
 		super(leftExpression, rightExpression);
-		this.type = type;
+		this.operator = operator;
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 
 	public void release() {
 		super.release();
-		type = null;
+		operator = null;
 	}
 
 }

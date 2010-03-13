@@ -10,6 +10,7 @@ import ast.expression.AbstractExpression;
 public abstract class AbstractBinaryExpression extends AbstractExpression {
 	/** 左子树 */
 	public AbstractExpression leftExpression = null;
+
 	/** 右子树 */
 	public AbstractExpression rightExpression = null;
 
