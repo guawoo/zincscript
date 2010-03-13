@@ -14,9 +14,9 @@ public class AssignmentExpression extends AbstractBinaryExpression {
 	 * 构造函数
 	 * 
 	 * @param leftExpression
-	 *            左子式
+	 *            {@link #leftExpression}
 	 * @param rightExpression
-	 *            右子式
+	 *            {@link #rightExpression}
 	 */
 	public AssignmentExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression) {
@@ -24,8 +24,7 @@ public class AssignmentExpression extends AbstractBinaryExpression {
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

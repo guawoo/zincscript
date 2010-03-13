@@ -18,26 +18,44 @@ import ast.statement.AbstractStatement;
 public class FunctionLiteral extends AbstractLiteral {
 	/** 函数名 */
 	public IdentifierLiteral funcName = null;
+
 	/** 参数列表 */
 	public IdentifierLiteral[] parameters = null;
+
 	/** 函数体语句 */
 	public AbstractStatement[] statements = null;
 
+	/**
+	 * 函数内部变量列表.
+	 * <p>
+	 * 内部变量列表在语法分析过程中不能确定,因此在语法树构建完成后需要经过 {@link DeclarationInterpreter}
+	 * 分析出整个语法树中缺失的数据,然后才能交给 {@link CompilationInterpreter}生成三地址代码
+	 */
 	public IdentifierLiteral[] variables = null;
+
+	/**
+	 * 函数内部函数列表
+	 * <p>
+	 * 内部函数列表在语法分析过程中不能确定,因此在语法树构建完成后需要经过 {@link DeclarationInterpreter}
+	 * 分析出整个语法树中缺失的数据,然后才能交给 {@link CompilationInterpreter}生成三地址代码
+	 */
 	public AbstractStatement[] functions = null;
+
+	/** */
 	public boolean enableLocalsOptimization = false;
 
+	/** */
 	public int index = 0;
 
 	/**
 	 * 构造函数
 	 * 
 	 * @param funcName
-	 *            函数名
+	 *            {@link #funcName}
 	 * @param parameters
-	 *            参数列表
+	 *            {@link #parameters}
 	 * @param statements
-	 *            函数体语句
+	 *            {@link #statements}
 	 */
 	public FunctionLiteral(IdentifierLiteral funcName,
 			IdentifierLiteral[] parameters, AbstractStatement[] statements) {

@@ -4,10 +4,23 @@ import interpreter.AbstractInterpreter;
 import parser.ParserException;
 import ast.expression.AbstractExpression;
 
+/**
+ * <code>IdentifierLiteral</code>
+ * 
+ * @author Jarod Yv
+ */
 public class IdentifierLiteral extends AbstractLiteral {
+	/** 标识符 */
 	public String string = null;
+
 	public int index = -1;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param string
+	 *            {@link #string}
+	 */
 	public IdentifierLiteral(String string) {
 		this.string = string;
 	}

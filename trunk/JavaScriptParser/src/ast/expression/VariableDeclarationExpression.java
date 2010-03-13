@@ -10,9 +10,20 @@ import ast.expression.literal.IdentifierLiteral;
  * @author Jarod Yv
  */
 public class VariableDeclarationExpression extends AbstractExpression {
+	/** 标识符 */
 	public IdentifierLiteral identifier = null;
+
+	/** 初始化表达式 */
 	public AbstractExpression initializer = null;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param identifier
+	 *            {@link #identifier}
+	 * @param initializer
+	 *            {@link #initializer}
+	 */
 	public VariableDeclarationExpression(IdentifierLiteral identifier,
 			AbstractExpression initializer) {
 		this.identifier = identifier;
@@ -20,8 +31,7 @@ public class VariableDeclarationExpression extends AbstractExpression {
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

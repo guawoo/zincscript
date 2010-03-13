@@ -9,8 +9,15 @@ import parser.ParserException;
  * @author Jarod Yv
  */
 public class VariableExpression extends AbstractExpression {
+	/** 函数生命语句 */
 	public VariableDeclarationExpression[] declarations = null;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param declarations
+	 *            {@link #declarations}
+	 */
 	public VariableExpression(VariableDeclarationExpression[] declarations) {
 		this.declarations = declarations;
 	}

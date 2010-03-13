@@ -10,8 +10,6 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class ThisLiteral extends AbstractLiteral {
-	public ThisLiteral() {
-	}
 
 	public AbstractExpression interpretExpression(
 			AbstractInterpreter interpreter) throws ParserException {

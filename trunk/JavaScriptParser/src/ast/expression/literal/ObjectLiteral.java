@@ -10,8 +10,15 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class ObjectLiteral extends AbstractLiteral {
+	/** 对象属性 */
 	public ObjectPropertyLiteral[] properties = null;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param properties
+	 *            {@link #properties}
+	 */
 	public ObjectLiteral(ObjectPropertyLiteral[] properties) {
 		this.properties = properties;
 	}

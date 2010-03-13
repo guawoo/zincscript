@@ -10,16 +10,22 @@ import ast.expression.AbstractExpression;
  * @author Jarod Yv
  */
 public class LogicalAndExpression extends AbstractBinaryExpression {
-	
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param leftExpression
+	 *            {@link #leftExpression}
+	 * @param rightExpression
+	 *            {@link #rightExpression}
+	 */
 	public LogicalAndExpression(AbstractExpression leftExpression,
 			AbstractExpression rightExpression) {
 		super(leftExpression, rightExpression);
 	}
 
 	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter)
-			throws ParserException {
+			AbstractInterpreter interpreter) throws ParserException {
 		return interpreter.interpret(this);
 	}
 

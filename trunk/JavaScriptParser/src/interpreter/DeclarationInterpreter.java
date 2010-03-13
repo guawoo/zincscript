@@ -600,8 +600,14 @@ public class DeclarationInterpreter extends AbstractInterpreter {
 		return expression;
 	}
 
+	/**
+	 * 向变量表中添加变量定义
+	 * 
+	 * @param identifier
+	 *            变量定义表达式
+	 */
 	private void addVariable(IdentifierLiteral identifier) {
-		if (variableList.indexOf(identifier) == -1) {
+		if (variableList.indexOf(identifier) == -1) {// 如果变量不存在则加入变量列表
 			identifier.index = variableList.size();
 			variableList.add(identifier);
 		}
