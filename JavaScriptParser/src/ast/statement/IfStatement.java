@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>IfStatement</code> 定义了<strong><code>if</code></strong>关键字语法的语法树
@@ -33,9 +33,9 @@ public class IfStatement extends AbstractStatement {
 		this.falseStatement = falseStatement;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

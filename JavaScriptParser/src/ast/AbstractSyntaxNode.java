@@ -1,7 +1,5 @@
 package ast;
 
-import interpreter.AbstractInterpreter;
-
 /**
  * <code>AbstractSyntaxNode</code> 是语法树上所有节点的抽象基类。
  * <p>

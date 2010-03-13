@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.IdentifierLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>BreakStatement</code> 定义了<strong><code>break</code></strong>关键字语句的语法结构
@@ -31,9 +31,9 @@ public class BreakStatement extends AbstractStatement {
 		this.identifier = identifier;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

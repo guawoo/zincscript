@@ -1,8 +1,9 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
 import parser.ParserException;
 import ast.AbstractSyntaxNode;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>AbstracStatement</code> 是语法树上所有语句语法节点的基类
@@ -39,13 +40,13 @@ public abstract class AbstractStatement extends AbstractSyntaxNode {
 	/**
 	 * 分析声明语句语法
 	 * 
-	 * @param interpreter
+	 * @param compiler
 	 *            分析器
 	 * @return 声明语法节点
 	 * @throws ParserException
 	 */
-	public abstract AbstractStatement interpretStatement(
-			AbstractInterpreter interpreter) throws ParserException;
+	public abstract AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException;
 
 	/**
 	 * 获取声明语句的行号

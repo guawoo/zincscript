@@ -1,9 +1,9 @@
 package ast.expression.binary;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import parser.Token;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>AssignmentOperatorExpression</code>
@@ -28,9 +28,9 @@ public class AssignmentOperatorExpression extends AbstractBinaryExpression {
 		this.operator = operator;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

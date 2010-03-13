@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>ReturnStatement</code> 定义了<strong><code>return</code></strong>关键字语法的语法树
@@ -24,15 +24,17 @@ public class ReturnStatement extends AbstractStatement {
 
 	/**
 	 * 构造函数
-	 * @param expression {@link #expression}
+	 * 
+	 * @param expression
+	 *            {@link #expression}
 	 */
 	public ReturnStatement(AbstractExpression expression) {
 		this.expression = expression;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

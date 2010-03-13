@@ -1,7 +1,7 @@
 package ast.expression;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>ConditionalExpression</code>
@@ -11,10 +11,10 @@ import parser.ParserException;
 public class ConditionalExpression extends AbstractExpression {
 	/** 条件判断表达式 */
 	public AbstractExpression expression = null;
-	
+
 	/** 条件为真时执行的表达式 */
 	public AbstractExpression trueExpression = null;
-	
+
 	/** 条件为假时执行的表达式 */
 	public AbstractExpression falseExpression = null;
 
@@ -36,9 +36,9 @@ public class ConditionalExpression extends AbstractExpression {
 		this.falseExpression = falseExpression;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

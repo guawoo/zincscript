@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.IdentifierLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>LabelledStatement</code> 定义了标记语句的语法树
@@ -25,8 +25,11 @@ public class LabelledStatement extends AbstractStatement {
 
 	/**
 	 * 构造函数
-	 * @param identifier {@link #identifier}
-	 * @param statement {@link #statement}
+	 * 
+	 * @param identifier
+	 *            {@link #identifier}
+	 * @param statement
+	 *            {@link #statement}
 	 */
 	public LabelledStatement(IdentifierLiteral identifier,
 			AbstractStatement statement) {
@@ -34,9 +37,9 @@ public class LabelledStatement extends AbstractStatement {
 		this.statement = statement;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

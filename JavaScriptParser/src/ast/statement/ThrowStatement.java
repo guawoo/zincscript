@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>ThrowStatement</code> 定义了<strong><code>throw</code></strong>关键字语法的语法树
@@ -23,15 +23,17 @@ public class ThrowStatement extends AbstractStatement {
 
 	/**
 	 * 构造函数
-	 * @param expression {@link #expression}
+	 * 
+	 * @param expression
+	 *            {@link #expression}
 	 */
 	public ThrowStatement(AbstractExpression expression) {
 		this.expression = expression;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

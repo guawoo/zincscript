@@ -1,7 +1,7 @@
 package ast.expression;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>CallFunctionExpression</code> 定义了函数调用表达式的语法树
@@ -29,9 +29,9 @@ public class CallFunctionExpression extends AbstractExpression {
 		this.arguments = arguments;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

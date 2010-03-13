@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.VariableDeclarationExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>VariableStatement</code> 对变量声明表达式进行了封装. 按照语法定义, 一条变量声明语句包含一个或多个变量声明表达式.
@@ -32,9 +32,9 @@ public class VariableStatement extends AbstractStatement {
 		this.declarations = declarations;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

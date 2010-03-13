@@ -1,8 +1,8 @@
 package ast.expression.unary;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>IncrementExpression</code>
@@ -20,9 +20,9 @@ public class IncrementExpression extends AbstractUnaryExpression {
 		this.post = post;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 }

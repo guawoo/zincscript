@@ -1,7 +1,7 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>BlockStatement</code> 定义了代码块的语法树结构
@@ -30,9 +30,9 @@ public class BlockStatement extends AbstractStatement {
 		this.statementList = statementList;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

@@ -1,13 +1,9 @@
 package vm;
 
-import interpreter.CompilationInterpreter;
-import interpreter.DeclarationInterpreter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Enumeration;
 
 import parser.Parser;
@@ -19,6 +15,10 @@ import vm.object.nativeobject.ArrayObject;
 import vm.object.nativeobject.ErrorObject;
 import vm.object.nativeobject.FunctionObject;
 import ast.Program;
+
+import compiler.Compiler;
+import compiler.CompilerException;
+import compiler.PreCompiler;
 
 /**
  * <code>VirtualMachine</code>
@@ -148,21 +148,21 @@ public class VirtualMachine {
 	 *            脚本源代码
 	 * @throws ParserException
 	 */
-	public void loadScript(String script) throws ParserException {
+	public void loadScript(String script) throws ParserException,
+			CompilerException {
 		// 对脚本进行词法语法分析，生成抽象语法树
 		Parser parser = Parser.getInstace();
 		Program program = parser.parseProgram(script);
 		parser = null;
 		// 根据抽象语法树生成中间代码
-		DeclarationInterpreter declarationInterpreter = new DeclarationInterpreter();
-		declarationInterpreter.interpret(program);
+		PreCompiler declarationInterpreter = new PreCompiler();
+		declarationInterpreter.compile(program);
 		declarationInterpreter = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(baos);
 		try {
-			CompilationInterpreter compilationInterpreter = new CompilationInterpreter(
-					dos);
-			compilationInterpreter.interpret(program);
+			Compiler compilationInterpreter = new Compiler(dos);
+			compilationInterpreter.compile(program);
 			dos.flush();
 			byteCode = baos.toByteArray();
 		} catch (Exception e) {

@@ -1,9 +1,9 @@
 package ast.expression.unary;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import parser.Token;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>UnaryOperatorExpression</code> 是一元运算符表达式
@@ -27,9 +27,9 @@ public class UnaryOperatorExpression extends AbstractUnaryExpression {
 		this.operator = operator;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

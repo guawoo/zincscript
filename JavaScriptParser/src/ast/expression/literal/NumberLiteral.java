@@ -1,8 +1,8 @@
 package ast.expression.literal;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>NumberLiteral</code>
@@ -25,9 +25,9 @@ public class NumberLiteral extends AbstractLiteral {
 		this.value = value;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

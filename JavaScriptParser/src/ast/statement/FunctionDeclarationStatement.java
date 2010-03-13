@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.FunctionLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>FunctionDeclarationStatement</code> 定义了函数声明的语法树
@@ -32,9 +32,9 @@ public class FunctionDeclarationStatement extends AbstractStatement {
 		this.function = function;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

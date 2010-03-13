@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.IdentifierLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>ContinueStatement</code> 定义了<strong><code>continue</code>
@@ -32,9 +32,9 @@ public class ContinueStatement extends AbstractStatement {
 		this.identifier = identifier;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {
