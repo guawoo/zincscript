@@ -1,8 +1,8 @@
 package ast.expression.literal;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>IdentifierLiteral</code>
@@ -13,6 +13,7 @@ public class IdentifierLiteral extends AbstractLiteral {
 	/** 标识符 */
 	public String string = null;
 
+	/** 标识符在变量列表中的索引 */
 	public int index = -1;
 
 	/**
@@ -47,9 +48,9 @@ public class IdentifierLiteral extends AbstractLiteral {
 		return string;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

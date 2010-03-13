@@ -1,8 +1,8 @@
 package ast;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.statement.AbstractStatement;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>Program</code> 是整棵语法树的根. 从结构上讲, <code>Program</code>由若干
@@ -37,13 +37,13 @@ public class Program extends AbstractSyntaxNode {
 	 * <p>
 	 * 用于调用相关语义分析器对语法树进行语义分析
 	 * 
-	 * @param interpreter
+	 * @param compiler
+	 *            编译器
 	 * @return
 	 * @throws ParserException
 	 */
-	public Program interpretProgram(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public Program compileProgram(ICompilable compiler) throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>DoStatement</code> 定义了<strong><code>do-while</code></strong>关键字语法的语法树
@@ -22,7 +22,6 @@ public class DoWhileStatement extends AbstractStatement {
 	public AbstractStatement statement = null;
 	/** while后面的条件表达式 */
 	public AbstractExpression expression = null;
-	
 
 	/**
 	 * 构造函数
@@ -38,9 +37,9 @@ public class DoWhileStatement extends AbstractStatement {
 		this.statement = statement;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

@@ -1,8 +1,8 @@
 package ast.expression;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.AbstractSyntaxNode;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>AbstractExpression</code> 是语法树上所有表达式节点的基类
@@ -13,11 +13,11 @@ public abstract class AbstractExpression extends AbstractSyntaxNode {
 	/**
 	 * 分析表达式语法
 	 * 
-	 * @param interpreter
-	 *            分析器
+	 * @param compiler
+	 *            编译器
 	 * @return 表达式语法节点
 	 * @throws ParserException
 	 */
-	public abstract AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException;
+	public abstract AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException;
 }

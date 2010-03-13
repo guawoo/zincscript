@@ -1,9 +1,9 @@
 package ast.expression.binary;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import parser.Token;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>BinaryOperatorExpression</code> 定义了二元运算符表达式的语法树节点
@@ -30,9 +30,9 @@ public class BinaryOperatorExpression extends AbstractBinaryExpression {
 		this.operator = operator;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

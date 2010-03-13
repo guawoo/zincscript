@@ -1,7 +1,7 @@
 package ast.expression;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>VariableExpression</code>
@@ -9,7 +9,7 @@ import parser.ParserException;
  * @author Jarod Yv
  */
 public class VariableExpression extends AbstractExpression {
-	/** 函数生命语句 */
+	/** 变量声明语句 */
 	public VariableDeclarationExpression[] declarations = null;
 
 	/**
@@ -22,8 +22,8 @@ public class VariableExpression extends AbstractExpression {
 		this.declarations = declarations;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
+	public AbstractExpression compileExpression(
+			ICompilable compiler) throws CompilerException {
 		return null;
 	}
 

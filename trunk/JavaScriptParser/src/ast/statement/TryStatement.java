@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.IdentifierLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>TryStatement</code> 定义了<strong><code>try</code></strong>关键字语法的语法树
@@ -35,10 +35,15 @@ public class TryStatement extends AbstractStatement {
 
 	/**
 	 * 构造函数
-	 * @param tryBlock {@link #tryBlock}
-	 * @param catchIdentifier {@link #catchIdentifier}
-	 * @param catchBlock {@link #catchBlock}
-	 * @param finallyBlock {@link #finallyBlock}
+	 * 
+	 * @param tryBlock
+	 *            {@link #tryBlock}
+	 * @param catchIdentifier
+	 *            {@link #catchIdentifier}
+	 * @param catchBlock
+	 *            {@link #catchBlock}
+	 * @param finallyBlock
+	 *            {@link #finallyBlock}
 	 */
 	public TryStatement(AbstractStatement tryBlock,
 			IdentifierLiteral catchIdentifier, AbstractStatement catchBlock,
@@ -49,9 +54,9 @@ public class TryStatement extends AbstractStatement {
 		this.finallyBlock = finallyBlock;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

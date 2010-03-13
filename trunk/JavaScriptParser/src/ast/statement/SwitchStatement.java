@@ -1,8 +1,8 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>SwitchStatement</code> 定义了<strong><code>switch</code></strong>关键字语法的语法树
@@ -21,22 +21,29 @@ import ast.expression.AbstractExpression;
 public class SwitchStatement extends AbstractStatement {
 	/** <strong><code>switch</code></strong>关键字后的表达式 */
 	public AbstractExpression expression = null;
-	/** <strong><code>switch</code></strong>语句包含的<strong><code>case</code></strong>语句 */
+	
+	/**
+	 * <strong><code>switch</code></strong>语句包含的<strong><code>case</code>
+	 * </strong>语句
+	 */
 	public CaseStatement[] cases = null;
 
 	/**
 	 * 构造函数
-	 * @param expression {@link #expression}
-	 * @param cases {@link #cases}
+	 * 
+	 * @param expression
+	 *            {@link #expression}
+	 * @param cases
+	 *            {@link #cases}
 	 */
 	public SwitchStatement(AbstractExpression expression, CaseStatement[] cases) {
 		this.expression = expression;
 		this.cases = cases;
 	}
 
-	public AbstractStatement interpretStatement(AbstractInterpreter interpreter)
-			throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

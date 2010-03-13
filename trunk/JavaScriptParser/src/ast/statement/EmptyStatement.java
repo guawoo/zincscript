@@ -1,7 +1,7 @@
 package ast.statement;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>EmptyStatement</code>定义了空语句的语法结构
@@ -20,9 +20,9 @@ import parser.ParserException;
  */
 public class EmptyStatement extends AbstractStatement {
 
-	public AbstractStatement interpretStatement(AbstractInterpreter analyzer)
-			throws ParserException {
-		return analyzer.interpret(this);
+	public AbstractStatement compileStatement(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

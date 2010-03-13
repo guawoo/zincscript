@@ -1,8 +1,8 @@
 package ast.expression;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.literal.IdentifierLiteral;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>VariableDeclarationExpression</code>
@@ -30,9 +30,9 @@ public class VariableDeclarationExpression extends AbstractExpression {
 		this.initializer = initializer;
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 	public void release() {

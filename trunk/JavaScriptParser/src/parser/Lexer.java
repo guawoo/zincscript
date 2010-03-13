@@ -313,7 +313,7 @@ public final class Lexer {
 	private void prevChar() throws ParserException {
 		if (curPosition > 0) {
 			if (isLineTerminator()) {
-				throw new ParserException("不能返回上一条语句的字符");
+				throwLexerException("不能返回上一条语句的字符");
 			}
 			ch = script.charAt(--curPosition);
 		} else {

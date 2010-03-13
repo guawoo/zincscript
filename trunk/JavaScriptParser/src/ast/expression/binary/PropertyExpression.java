@@ -1,8 +1,8 @@
 package ast.expression.binary;
 
-import interpreter.AbstractInterpreter;
-import parser.ParserException;
 import ast.expression.AbstractExpression;
+import compiler.CompilerException;
+import compiler.ICompilable;
 
 /**
  * <code>PropertyExpression</code>
@@ -24,9 +24,9 @@ public class PropertyExpression extends AbstractBinaryExpression {
 		super(leftExpression, rightExpression);
 	}
 
-	public AbstractExpression interpretExpression(
-			AbstractInterpreter interpreter) throws ParserException {
-		return interpreter.interpret(this);
+	public AbstractExpression compileExpression(ICompilable compiler)
+			throws CompilerException {
+		return compiler.compile(this);
 	}
 
 }
