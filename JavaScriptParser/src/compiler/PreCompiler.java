@@ -55,6 +55,10 @@ import ast.statement.WithStatement;
 
 /**
  * <code>DeclarationInterpreter</code> 负责对脚本中声明函数和声明变量的语法进行语义分析
+ * <p>
+ * {@link Program}语法节点中{@link Program#statements}在语法分析时已经建立. 但
+ * {@link Program#functions}尚为空值. {@link Program#functions}用于保存这个脚本程序的函数声明,
+ * <code>DeclarationInterpreter</code> 会遍历整棵语法树, 抽取函数定义语法
  * 
  * @author Jarod Yv
  */
@@ -311,8 +315,8 @@ public class PreCompiler implements ICompilable {
 	// ///////////////////////////////////////////////////////////////////////
 
 	// ////////////////////////////// Expression /////////////////////////////
-	public AbstractExpression compile(
-			AssignmentExpression assignmentExpression) throws CompilerException {
+	public AbstractExpression compile(AssignmentExpression assignmentExpression)
+			throws CompilerException {
 		return interpretBinaryExpression(assignmentExpression);
 	}
 
@@ -337,7 +341,8 @@ public class PreCompiler implements ICompilable {
 	}
 
 	public AbstractExpression compile(
-			ConditionalExpression conditionalExpression) throws CompilerException {
+			ConditionalExpression conditionalExpression)
+			throws CompilerException {
 		conditionalExpression.expression = interpretExpression(conditionalExpression.expression);
 		conditionalExpression.trueExpression = interpretExpression(conditionalExpression.trueExpression);
 		conditionalExpression.falseExpression = interpretExpression(conditionalExpression.falseExpression);
@@ -354,8 +359,8 @@ public class PreCompiler implements ICompilable {
 		return interpretUnaryExpression(incrementExpression);
 	}
 
-	public AbstractExpression compile(
-			LogicalAndExpression logicalAndExpression) throws CompilerException {
+	public AbstractExpression compile(LogicalAndExpression logicalAndExpression)
+			throws CompilerException {
 		return interpretBinaryExpression(logicalAndExpression);
 	}
 
@@ -430,6 +435,7 @@ public class PreCompiler implements ICompilable {
 	// ///////////////////////////////////////////////////////////////////////
 
 	// /////////////////////////////// Literal ///////////////////////////////
+
 	/**
 	 * 解释{@link IdentifierLiteral}
 	 * <p>
@@ -437,8 +443,8 @@ public class PreCompiler implements ICompilable {
 	 * {@link #hasArgumentsVariable}为<code>true</code>
 	 */
 	public AbstractLiteral compile(IdentifierLiteral identifierLiteral)
-			throws CompilerException{
-		if (ARGUMENTS.equals(identifierLiteral.string)) {
+			throws CompilerException {
+		if (ARGUMENTS.equals(identifierLiteral.identifierName)) {
 			hasArgumentsVariable = true;
 		}
 		return identifierLiteral;

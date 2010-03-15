@@ -1130,6 +1130,12 @@ public final class Parser {
 	}
 
 	/**
+	 * 按照ECMA上的解释，<b>new</b>关键字语法有两种形式：
+	 * <ul>
+	 * <li><em>NewExpression</em> : <b>new</b> <em>NewExpression</em>
+	 * <li><em>MemberExpression</em> : <b>new</b>
+	 * <em>MemberExpression Arguments</em>
+	 * </ul>
 	 * The grammar for the 'new' keyword is a little complicated. The keyword
 	 * 'new' can occur in either a NewExpression (where its not followed by an
 	 * argument list) or in MemberExpresison (where it is followed by an
@@ -1174,7 +1180,7 @@ public final class Parser {
 				nextSyntax(Token.OPERATOR_DOT);
 				IdentifierLiteral identifier = parseIdentifier();
 				expression = new PropertyExpression(expression,
-						new StringLiteral(identifier.string));
+						new StringLiteral(identifier.identifierName));
 			} else {
 				return expression;
 			}
@@ -1182,8 +1188,11 @@ public final class Parser {
 	}
 
 	/**
-	 * @return
+	 * 解析<b>new</b>语句
+	 * 
+	 * @return {@link NewExpression}
 	 * @throws ParserException
+	 * @see ECMA-262 44页 11.2.2 The new Operator
 	 */
 	private final NewExpression parseNewExpression() throws ParserException {
 		AbstractExpression objName = null;
@@ -1377,7 +1386,7 @@ public final class Parser {
 		AbstractExpression propertyValue = null;
 		// 读取参数名
 		if (syntax.isIdentifier()) {
-			propertyName = new StringLiteral(parseIdentifier().string);
+			propertyName = new StringLiteral(parseIdentifier().identifierName);
 		} else if (syntax.isStringLiteral()) {
 			propertyName = parseStringLiteral();
 		} else if (syntax.isNumericLiteral()) {
@@ -1398,6 +1407,7 @@ public final class Parser {
 	 * @return
 	 * @throws ParserException
 	 * @see ECMA-262 14页~15页 7.6.Identifiers
+	 * @see {@link IdentifierLiteral}
 	 */
 	private final IdentifierLiteral parseIdentifier() throws ParserException {
 		IdentifierLiteral identifier = null;
