@@ -127,7 +127,7 @@ public class Compiler implements ICompilable {
 		// 将函数的变量写入局部变量表
 		for (int i = 0; i < function.variables.length; i++) {
 			IdentifierLiteral variable = function.variables[i];
-			addToGlobalStringTable(variable.string);
+			addToGlobalStringTable(variable.identifierName);
 			localVariableTable.put(variable, variable);
 		}
 
@@ -212,7 +212,7 @@ public class Compiler implements ICompilable {
 		writeJump(
 				VirtualMachine.XOP_GO,
 				breakStatement.identifier == null ? (Object) currentBreakStatement
-						: breakStatement.identifier.string, "break");
+						: breakStatement.identifier.identifierName, "break");
 		return breakStatement;
 	}
 
@@ -227,7 +227,7 @@ public class Compiler implements ICompilable {
 		writeJump(
 				VirtualMachine.XOP_GO,
 				continueStatement.identifier == null ? (Object) currentBreakStatement
-						: continueStatement.identifier.string, "continue");
+						: continueStatement.identifier.identifierName, "continue");
 		return continueStatement;
 	}
 
@@ -331,11 +331,11 @@ public class Compiler implements ICompilable {
 		if (forInStatement.variable instanceof IdentifierLiteral) {
 			writeXop(
 					VirtualMachine.XOP_PUSH_STR,
-					getStringLiteralIndex(((IdentifierLiteral) forInStatement.variable).string));
+					getStringLiteralIndex(((IdentifierLiteral) forInStatement.variable).identifierName));
 			writeOp(VirtualMachine.OP_CTX_SET);
 		} else if (forInStatement.variable instanceof VariableDeclarationExpression) {
 			writeVarDef(
-					((VariableDeclarationExpression) forInStatement.variable).identifier.string,
+					((VariableDeclarationExpression) forInStatement.variable).identifier.identifierName,
 					true);
 		} else {
 			throw new IllegalArgumentException();
@@ -374,7 +374,7 @@ public class Compiler implements ICompilable {
 
 	public AbstractStatement compile(LabelledStatement labelledStatement)
 			throws CompilerException {
-		labelSet.add(labelledStatement.identifier.string);
+		labelSet.add(labelledStatement.identifier.identifierName);
 		labelledStatement.statement.compileStatement(this);
 		return labelledStatement;
 	}
@@ -469,7 +469,7 @@ public class Compiler implements ICompilable {
 			}
 
 			// add var and init from stack
-			writeVarDef(tryStatement.catchIdentifier.string, true);
+			writeVarDef(tryStatement.catchIdentifier.identifierName, true);
 			writeOp(VirtualMachine.OP_DROP);
 			tryStatement.catchBlock.compileStatement(this);
 
@@ -787,10 +787,10 @@ public class Compiler implements ICompilable {
 			throws CompilerException {
 		if (variableDeclarationExpression.initializer != null) {
 			variableDeclarationExpression.initializer.compileExpression(this);
-			writeVarDef(variableDeclarationExpression.identifier.string, true);
+			writeVarDef(variableDeclarationExpression.identifier.identifierName, true);
 			writeOp(VirtualMachine.OP_DROP);
 		} else {
-			writeVarDef(variableDeclarationExpression.identifier.string, false);
+			writeVarDef(variableDeclarationExpression.identifier.identifierName, false);
 		}
 		return variableDeclarationExpression;
 	}
@@ -831,7 +831,7 @@ public class Compiler implements ICompilable {
 		} else if (pa instanceof DeleteExpression) {
 			writeOp(VirtualMachine.OP_CTX);
 			writeXop(VirtualMachine.XOP_PUSH_STR,
-					getStringLiteralIndex(identifierLiteral.string));
+					getStringLiteralIndex(identifierLiteral.identifierName));
 			writeOp(VirtualMachine.OP_DEL);
 		} else {
 			throw new IllegalArgumentException();
@@ -909,7 +909,7 @@ public class Compiler implements ICompilable {
 		writeXop(VirtualMachine.XOP_PUSH_FN, functionLiterals.size() - 1);
 
 		if (functionLiteral.funcName != null) {
-			writeVarDef(functionLiteral.funcName.string, true);
+			writeVarDef(functionLiteral.funcName.identifierName, true);
 		}
 		return functionLiteral;
 	}
@@ -984,7 +984,7 @@ public class Compiler implements ICompilable {
 				dos.writeShort(variables.length);
 				for (int i = 0; i < variables.length; i++) {
 					dos.writeShort((short) ((Integer) globalStringMap
-							.get(variables[i].string)).intValue());
+							.get(variables[i].identifierName)).intValue());
 				}
 			}
 		} catch (IOException e) {
@@ -1075,7 +1075,7 @@ public class Compiler implements ICompilable {
 			writeXop(VirtualMachine.XOP_LCL_GET, index);
 		} else {
 			writeXop(VirtualMachine.XOP_PUSH_STR,
-					getStringLiteralIndex(identifier.string));
+					getStringLiteralIndex(identifier.identifierName));
 			writeOp(VirtualMachine.OP_CTX_GET);
 		}
 	}
@@ -1087,7 +1087,7 @@ public class Compiler implements ICompilable {
 			writeXop(VirtualMachine.XOP_LCL_SET, index);
 		} else {
 			writeXop(VirtualMachine.XOP_PUSH_STR,
-					getStringLiteralIndex(identifier.string));
+					getStringLiteralIndex(identifier.identifierName));
 			writeOp(VirtualMachine.OP_CTX_SET);
 		}
 	}
