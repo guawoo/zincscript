@@ -340,4 +340,5 @@ public interface ICompilable {
 	 */
 	public abstract AbstractLiteral compile(
 			ObjectPropertyLiteral objectPropertyLiteral) throws CompilerException;
+	// ///////////////////////////////////////////////////////////////////////
 }

@@ -1,8 +1,9 @@
 package vm.object.buildin;
 
 import java.util.Random;
+
+import vm.VMStack;
 import vm.object.VMObject;
-import vm.object.nativeobject.ArrayObject;
 import vm.object.nativeobject.FunctionObject;
 
 /**
@@ -11,16 +12,20 @@ import vm.object.nativeobject.FunctionObject;
  */
 public class MathObject extends VMObject {
 
-	public static final double LN2 = 0.6931471805599453;
+	/** ln(2)的常量结果 */
+	private static final double LN2 = 0.6931471805599453;
+	private static final double LN10 = 2.302585092994046;
+	private static final double LOG2E = 1.4426950408889634;
+	private static final double LOG10E = 0.4342944819032518;
 	/**
 	 * M因子, 用于计算ln(x). 根据网上资料, M=8就能够满足对精度的要求
 	 * 
 	 * @see #ln(double)
 	 */
 	private static final int M = 8; // m*ln(2)
-	public static final Random random = new Random();
+	public static final Random RANDOM = new Random();
 
-	// 方法
+	// /////////////////////// 方法代号 ///////////////////////
 	private static final int ID_ABS = 19;
 	private static final int ID_ACOS = 20;
 	private static final int ID_ASIN = 21;
@@ -39,7 +44,9 @@ public class MathObject extends VMObject {
 	private static final int ID_SIN = 34;
 	private static final int ID_SQRT = 35;
 	private static final int ID_TAN = 36;
-	// 常量
+	// //////////////////////////////////////////////////////
+
+	// /////////////////////// 常量代号 ///////////////////////
 	private static final int ID_E = 70;
 	private static final int ID_LN10 = 72;
 	private static final int ID_LN2 = 74;
@@ -48,6 +55,7 @@ public class MathObject extends VMObject {
 	private static final int ID_PI = 80;
 	private static final int ID_SQRT1_2 = 82;
 	private static final int ID_SQRT2 = 84;
+	// //////////////////////////////////////////////////////
 
 	public static final MathObject MATH_PROTOTYPE = new MathObject();
 	static {
@@ -84,7 +92,7 @@ public class MathObject extends VMObject {
 		super(OBJECT_PROTOTYPE);
 	}
 
-	public void evalNative(int index, ArrayObject stack, int sp, int parCount) {
+	public void evalNative(int index, VMStack stack, int sp, int parCount) {
 		switch (index) {
 		case ID_ABS:
 			stack.setNumber(sp, Math.abs(stack.getNumber(sp + 2)));
@@ -128,7 +136,7 @@ public class MathObject extends VMObject {
 					.getNumber(sp + 3)));
 			break;
 		case ID_RANDOM:
-			stack.setNumber(sp, random.nextDouble());
+			stack.setNumber(sp, RANDOM.nextDouble());
 			break;
 		case ID_ROUND:
 			stack.setNumber(sp, Math.floor(stack.getNumber(sp + 2) + 0.5));
@@ -146,16 +154,16 @@ public class MathObject extends VMObject {
 			stack.setNumber(sp, Math.E);
 			break;
 		case ID_LN10:
-			stack.setNumber(sp, 2.302585092994046);
+			stack.setNumber(sp, LN10);
 			break;
 		case ID_LN2:
 			stack.setNumber(sp, LN2);
 			break;
 		case ID_LOG2E:
-			stack.setNumber(sp, 1.4426950408889634);
+			stack.setNumber(sp, LOG2E);
 			break;
 		case ID_LOG10E:
-			stack.setNumber(sp, 0.4342944819032518);
+			stack.setNumber(sp, LOG10E);
 			break;
 		case ID_PI:
 			stack.setNumber(sp, Math.PI);
@@ -245,8 +253,10 @@ public class MathObject extends VMObject {
 	 * 求2数的平均值
 	 * 
 	 * @param a
+	 *            数值a
 	 * @param b
-	 * @return
+	 *            数值b
+	 * @return a和b的平均值
 	 */
 	private final double avg(double a, double b) {
 		for (int i = 0; i < 10; i++) {

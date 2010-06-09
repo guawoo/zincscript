@@ -3,6 +3,8 @@ package vm.object.nativeobject;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import vm.VMStack;
 import vm.object.VMObject;
 
 /**
@@ -136,7 +138,7 @@ public class DateObject extends VMObject {
 		super(OBJECT_PROTOTYPE);
 	}
 
-	public void evalNative(int index, ArrayObject stack, int sp, int parCount) {
+	public void evalNative(int index, VMStack stack, int sp, int parCount) {
 		switch (index) {
 		case ID_TO_DATE_STRING:
 		case ID_TO_LOCALE_DATE_STRING:
