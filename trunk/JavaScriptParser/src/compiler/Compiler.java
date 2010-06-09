@@ -58,7 +58,7 @@ import ast.statement.WhileStatement;
 import ast.statement.WithStatement;
 
 /**
- * <code>CompilationInterpreter</code> 负责将语法树解释成可执行的中间代码.
+ * <code>Compiler</code> 负责将语法树编译成可执行的中间代码.
  * <p>
  * 整个过程分为2步, 会对语法树进行2次遍历：
  * <ol>
@@ -72,14 +72,23 @@ public class Compiler implements ICompilable {
 	private DataOutputStream dos = null;
 	private ByteArrayOutputStream codeStream = new ByteArrayOutputStream(0);
 
+	/** 全局字符串表 */
 	private Hashtable globalStringMap = new Hashtable();
 	private ArrayList globalStringTable = new ArrayList();
 
+	/** 函数定义列表 */
 	private ArrayList functionLiterals = new ArrayList();
+
+	/** 数字定义列表 */
 	private ArrayList numberLiterals = new ArrayList();
+
+	/** 字符串定义列表 */
 	private ArrayList stringLiterals = new ArrayList();
 
+	/** 本地变量表 */
 	private Hashtable localVariableTable = new Hashtable();
+
+	/** 跳转表记表 */
 	private Hashtable jumpLabels = new Hashtable();
 
 	private ArrayList unresolvedJumps = new ArrayList();
@@ -108,6 +117,27 @@ public class Compiler implements ICompilable {
 		this.dos = dos;
 		this.globalStringMap = new Hashtable();
 		this.globalStringTable = new ArrayList();
+	}
+
+	// /////////////////////////////// Program ///////////////////////////////
+	public Program compile(Program program) throws CompilerException {
+		for (int i = 0; i < program.functions.length; i++) {
+			program.functions[i].compileStatement(this);
+		}
+
+		for (int i = 0; i < program.statements.length; i++) {
+			program.statements[i].compileStatement(this);
+		}
+
+		writeGlobalStringTableBlock();
+		writeStringLiteralBlock();
+		writeNumberLiteralBlock();
+		writeFunctionLiteralBlock();
+		writeCodeBlock(0, 0, 0x00, codeStream.toByteArray());
+		writeLineNumberBlock();
+		writeEndMarker();
+
+		return program;
 	}
 
 	/**
@@ -169,26 +199,9 @@ public class Compiler implements ICompilable {
 		writeEndMarker();
 	}
 
-	public Program compile(Program program) throws CompilerException {
-		for (int i = 0; i < program.functions.length; i++) {
-			program.functions[i].compileStatement(this);
-		}
+	// ///////////////////////////////////////////////////////////////////////
 
-		for (int i = 0; i < program.statements.length; i++) {
-			program.statements[i].compileStatement(this);
-		}
-
-		writeGlobalStringTableBlock();
-		writeStringLiteralBlock();
-		writeNumberLiteralBlock();
-		writeFunctionLiteralBlock();
-		writeCodeBlock(0, 0, 0x00, codeStream.toByteArray());
-		writeLineNumberBlock();
-		writeEndMarker();
-
-		return program;
-	}
-
+	// ////////////////////////////// Statement //////////////////////////////
 	public AbstractStatement compile(
 			FunctionDeclarationStatement functionDeclarationStatement)
 			throws CompilerException {
@@ -569,8 +582,11 @@ public class Compiler implements ICompilable {
 		return withStatement;
 	}
 
-	public AbstractExpression compile(
-			AssignmentExpression assignmentExpression) throws CompilerException {
+	// ///////////////////////////////////////////////////////////////////////
+
+	// ////////////////////////////// Expression /////////////////////////////
+	public AbstractExpression compile(AssignmentExpression assignmentExpression)
+			throws CompilerException {
 		AbstractExpression savePendingAssignment = pendingAssignment;
 		pendingAssignment = assignmentExpression;
 		assignmentExpression.leftExpression.compileExpression(this);
@@ -634,7 +650,8 @@ public class Compiler implements ICompilable {
 	}
 
 	public AbstractExpression compile(
-			ConditionalExpression conditionalExpression) throws CompilerException {
+			ConditionalExpression conditionalExpression)
+			throws CompilerException {
 		conditionalExpression.expression.compileExpression(this);
 		writeJump(VirtualMachine.XOP_IF, conditionalExpression, "else");
 		conditionalExpression.trueExpression.compileExpression(this);
@@ -669,8 +686,8 @@ public class Compiler implements ICompilable {
 		return incrementExpression;
 	}
 
-	public AbstractExpression compile(
-			LogicalAndExpression logicalAndExpression) throws CompilerException {
+	public AbstractExpression compile(LogicalAndExpression logicalAndExpression)
+			throws CompilerException {
 		logicalAndExpression.leftExpression.compileExpression(this);
 		writeOp(VirtualMachine.OP_DUP);
 		// jump (= skip) if false since false && any = false
@@ -721,8 +738,7 @@ public class Compiler implements ICompilable {
 			writeOp(VirtualMachine.OP_GET);
 		} else if (pa instanceof AssignmentExpression) {
 			// push value
-			((AssignmentExpression) pa).rightExpression
-					.compileExpression(this);
+			((AssignmentExpression) pa).rightExpression.compileExpression(this);
 			// push object
 			propertyExpression.leftExpression.compileExpression(this);
 			// push property
@@ -795,6 +811,9 @@ public class Compiler implements ICompilable {
 		return variableDeclarationExpression;
 	}
 
+	// ///////////////////////////////////////////////////////////////////////
+
+	// /////////////////////////////// Literal ///////////////////////////////
 	public AbstractLiteral compile(IdentifierLiteral identifierLiteral)
 			throws CompilerException {
 		AbstractExpression pa = pendingAssignment;
@@ -810,8 +829,7 @@ public class Compiler implements ICompilable {
 		if (pa == null) {
 			writeOpGet(identifierLiteral);
 		} else if (pa instanceof AssignmentExpression) {
-			((AssignmentExpression) pa).rightExpression
-					.compileExpression(this);
+			((AssignmentExpression) pa).rightExpression.compileExpression(this);
 			writeOpSet(identifierLiteral);
 		} else if (pa instanceof AssignmentOperatorExpression) {
 			writeOpGet(identifierLiteral);
@@ -932,6 +950,41 @@ public class Compiler implements ICompilable {
 		return objectPropertyLiteral;
 	}
 
+	// ///////////////////////////////////////////////////////////////////////
+
+	/**
+	 * 写入全局字符串表
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x10</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>字符串数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>length</td>
+	 * <td>字符串数据长度</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>data</td>
+	 * <td>字符串数据</td>
+	 * <td>byte[]</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @throws CompilerException
+	 */
 	private void writeGlobalStringTableBlock() throws CompilerException {
 		try {
 			if (globalStringTable.size() > 0) {
@@ -946,6 +999,34 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入数字定义表
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x20</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>数字数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>number</td>
+	 * <td>数值</td>
+	 * <td>double</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @throws CompilerException
+	 */
 	private void writeNumberLiteralBlock() throws CompilerException {
 		try {
 			if (numberLiterals.size() > 0) {
@@ -961,6 +1042,34 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入字符串定义表
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x30</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>数字数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>index</td>
+	 * <td>字符串在全局字符串表中的索引</td>
+	 * <td>short</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @throws CompilerException
+	 */
 	private void writeStringLiteralBlock() throws CompilerException {
 		try {
 			if (stringLiterals.size() > 0) {
@@ -976,6 +1085,36 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入变量名列表
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x60</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>数字数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>index</td>
+	 * <td>变量名在全局字符串表中的索引</td>
+	 * <td>short</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param variables
+	 *            变量名列表
+	 * @throws CompilerException
+	 */
 	private void writeLocalVariableNameBlock(IdentifierLiteral[] variables)
 			throws CompilerException {
 		try {
@@ -992,6 +1131,34 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入函数定义数据
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x50</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>函数数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>FunctionLiteral</td>
+	 * <td>函数数据</td>
+	 * <td>byte[]</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @throws CompilerException
+	 */
 	private void writeFunctionLiteralBlock() throws CompilerException {
 		try {
 			if (functionLiterals.size() > 0) {
@@ -1006,6 +1173,13 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * @param localVariableCount
+	 * @param paramenterCount
+	 * @param flags
+	 * @param code
+	 * @throws CompilerException
+	 */
 	private void writeCodeBlock(int localVariableCount, int paramenterCount,
 			int flags, byte[] code) throws CompilerException {
 		try {
@@ -1021,7 +1195,8 @@ public class Compiler implements ICompilable {
 				Integer target = (Integer) jumpLabels.get(label);
 
 				if (target == null) {
-					throw new CompilerException("Unresolved Jump Label: " + label);
+					throw new CompilerException("Unresolved Jump Label: "
+							+ label);
 				}
 
 				int delta = target.intValue() - address - 2;
@@ -1036,6 +1211,39 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入行号数据
+	 * <p>
+	 * <table>
+	 * <tr style="background-color:#990000;color:#FFFFFF">
+	 * <th>数据内容</th>
+	 * <th>数据描述</th>
+	 * <th>数据长度</th>
+	 * </tr>
+	 * <tr>
+	 * <td>flag</td>
+	 * <td>数据段标识</td>
+	 * <td>0x7f</td>
+	 * </tr>
+	 * <tr>
+	 * <td>count</td>
+	 * <td>行号数量</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>pc</td>
+	 * <td>ProgramCounter</td>
+	 * <td>short</td>
+	 * </tr>
+	 * <tr style="background-color:#ccffff">
+	 * <td>linenumber</td>
+	 * <td>行号</td>
+	 * <td>short</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @throws CompilerException
+	 */
 	private void writeLineNumberBlock() throws CompilerException {
 		try {
 			dos.write(VirtualMachine.BLOCK_LINE_NUMBERS);
@@ -1064,10 +1272,22 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入一个操作符
+	 * 
+	 * @param op
+	 *            操作符
+	 */
 	private void writeOp(int op) {
 		codeStream.write(op);
 	}
 
+	/**
+	 * 写入取出(get)给定标识符指向数据的操作
+	 * 
+	 * @param identifier
+	 *            指定的标识符
+	 */
 	private void writeOpGet(IdentifierLiteral identifier) {
 		int index = identifier.index;
 
@@ -1080,6 +1300,12 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入设置(set)数据给定标识符的操作
+	 * 
+	 * @param identifier
+	 *            指定的标识符
+	 */
 	private void writeOpSet(IdentifierLiteral identifier) {
 		int index = identifier.index;
 
@@ -1105,12 +1331,16 @@ public class Compiler implements ICompilable {
 	}
 
 	/**
-	 * Write a variable-length operation with an immediate parameter to the
-	 * given output stream.
+	 * 写入后面带有立即数的操作符
+	 * 
+	 * @param opcode
+	 *            操作符
+	 * @param imm
+	 *            操作符后跟的立即数字
 	 */
-	void writeXop(int opcode, int param) {
+	void writeXop(int opcode, int imm) {
 		if (opcode == VirtualMachine.XOP_ADD) {
-			switch (param) {
+			switch (imm) {
 			case 1:
 				writeOp(VirtualMachine.OP_INC);
 				return;
@@ -1120,13 +1350,13 @@ public class Compiler implements ICompilable {
 			}
 		}
 
-		if ((param & 0x0ff80) == 0 || (param & 0x0ff80) == 0xff80) {
+		if ((imm & 0x0ff80) == 0 || (imm & 0x0ff80) == 0xff80) {
 			codeStream.write(opcode << 1);
-			codeStream.write(param);
+			codeStream.write(imm);
 		} else {
 			codeStream.write((opcode << 1) | 1);
-			codeStream.write(param >> 8);
-			codeStream.write(param & 255);
+			codeStream.write(imm >> 8);
+			codeStream.write(imm & 255);
 		}
 	}
 
@@ -1174,6 +1404,12 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入二元操作符
+	 * 
+	 * @param type
+	 *            操作符类型
+	 */
 	private void writeBinaryOperator(Token type) {
 		if (type == Token.OPERATOR_ASSIGN) {
 			// should be handled as special case
@@ -1244,6 +1480,12 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * 写入一元操作符
+	 * 
+	 * @param type
+	 *            操作符类型
+	 */
 	private void writeUnaryOperator(Token type) {
 		if (type == Token.OPERATOR_PLUS) {
 			writeXop(VirtualMachine.XOP_ADD, 0);
@@ -1274,16 +1516,23 @@ public class Compiler implements ICompilable {
 	/**
 	 * 如果待加入的字符串不在全局符号表中，则将字符串加入符号表中
 	 * 
-	 * @param s
+	 * @param string
 	 *            待加入的字符串
 	 */
-	private void addToGlobalStringTable(String s) {
-		if (globalStringMap.get(s) == null) {
-			globalStringMap.put(s, new Integer(globalStringTable.size()));
-			globalStringTable.add(s);
+	private void addToGlobalStringTable(String string) {
+		if (globalStringMap.get(string) == null) {
+			globalStringMap.put(string, new Integer(globalStringTable.size()));
+			globalStringTable.add(string);
 		}
 	}
 
+	/**
+	 * 获取字符串在字符串定义列表中的索引. 如果不存在则加入进去.
+	 * 
+	 * @param string
+	 *            待查找的字符串
+	 * @return 字符串在字符串定义列表中的索引
+	 */
 	private int getStringLiteralIndex(String string) {
 		int i = stringLiterals.indexOf(string);
 		if (i == -1) {
@@ -1294,6 +1543,12 @@ public class Compiler implements ICompilable {
 		return i;
 	}
 
+	/**
+	 * 将给定语句的行号数据添加进列表
+	 * 
+	 * @param statement
+	 *            给定语句
+	 */
 	private void addLineNumber(AbstractStatement statement) {
 		if (Config.LINENUMBER) {
 			lineNumberList.add(new LineNumber(codeStream.size(), statement
@@ -1301,6 +1556,11 @@ public class Compiler implements ICompilable {
 		}
 	}
 
+	/**
+	 * <code>LineNumber</code>封装了行号数据
+	 * 
+	 * @author Jarod Yv
+	 */
 	private class LineNumber {
 		private int programCounter;
 		private int lineNumber;

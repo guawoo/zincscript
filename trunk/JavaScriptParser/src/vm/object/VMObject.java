@@ -2,8 +2,9 @@ package vm.object;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import vm.VMStack;
 import vm.VMUtils;
-import vm.object.nativeobject.ArrayObject;
 import vm.object.nativeobject.FunctionObject;
 
 /**
@@ -16,14 +17,13 @@ import vm.object.nativeobject.FunctionObject;
  */
 public class VMObject {
 
-	protected static final int ID_INIT_OBJECT = 1;
-
-	protected static final int ID_TO_STRING = 2;
-	protected static final int ID_TO_LOCALE_STRING = 3;
-	protected static final int ID_VALUE_OF = 4;
-	protected static final int ID_HAS_OWN_PROPERTY = 5;
-	protected static final int ID_IS_PROTOTYPE_OF = 6;
-	protected static final int ID_PROPERTY_IS_ENUMERABLE = 7;
+	protected static final int ID_INIT_OBJECT = 0x01;
+	protected static final int ID_TO_STRING = 0x02;
+	protected static final int ID_TO_LOCALE_STRING = 0x03;
+	protected static final int ID_VALUE_OF = 0x04;
+	protected static final int ID_HAS_OWN_PROPERTY = 0x05;
+	protected static final int ID_IS_PROTOTYPE_OF = 0x06;
+	protected static final int ID_PROPERTY_IS_ENUMERABLE = 0x07;
 
 	/**
 	 * Object的{@link #parentPrototype}, 后面的static块用于添加Object中的方法。
@@ -80,7 +80,7 @@ public class VMObject {
 	 * stack[sp+2]. Function and getter results are returned at stack[sp+0]. The
 	 * assignement value for a setter is stored at stack[sp+0].
 	 */
-	public void evalNative(int index, ArrayObject stack, int sp, int parCount) {
+	public void evalNative(int index, VMStack stack, int sp, int parCount) {
 		switch (index) {
 		case ID_INIT_OBJECT:
 			Object value = stack.getObject(sp + 2);
@@ -142,7 +142,7 @@ public class VMObject {
 	 * @param sp
 	 * @return
 	 */
-	private boolean isConstruction(ArrayObject stack, int sp) {
+	private boolean isConstruction(VMStack stack, int sp) {
 		return sp > 0 && stack.getObject(sp - 1) == stack.getObject(sp);
 	}
 
@@ -173,7 +173,7 @@ public class VMObject {
 	 * Set method called from the byte code interpreter, avoiding temporary
 	 * stack creation. This method is overwritten in JsArray.
 	 */
-	public void vmSetOperation(ArrayObject stack, int keyIndex, int valueIndex) {
+	public void vmSetOperation(VMStack stack, int keyIndex, int valueIndex) {
 		String key = stack.getString(keyIndex);
 
 		// TODO re-enable optimization
@@ -194,7 +194,7 @@ public class VMObject {
 	 * Get method called from the bytecode interpreter, avoiding temporary stack
 	 * creation. This method is overwritten in JsArray and JsArguments.
 	 */
-	public void vmGetOperation(ArrayObject stack, int keyIndex, int valueIndex) {
+	public void vmGetOperation(VMStack stack, int keyIndex, int valueIndex) {
 		String key = stack.getString(keyIndex);
 
 		// TODO re-enable optimization
@@ -225,7 +225,7 @@ public class VMObject {
 		if (old instanceof FunctionObject
 				&& ((FunctionObject) old).expectedParameterCount == -1) {
 			FunctionObject nat = (FunctionObject) old;
-			ArrayObject stack = new ArrayObject();
+			VMStack stack = new VMStack();
 			stack.setObject(0, v);
 			evalNative(nat.index + 1, stack, 0, 0);
 			return;
@@ -251,7 +251,7 @@ public class VMObject {
 		if (v instanceof FunctionObject) {
 			FunctionObject nat = (FunctionObject) v;
 			if (nat.expectedParameterCount == -1) {
-				ArrayObject stack = new ArrayObject();
+				VMStack stack = new VMStack();
 				evalNative(nat.index, stack, 0, 0);
 				return stack.getObject(0);
 			}

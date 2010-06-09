@@ -297,7 +297,7 @@ public class VirtualMachine {
 	public Object exec(DataInputStream dis) throws IOException {
 		mainFunction = new FunctionObject(-1, -1);
 		mainFunction = generateFunctionObject(dis, null);
-		ArrayObject stack = new ArrayObject();
+		VMStack stack = new VMStack();
 		stack.setObject(0, global);
 		stack.setObject(1, mainFunction);
 		stack.setObject(2, null);
@@ -311,7 +311,7 @@ public class VirtualMachine {
 	 * must be on stack (sp + 0 = context, sp + 1=function, sp + 2 = first param
 	 * etc.). The result is expected at sp + 0.
 	 */
-	public void eval(FunctionObject function, ArrayObject stack, int sp,
+	public void eval(FunctionObject function, VMStack stack, int sp,
 			int actualParameterCount) {
 		VMObject thisPtr = stack.getVMObject(sp);
 		if (function == null)
@@ -488,8 +488,9 @@ public class VirtualMachine {
 
 					case OP_APPEND:
 						ArrayObject arr = (ArrayObject) stack.getObject(sp - 2);
-						stack.copy(sp - 1, arr, arr.size());
-						// ((Array)
+						// stack.copy(sp - 1, arr, arr.size());
+						arr.setObject(arr.size(), stack.getObject(sp - 1));
+						// ((ArrayObject)
 						// stack.getObject(sp-2)).addElement(stack.getObject(sp-1));
 						sp--;
 						arr = null;

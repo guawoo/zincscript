@@ -1,5 +1,6 @@
 package vm.object.nativeobject;
 
+import vm.VMStack;
 import vm.object.VMObject;
 
 public class NumberObject extends VMObject {
@@ -22,7 +23,7 @@ public class NumberObject extends VMObject {
 		super(OBJECT_PROTOTYPE);
 	}
 
-	public void evalNative(int index, ArrayObject stack, int sp, int parCount) {
+	public void evalNative(int index, VMStack stack, int sp, int parCount) {
 		switch (index) {
 		case ID_TO_EXPONENTIAL:
 		case ID_TO_FIXED:
