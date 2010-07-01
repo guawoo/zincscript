@@ -8,48 +8,56 @@ import vm.VMStack;
 import vm.object.VMObject;
 
 /**
+ * <code>DateObject</code> 是JavaScript中的日期对象
+ * 
  * @author Jarod Yv
  * @see ECMA-262 117页~129页 15.9.DateObjects
  */
 public class DateObject extends VMObject {
-	private static final int ID_TO_DATE_STRING = 903;
-	private static final int ID_TO_TIME_STRING = 904;
-	private static final int ID_TO_LOCALE_DATE_STRING = 906;
-	private static final int ID_TO_LOCALE_TIME_STRING = 907;
-	private static final int ID_GET_TIME = 909;
-	private static final int ID_GET_FULL_YEAR = 910;
-	private static final int ID_GET_UTC_FULL_YEAR = 911;
-	private static final int ID_GET_MONTH = 912;
-	private static final int ID_GET_UTC_MONTH = 913;
-	private static final int ID_GET_DATE = 914;
-	private static final int ID_GET_UTC_DATE = 915;
-	private static final int ID_GET_DAY = 916;
-	private static final int ID_GET_UTC_DAY = 917;
-	private static final int ID_GET_HOURS = 918;
-	private static final int ID_GET_UTC_HOURS = 919;
-	private static final int ID_GET_MINUTES = 920;
-	private static final int ID_GET_UTC_MINUTES = 921;
-	private static final int ID_GET_SECONDS = 922;
-	private static final int ID_GET_UTC_SECONDS = 923;
-	private static final int ID_GET_MILLISECONDS = 924;
-	private static final int ID_GET_UTC_MILLISECONDS = 925;
-	private static final int ID_GET_TIMEZONE_OFFSET = 926;
-	private static final int ID_SET_TIME = 927;
-	private static final int ID_SET_MILLISECONDS = 928;
-	private static final int ID_SET_UTC_MILLISECONDS = 929;
-	private static final int ID_SET_SECONDS = 930;
-	private static final int ID_SET_UTC_SECONDS = 931;
-	private static final int ID_SET_MINUTES = 932;
-	private static final int ID_SET_UTC_MINUTES = 933;
-	private static final int ID_SET_HOURS = 934;
-	private static final int ID_SET_UTC_HOURS = 935;
-	private static final int ID_SET_DATE = 936;
-	private static final int ID_SET_UTC_DATE = 937;
-	private static final int ID_SET_MONTH = 938;
-	private static final int ID_SET_UTC_MONTH = 939;
-	private static final int ID_SET_FULL_YEAR = 940;
-	private static final int ID_SET_UTC_FULL_YEAR = 941;
-	private static final int ID_TO_UTC_STRING = 942;
+
+	public static final int ID_INIT_DATE = 0x80;// 构造函数
+	public static final int ID_PARSE = 0x81;
+	public static final int ID_UTC = 0x82;
+
+	private static final int ID_TO_DATE_STRING = 0x83;
+	private static final int ID_TO_TIME_STRING = 0x84;
+	private static final int ID_TO_LOCALE_DATE_STRING = 0x85;
+	private static final int ID_TO_LOCALE_TIME_STRING = 0x86;
+
+	private static final int ID_GET_TIME = 0x87;
+	private static final int ID_GET_FULL_YEAR = 0x88;
+	private static final int ID_GET_UTC_FULL_YEAR = 0x89;
+	private static final int ID_GET_MONTH = 0x8a;
+	private static final int ID_GET_UTC_MONTH = 0x8b;
+	private static final int ID_GET_DATE = 0x8c;
+	private static final int ID_GET_UTC_DATE = 0x8d;
+	private static final int ID_GET_DAY = 0x8e;
+	private static final int ID_GET_UTC_DAY = 0x8f;
+	private static final int ID_GET_HOURS = 0x90;
+	private static final int ID_GET_UTC_HOURS = 0x91;
+	private static final int ID_GET_MINUTES = 0x92;
+	private static final int ID_GET_UTC_MINUTES = 0x93;
+	private static final int ID_GET_SECONDS = 0x94;
+	private static final int ID_GET_UTC_SECONDS = 0x95;
+	private static final int ID_GET_MILLISECONDS = 0x96;
+	private static final int ID_GET_UTC_MILLISECONDS = 0x97;
+	private static final int ID_GET_TIMEZONE_OFFSET = 0x98;
+	private static final int ID_SET_TIME = 0x99;
+	private static final int ID_SET_MILLISECONDS = 0x9a;
+	private static final int ID_SET_UTC_MILLISECONDS = 0x9b;
+	private static final int ID_SET_SECONDS = 0x9c;
+	private static final int ID_SET_UTC_SECONDS = 0x9d;
+	private static final int ID_SET_MINUTES = 0x9e;
+	private static final int ID_SET_UTC_MINUTES = 0x9f;
+	private static final int ID_SET_HOURS = 0xa0;
+	private static final int ID_SET_UTC_HOURS = 0xa1;
+	private static final int ID_SET_DATE = 0xa2;
+	private static final int ID_SET_UTC_DATE = 0xa3;
+	private static final int ID_SET_MONTH = 0xa4;
+	private static final int ID_SET_UTC_MONTH = 0xa5;
+	private static final int ID_SET_FULL_YEAR = 0xa6;
+	private static final int ID_SET_UTC_FULL_YEAR = 0xa7;
+	private static final int ID_TO_UTC_STRING = 0xa8;
 
 	public static final DateObject DATE_PROTOTYPE = new DateObject();
 	static {

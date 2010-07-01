@@ -4,30 +4,33 @@ import vm.VMStack;
 import vm.object.VMObject;
 
 /**
+ * <code>StringObject</code> 是JavaScript中的字符串对象
+ * 
  * @author Jarod Yv
  * @see ECMA-262 98页~106页 15.5.String Objects
  */
 public class StringObject extends VMObject {
 
-	private static final int ID_FROM_CHAR_CODE = 39;
-	private static final int ID_CHAR_AT = 40;
-	private static final int ID_CHAR_CODE_AT = 41;
-	private static final int ID_CONCAT = 42;
-	private static final int ID_INDEX_OF = 43;
-	private static final int ID_LAST_INDEX_OF = 44;
-	private static final int ID_LOCALE_COMPARE = 45;
-	private static final int ID_MATCH = 46;
-	private static final int ID_REPLACE = 47;
-	private static final int ID_SEARCH = 48;
-	private static final int ID_SLICE = 49;
-	private static final int ID_SPLIT = 50;
-	private static final int ID_SUBSTRING = 51;
-	private static final int ID_TO_LOWER_CASE = 52;
-	private static final int ID_TO_LOCALE_LOWER_CASE = 53;
-	private static final int ID_TO_UPPER_CASE = 54;
-	private static final int ID_TO_LOCALE_UPPER_CASE = 55;
-	private static final int ID_LENGTH = 56;
-	private static final int ID_LENGTH_SET = 57;
+	public static final int ID_INIT_STRING = 0x40;// 构造函数
+
+	private static final int ID_CHAR_AT = 0x41;// prototype.charAt()
+	private static final int ID_CHAR_CODE_AT = 0x42;// prototype.charCodeAt()
+	private static final int ID_CONCAT = 0x43;// prototype.concat()
+	private static final int ID_INDEX_OF = 0x44;// prototype.indexOf()
+	private static final int ID_LAST_INDEX_OF = 0x45;// prototype.lastIndexOf()
+	private static final int ID_LOCALE_COMPARE = 0x46;// prototype.localeCompare()
+	private static final int ID_MATCH = 0x47;// prototype.match()
+	private static final int ID_REPLACE = 0x48;// prototype.replace()
+	private static final int ID_SEARCH = 0x49;// prototype.localeCompare()
+	private static final int ID_SLICE = 0x4a;// prototype.slice()
+	private static final int ID_SPLIT = 0x4b;// prototype.split()
+	private static final int ID_SUBSTRING = 0x4c;// prototype.substring()
+	private static final int ID_TO_LOWER_CASE = 0x4d;// prototype.toLowerCase()
+	private static final int ID_TO_LOCALE_LOWER_CASE = 0x4e;// prototype.toLocalLowerCase()
+	private static final int ID_TO_UPPER_CASE = 0x4f;// prototype.toUpperCase()
+	private static final int ID_TO_LOCALE_UPPER_CASE = 0x50;// prototype.toLocalUpperCase()
+	private static final int ID_LENGTH = 0x51; // prototype.length()
+	private static final int ID_LENGTH_SET = 0x52;// prototype.lengthSet()
 
 	public static final StringObject STRING_PROTOTYPE = new StringObject();
 	static {

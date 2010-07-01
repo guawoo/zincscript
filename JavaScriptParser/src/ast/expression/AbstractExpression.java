@@ -20,4 +20,8 @@ public abstract class AbstractExpression extends AbstractSyntaxNode {
 	 */
 	public abstract AbstractExpression compileExpression(ICompilable compiler)
 			throws CompilerException;
+
+	public void print() {
+		System.out.println("This is the expression");
+	}
 }

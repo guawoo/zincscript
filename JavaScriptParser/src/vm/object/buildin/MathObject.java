@@ -7,6 +7,8 @@ import vm.object.VMObject;
 import vm.object.nativeobject.FunctionObject;
 
 /**
+ * <code>MathObject</code> 是JavaScript的数学运算库
+ * 
  * @author Jarod Yv
  * @see ECMA-262 112页~117页 15.8.The Math Object
  */
@@ -26,24 +28,24 @@ public class MathObject extends VMObject {
 	public static final Random RANDOM = new Random();
 
 	// /////////////////////// 方法代号 ///////////////////////
-	private static final int ID_ABS = 19;
-	private static final int ID_ACOS = 20;
-	private static final int ID_ASIN = 21;
-	private static final int ID_ATAN = 22;
-	private static final int ID_ATAN2 = 23;
-	private static final int ID_CEIL = 24;
-	private static final int ID_COS = 25;
-	private static final int ID_EXP = 26;
-	private static final int ID_FLOOR = 27;
-	private static final int ID_LOG = 28;
-	private static final int ID_MAX = 29;
-	private static final int ID_MIN = 30;
-	private static final int ID_POW = 31;
-	private static final int ID_RANDOM = 32;
-	private static final int ID_ROUND = 33;
-	private static final int ID_SIN = 34;
-	private static final int ID_SQRT = 35;
-	private static final int ID_TAN = 36;
+	private static final int ID_ABS = 0xb1;
+	private static final int ID_ACOS = 0xb2;
+	private static final int ID_ASIN = 0xb3;
+	private static final int ID_ATAN = 0xb4;
+	private static final int ID_ATAN2 = 0xb5;
+	private static final int ID_CEIL = 0xb6;
+	private static final int ID_COS = 0xb7;
+	private static final int ID_EXP = 0xb8;
+	private static final int ID_FLOOR = 0xb9;
+	private static final int ID_LOG = 0xba;
+	private static final int ID_MAX = 0xbb;
+	private static final int ID_MIN = 0xbc;
+	private static final int ID_POW = 0xbd;
+	private static final int ID_RANDOM = 0xbe;
+	private static final int ID_ROUND = 0xbf;
+	private static final int ID_SIN = 0xc0;
+	private static final int ID_SQRT = 0xc1;
+	private static final int ID_TAN = 0xc2;
 	// //////////////////////////////////////////////////////
 
 	// /////////////////////// 常量代号 ///////////////////////
@@ -145,6 +147,7 @@ public class MathObject extends VMObject {
 			stack.setNumber(sp, Math.sin(stack.getNumber(sp + 2)));
 			break;
 		case ID_SQRT:
+			System.out.println("Math.sqrt()");
 			stack.setNumber(sp, Math.sqrt(stack.getNumber(sp + 2)));
 			break;
 		case ID_TAN:

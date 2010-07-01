@@ -1,8 +1,26 @@
 package vm.object.nativeobject;
 
+import vm.VMStack;
 import vm.object.VMObject;
 
+/**
+ * <code>FunctionObject</code> 是JavaScript中的函数对象.
+ * JavaScript中所有数据都是对象,连函数也被看作一个对象,可以像其他对象一样生成和传递.
+ * 甚至一个JavaScript程序也可以被看作是一个函数集合对象.
+ * <p>
+ * 函数可以说是JavaScript中可执行的单元,任何代码要想运行需要封装进一个函数, 因此函数对象与其他对象不同,函数对象需要负责维护运行时的临时数据.
+ * 
+ * @author Jarod Yv
+ * 
+ */
 public class FunctionObject extends VMObject {
+
+	public static final int ID_INIT_FUNCTION = 0x60;
+
+	private static final int ID_PROTOTYPE = 0x61;
+	private static final int ID_LENGTH = 0x62;
+	private static final int ID_APPLY = 0x63;
+
 	/** 函数接受参数的个数; -1表示本地getter/setter方法 */
 	public int expectedParameterCount;
 
@@ -40,6 +58,20 @@ public class FunctionObject extends VMObject {
 	public VMObject context;
 
 	public int[] lineNumbers;
+
+	public static final FunctionObject FUNCTION_PROTOTYPE = new FunctionObject();
+	static {
+		FUNCTION_PROTOTYPE.addProperty("prototype", new FunctionObject(
+				ID_PROTOTYPE, -1));
+		FUNCTION_PROTOTYPE.addProperty("length", new FunctionObject(ID_LENGTH,
+				-1));
+		FUNCTION_PROTOTYPE.addProperty("apply",
+				new FunctionObject(ID_APPLY, -1));
+	}
+
+	public FunctionObject() {
+		super(OBJECT_PROTOTYPE);
+	}
 
 	/**
 	 * 构造函数
@@ -108,5 +140,23 @@ public class FunctionObject extends VMObject {
 			return lineNumbers[i + 1];
 		}
 		return -1;
+	}
+
+	public void evalNative(int id, VMStack stack, int sp, int pc) {
+		switch (id) {
+		case ID_PROTOTYPE:
+			stack.setObject(sp, prototype);
+			break;
+
+		case ID_LENGTH:
+			stack.setNumber(sp, pc);
+			break;
+
+		case ID_APPLY:
+			throw new RuntimeException("NYI");
+
+		default:
+			super.evalNative(id, stack, sp, pc);
+		}
 	}
 }

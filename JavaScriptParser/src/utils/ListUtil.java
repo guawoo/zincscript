@@ -60,4 +60,5 @@ public final class ListUtil {
 		list.toArray(literalArray);
 		return literalArray;
 	}
+
 }
