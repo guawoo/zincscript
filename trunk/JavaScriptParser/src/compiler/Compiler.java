@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
+
 import parser.Config;
 import parser.Token;
 import utils.ArrayList;
@@ -119,6 +120,56 @@ public class Compiler implements ICompilable {
 		this.globalStringTable = new ArrayList();
 	}
 
+	public Compiler(Compiler parent, FunctionLiteral function,
+			DataOutputStream dos) throws CompilerException {
+		this.parent = parent;
+		this.globalStringMap = parent.globalStringMap;
+		this.globalStringTable = parent.globalStringTable;
+		this.dos = dos;
+		this.enableLocalsOptimization = function.enableLocalsOptimization;
+
+		for (int i = 0; i < function.variables.length; i++) {
+			IdentifierLiteral variable = function.variables[i];
+			addToGlobalStringTable(variable.identifierName);
+			localVariableTable.put(variable, variable);
+		}
+
+		for (int i = 0; i < function.variables.length; i++) {
+			addToGlobalStringTable(function.variables[i].identifierName);
+		}
+
+		for (int i = 0; i < function.functions.length; i++) {
+			if (function.functions[i] != null) {
+				function.functions[i].compileStatement(this);
+			}
+		}
+
+		for (int i = 0; i < function.statements.length; i++) {
+			if (function.statements[i] != null) {
+				function.statements[i].compileStatement(this);
+			}
+		}
+
+		byte[] byteCode = codeStream.toByteArray();
+
+		// TODO remove this magic numbers.
+		int flags = Config.FASTLOCALS && function.enableLocalsOptimization ? 0x01
+				: 0x00;
+
+		// if (function.funcName != null) {
+		// writeCommentBlock("function " + function.name.string);
+		// }
+
+		writeStringLiteralBlock();
+		writeNumberLiteralBlock();
+		writeFunctionLiteralBlock();
+		writeLocalVariableNameBlock(function.variables);
+		writeCodeBlock(function.variables.length, function.parameters.length,
+				flags, byteCode);
+		writeLineNumberBlock();
+		writeEndMarker();
+	}
+
 	// /////////////////////////////// Program ///////////////////////////////
 	public Program compile(Program program) throws CompilerException {
 		for (int i = 0; i < program.functions.length; i++) {
@@ -138,65 +189,6 @@ public class Compiler implements ICompilable {
 		writeEndMarker();
 
 		return program;
-	}
-
-	/**
-	 * @param parent
-	 * @param function
-	 * @param dos
-	 * @throws CompilerException
-	 */
-	private void CompileFunction(Compiler parent, FunctionLiteral function,
-			DataOutputStream dos) throws CompilerException {
-		this.parent = parent;
-		this.globalStringMap = this.parent.globalStringMap;
-		this.globalStringTable = this.parent.globalStringTable;
-		this.dos = dos;
-		this.enableLocalsOptimization = function.enableLocalsOptimization;
-
-		// 将函数的变量写入局部变量表
-		for (int i = 0; i < function.variables.length; i++) {
-			IdentifierLiteral variable = function.variables[i];
-			addToGlobalStringTable(variable.identifierName);
-			localVariableTable.put(variable, variable);
-		}
-
-		// for (int i = 0; i < function.variables.length; i++) {
-		// addToGlobalStringTable(function.variables[i].string);
-		// }
-
-		// 处理函数中的函数
-		for (int i = 0; i < function.functions.length; i++) {
-			if (function.functions[i] != null) {
-				function.functions[i].compileStatement(this);
-			}
-		}
-
-		// 处理函数中的语句
-		for (int i = 0; i < function.statements.length; i++) {
-			if (function.statements[i] != null) {
-				function.statements[i].compileStatement(this);
-			}
-		}
-
-		byte[] byteCode = codeStream.toByteArray();
-
-		// TODO remove this magic numbers.
-		int flags = Config.FASTLOCALS && function.enableLocalsOptimization ? 0x01
-				: 0x00;
-
-		// if (function.funcName != null) {
-		// writeCommentBlock("function " + function.funcName.string);
-		// }
-
-		writeStringLiteralBlock();
-		writeNumberLiteralBlock();
-		writeFunctionLiteralBlock();
-		writeLocalVariableNameBlock(function.variables);
-		writeCodeBlock(function.variables.length, function.parameters.length,
-				flags, byteCode);
-		writeLineNumberBlock();
-		writeEndMarker();
 	}
 
 	// ///////////////////////////////////////////////////////////////////////
@@ -240,7 +232,8 @@ public class Compiler implements ICompilable {
 		writeJump(
 				VirtualMachine.XOP_GO,
 				continueStatement.identifier == null ? (Object) currentBreakStatement
-						: continueStatement.identifier.identifierName, "continue");
+						: continueStatement.identifier.identifierName,
+				"continue");
 		return continueStatement;
 	}
 
@@ -803,10 +796,14 @@ public class Compiler implements ICompilable {
 			throws CompilerException {
 		if (variableDeclarationExpression.initializer != null) {
 			variableDeclarationExpression.initializer.compileExpression(this);
-			writeVarDef(variableDeclarationExpression.identifier.identifierName, true);
+			writeVarDef(
+					variableDeclarationExpression.identifier.identifierName,
+					true);
 			writeOp(VirtualMachine.OP_DROP);
 		} else {
-			writeVarDef(variableDeclarationExpression.identifier.identifierName, false);
+			writeVarDef(
+					variableDeclarationExpression.identifier.identifierName,
+					false);
 		}
 		return variableDeclarationExpression;
 	}
@@ -920,7 +917,7 @@ public class Compiler implements ICompilable {
 			throws CompilerException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		CompileFunction(this, functionLiteral, new DataOutputStream(baos));
+		new Compiler(this, functionLiteral, new DataOutputStream(baos));
 
 		functionLiterals.add(baos.toByteArray());
 
@@ -1338,7 +1335,7 @@ public class Compiler implements ICompilable {
 	 * @param imm
 	 *            操作符后跟的立即数字
 	 */
-	void writeXop(int opcode, int imm) {
+	private void writeXop(int opcode, int imm) {
 		if (opcode == VirtualMachine.XOP_ADD) {
 			switch (imm) {
 			case 1:

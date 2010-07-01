@@ -28,4 +28,6 @@ public abstract class AbstractSyntaxNode {
 			}
 		}
 	}
+
+	public abstract void print();
 }

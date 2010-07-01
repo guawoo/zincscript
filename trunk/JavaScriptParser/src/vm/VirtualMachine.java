@@ -1,5 +1,6 @@
 package vm;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -141,6 +142,18 @@ public class VirtualMachine {
 
 	private byte[] byteCode = null;
 
+	public VirtualMachine() {
+		global = new GlobalObject();
+	}
+
+	public Object exec(String script) throws Exception {
+		loadScript(script);
+		System.out.println(byteCode.length);
+		ByteArrayInputStream bias = new ByteArrayInputStream(byteCode);
+		DataInputStream dis = new DataInputStream(bias);
+		return exec(dis);
+	}
+
 	/**
 	 * 载入脚本
 	 * 
@@ -153,10 +166,12 @@ public class VirtualMachine {
 		// 对脚本进行词法语法分析，生成抽象语法树
 		Parser parser = Parser.getInstace();
 		Program program = parser.parseProgram(script);
+		program.print();
 		parser = null;
 		// 根据抽象语法树生成中间代码
 		PreCompiler declarationInterpreter = new PreCompiler();
 		declarationInterpreter.compile(program);
+		program.print();
 		declarationInterpreter = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(baos);
@@ -166,6 +181,7 @@ public class VirtualMachine {
 			dos.flush();
 			byteCode = baos.toByteArray();
 		} catch (Exception e) {
+			e.printStackTrace();
 			byteCode = null;
 		} finally {
 			try {
@@ -206,6 +222,7 @@ public class VirtualMachine {
 		loop: while (true) {
 			int blockType = dis.read();
 			int count;
+			System.out.println("blockType = " + blockType);
 			switch (blockType) {
 			case BLOCK_GLOBAL_STRING_TABLE:// 读取全局字符串表
 				count = dis.readUnsignedShort();
@@ -299,8 +316,8 @@ public class VirtualMachine {
 		mainFunction = generateFunctionObject(dis, null);
 		VMStack stack = new VMStack();
 		stack.setObject(0, global);
-		stack.setObject(1, mainFunction);
-		stack.setObject(2, null);
+		stack.setObject(1, global);
+		stack.setObject(2, mainFunction);
 
 		eval(null, stack, 1, 0);
 		return stack.getObject(3);
@@ -313,6 +330,8 @@ public class VirtualMachine {
 	 */
 	public void eval(FunctionObject function, VMStack stack, int sp,
 			int actualParameterCount) {
+		System.out.println((function == null) ? "Function is NULL" : function
+				.toString());
 		VMObject thisPtr = stack.getVMObject(sp);
 		if (function == null)
 			function = (FunctionObject) stack.getVMObject(sp + 1);
@@ -408,8 +427,8 @@ public class VirtualMachine {
 						FunctionObject m = (FunctionObject) stack
 								.getObject(sp + 1);
 						eval(m, stack, sp++, imm);
-						// System.out.println("Ret val received: "
-						// + stack.getObject(sp-1)+" sp: "+sp);
+						System.out.println("Ret val received: "
+								+ stack.getObject(sp - 1) + " sp: " + sp);
 						break;
 
 					case XOP_PUSH_FN:

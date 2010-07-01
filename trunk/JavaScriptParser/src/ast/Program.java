@@ -39,10 +39,11 @@ public class Program extends AbstractSyntaxNode {
 	 * 
 	 * @param compiler
 	 *            编译器
-	 * @return
+	 * @return {@link Program}
 	 * @throws ParserException
 	 */
-	public Program compileProgram(ICompilable compiler) throws CompilerException {
+	public Program compileProgram(ICompilable compiler)
+			throws CompilerException {
 		return compiler.compile(this);
 	}
 
@@ -52,5 +53,20 @@ public class Program extends AbstractSyntaxNode {
 		release(functions);
 		functions = null;
 		System.gc();
+	}
+
+	public void print() {
+		if (statements != null) {
+			System.out.println("statements");
+			for (int i = 0; i < statements.length; i++) {
+				statements[i].print();
+			}
+		}
+		if (functions != null) {
+			System.out.println("functions");
+			for (int i = 0; i < functions.length; i++) {
+				functions[i].print();
+			}
+		}
 	}
 }

@@ -17,14 +17,16 @@ import vm.object.nativeobject.FunctionObject;
  */
 public class VMObject {
 
-	protected static final int ID_INIT_OBJECT = 0x01;
-	protected static final int ID_TO_STRING = 0x02;
-	protected static final int ID_TO_LOCALE_STRING = 0x03;
-	protected static final int ID_VALUE_OF = 0x04;
-	protected static final int ID_HAS_OWN_PROPERTY = 0x05;
-	protected static final int ID_IS_PROTOTYPE_OF = 0x06;
-	protected static final int ID_PROPERTY_IS_ENUMERABLE = 0x07;
+	public static final int ID_INIT_OBJECT = 0x01;// 构造函数
+	public static final int ID_FROM_CHAR_CODE = 0x0f;
 
+	protected static final int ID_TO_STRING = 0x02;// prototype.toString()
+	protected static final int ID_TO_LOCALE_STRING = 0x03;// prototype.toLocalString()
+	protected static final int ID_VALUE_OF = 0x04;// prototype.valueOf()
+	protected static final int ID_HAS_OWN_PROPERTY = 0x05;// prototype.hasOwnProperty()
+	protected static final int ID_IS_PROTOTYPE_OF = 0x06;// prototype.isPrototypeOf()
+	protected static final int ID_PROPERTY_IS_ENUMERABLE = 0x07;// prototype.propertyIsEnumerable()
+	
 	/**
 	 * Object的{@link #parentPrototype}, 后面的static块用于添加Object中的方法。
 	 * <p>
@@ -69,10 +71,11 @@ public class VMObject {
 		this.parentPrototype = parentPrototype;
 	}
 
-	public void addProperty(String property, Object value) {
+	public VMObject addProperty(String property, Object value) {
 		if (data == null)
 			data = new Hashtable();
 		data.put(property, value == null ? VMUtils.EMPTY_OBJECT : value);
+		return this;
 	}
 
 	/**

@@ -66,4 +66,8 @@ public abstract class AbstractStatement extends AbstractSyntaxNode {
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
 	}
+
+	public void print() {
+		System.out.println("This is the statement @" + this.lineNumber);
+	}
 }

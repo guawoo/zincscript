@@ -4,10 +4,11 @@ import vm.VMStack;
 import vm.object.VMObject;
 
 public class NumberObject extends VMObject {
-	private static final int ID_INIT_NUMBER = 60;
-	private static final int ID_TO_FIXED = 61;
-	private static final int ID_TO_EXPONENTIAL = 62;
-	private static final int ID_TO_PRECISION = 63;
+	public static final int ID_INIT_NUMBER = 0x70;// 构造函数
+
+	private static final int ID_TO_FIXED = 0x71;// prototype.toFixed()
+	private static final int ID_TO_EXPONENTIAL = 0x72;// prototype.toExponential()
+	private static final int ID_TO_PRECISION = 0x73;// prototype.toPrecision()
 
 	public static final NumberObject NUMBER_PROTOTYPE = new NumberObject();
 	static {
@@ -39,9 +40,11 @@ public class NumberObject extends VMObject {
 	}
 
 	/**
-	 * Converts a double to a string. This method is based on extracting the
-	 * decimal mantisse and exponent from toString(), this should probably be
-	 * replaced by a more elegant method...
+	 * 将浮点数转换为字符串. 这个方法会在javascript的
+	 * <code>toFixed(), toExponential(), toPrecision()</code> 中被调用,作用等同于
+	 * <code>toString()</code>.
+	 * <p>
+	 * 这个方法写得有点垃圾,有时间应该对其进行重构
 	 */
 	private String formatNumber(int op, double d, double digitsRaw) {
 		String s = Double.toString(d);
