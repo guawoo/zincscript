@@ -1,0 +1,1 @@
+ZincScript是J2ME平台上的脚本语言，语法类似Ruby。
